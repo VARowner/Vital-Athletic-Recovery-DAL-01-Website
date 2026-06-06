@@ -4,6 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<!-- ===== GOOGLE ANALYTICS (GA4) =====
+     Replace G-XXXXXXXXXX (both places) with your real Measurement ID. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- ===== GOOGLE TAG MANAGER ===== -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<!-- ===== END GOOGLE TAG MANAGER ===== -->
+
 <title>Blog — Vital Athletic Recovery · East Dallas</title>
 <meta name="description" content="Notes from the studio. Recovery science, member stories, and what we're learning at Vital Athletic Recovery in East Dallas." />
 <meta name="robots" content="index, follow" />
@@ -61,12 +79,12 @@
     -webkit-backdrop-filter: blur(14px) saturate(110%);
     background: rgba(242,235,216,0.72);
     border-bottom: 1px solid var(--line);
-    transition: padding 0.35s ease, background 0.35s ease;
+    transition: padding 0.35s ease, background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
   }
   nav.scrolled {
     padding: 12px 48px;
-    background: rgba(242,235,216,0.92);
-    border-bottom-color: var(--line-strong);
+    background: rgba(15, 13, 10, 0.92); /* edgy: dark glass on scroll */
+    border-bottom-color: rgba(138, 101, 54, 0.45);
   }
   .logo {
     display: inline-flex; align-items: center;
@@ -75,9 +93,12 @@
   .logo img {
     height: 300px; width: auto; display: block;
     margin: -50px 0;
-    transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease;
+    transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease, filter 0.35s ease;
   }
-  nav.scrolled .logo img { height: 225px; margin: -38px 0; }
+  nav.scrolled .logo img {
+    height: 225px; margin: -38px 0;
+    filter: brightness(0) invert(1);
+  }
   .logo:hover img { opacity: 0.85; }
   .nav-links {
     display: flex; gap: 36px; list-style: none;
@@ -89,15 +110,33 @@
   }
   .nav-links a:hover, .nav-links a.active { color: var(--accent); }
   .nav-links a.active { font-weight: 500; }
+  nav.scrolled .nav-links a { color: rgba(244, 238, 218, 0.78); }
+  nav.scrolled .nav-links a:hover,
+  nav.scrolled .nav-links a.active { color: var(--accent-soft); }
   .nav-cta {
     padding: 10px 22px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--ink-inverse);
     text-decoration: none;
     font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
     transition: all 0.3s;
   }
-  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+  .nav-cta:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink-inverse);
+  }
+  nav.scrolled .nav-cta {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--ink);
+  }
+  nav.scrolled .nav-cta:hover {
+    background: var(--ink-inverse);
+    border-color: var(--ink-inverse);
+    color: var(--ink);
+  }
   .nav-actions {
     display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
   }
@@ -107,6 +146,8 @@
     font-weight: 500; transition: color 0.3s;
   }
   .nav-login:hover { color: var(--accent); }
+  nav.scrolled .nav-login { color: rgba(244, 238, 218, 0.7); }
+  nav.scrolled .nav-login:hover { color: var(--accent-soft); }
 
   /* ===== BLOG HEADER ===== */
   .blog-header {
@@ -129,11 +170,12 @@
     line-height: 1; letter-spacing: -0.025em;
     margin-bottom: 20px;
   }
-  .blog-header h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .blog-header h1 em { font-style: normal; color: var(--accent); font-weight: 600; }
   .blog-header p {
-    font-family: var(--serif); font-style: italic;
+    font-family: var(--serif);
     font-size: 20px; color: var(--ink-dim);
     max-width: 600px;
+    line-height: 1.5;
   }
 
   /* ===== POST LIST ===== */
@@ -184,9 +226,10 @@
 
   /* ===== FOOTER (shared) ===== */
   footer {
-    background: var(--bg);
-    padding: 64px 48px 32px;
-    border-top: 1px solid var(--line);
+    background: #0d0b08;
+    color: var(--ink-inverse);
+    padding: 72px 48px 32px;
+    border-top: 1px solid rgba(138, 101, 54, 0.35);
   }
   .foot-grid {
     display: grid;
@@ -198,26 +241,27 @@
   .foot-brand img {
     height: 500px; width: auto; display: block;
     margin: -75px 0 -50px -50px;
+    filter: brightness(0) invert(1);
   }
   .foot-tag {
-    font-size: 14px; color: var(--ink-dim);
+    font-size: 14px; color: rgba(244, 238, 218, 0.7);
     line-height: 1.6; max-width: 360px;
   }
   .foot-col h4 {
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 20px; font-weight: 500;
+    color: var(--accent-soft); margin-bottom: 20px; font-weight: 500;
   }
   .foot-col ul { list-style: none; }
   .foot-col li { margin-bottom: 10px; }
   .foot-col a {
-    color: var(--ink-dim); text-decoration: none;
+    color: rgba(244, 238, 218, 0.7); text-decoration: none;
     font-size: 14px; transition: color 0.3s;
   }
-  .foot-col a:hover { color: var(--accent); }
+  .foot-col a:hover { color: var(--accent-soft); }
   .foot-bottom {
-    padding-top: 32px; border-top: 1px solid var(--line);
+    padding-top: 32px; border-top: 1px solid rgba(244, 238, 218, 0.12);
     display: flex; justify-content: space-between;
-    font-size: 12px; color: var(--ink-mute);
+    font-size: 12px; color: rgba(244, 238, 218, 0.5);
   }
 
   /* ===== MOBILE HAMBURGER + DRAWER ===== */
@@ -229,9 +273,9 @@
     border: 1px solid var(--accent);
     background: transparent;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 0; /* squared for edgier feel */
     padding: 0;
-    transition: background 0.25s ease;
+    transition: background 0.25s ease, border-color 0.25s ease;
   }
   .nav-burger:hover { background: rgba(138, 101, 54, 0.08); }
   .nav-burger span {
@@ -248,6 +292,8 @@
   .nav-burger.open span:nth-child(1) { top: 21px; transform: rotate(45deg); }
   .nav-burger.open span:nth-child(2) { opacity: 0; }
   .nav-burger.open span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+  nav.scrolled .nav-burger { border-color: var(--accent-soft); }
+  nav.scrolled .nav-burger span { background: var(--accent-soft); }
   .mobile-drawer {
     position: fixed;
     top: 0; right: 0;
@@ -282,7 +328,7 @@
   .mobile-drawer .mobile-cta {
     display: block; text-align: center; background: var(--ink); color: var(--bg);
     padding: 18px 24px; font-size: 13px; letter-spacing: 0.12em;
-    text-transform: uppercase; font-weight: 600; border-radius: 999px;
+    text-transform: uppercase; font-weight: 600; border-radius: 0; /* squared */
     text-decoration: none; transition: background 0.3s;
   }
   .mobile-drawer .mobile-cta:hover { background: var(--accent); }
@@ -329,6 +375,10 @@
 </style>
 </head>
 <body>
+<!-- ===== GOOGLE TAG MANAGER (noscript) ===== -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P73DQ4WR"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- ===== END GOOGLE TAG MANAGER (noscript) ===== -->
 
 <nav aria-label="Primary">
   <a href="index.html" class="logo" aria-label="Vital Athletic Recovery — home">
@@ -337,13 +387,14 @@
   <ul class="nav-links">
     <li><a href="index.html#about">About</a></li>
     <li><a href="index.html#memberships">Memberships</a></li>
-    <li><a href="index.html#modalities">Modalities</a></li>
+    <li><a href="amenities.html">Amenities</a></li>
+    <li><a href="instructors.html">Instructors</a></li>
     <li><a href="index.html#classes">Classes</a></li>
     <li><a href="blog.html" class="active">Blog</a></li>
     <li><a href="index.html#visit">Visit</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="#" class="nav-cta" data-cta="founder" data-product="founder">Become a Founder</a>
+    <a href="index.html#memberships" class="nav-cta">Membership Offers</a>
     <a href="https://vitalathleticrecovery.gymmasteronline.com/portal"
        target="_blank" rel="noopener" class="nav-login">Member Login</a>
   </div>
@@ -357,13 +408,14 @@
   <ul>
     <li><a href="index.html#about" data-drawer-link>About</a></li>
     <li><a href="index.html#memberships" data-drawer-link>Memberships</a></li>
-    <li><a href="index.html#modalities" data-drawer-link>Modalities</a></li>
+    <li><a href="amenities.html" data-drawer-link>Amenities</a></li>
+    <li><a href="instructors.html" data-drawer-link>Instructors</a></li>
     <li><a href="index.html#classes" data-drawer-link>Classes</a></li>
     <li><a href="blog.html" data-drawer-link>Blog</a></li>
     <li><a href="index.html#visit" data-drawer-link>Visit</a></li>
   </ul>
   <div class="mobile-actions">
-    <a href="#" class="mobile-cta" data-cta="founder" data-product="founder" data-drawer-link>Become a Founder</a>
+    <a href="index.html#memberships" class="mobile-cta" data-drawer-link>Membership Offers</a>
     <a href="https://vitalathleticrecovery.gymmasteronline.com/portal"
        target="_blank" rel="noopener" class="mobile-login" data-drawer-link>Member Login →</a>
   </div>
@@ -433,7 +485,8 @@
       <h4>Studio</h4>
       <ul>
         <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#modalities">Services</a></li>
+        <li><a href="amenities.html">Amenities</a></li>
+        <li><a href="instructors.html">Instructors</a></li>
         <li><a href="index.html#classes">Schedule</a></li>
         <li><a href="blog.html">Blog</a></li>
       </ul>

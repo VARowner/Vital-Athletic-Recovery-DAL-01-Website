@@ -4,6 +4,27 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<!-- ===== GOOGLE ANALYTICS (GA4) =====
+     Replace G-XXXXXXXXXX (both places) with your real Measurement ID
+     from Google Analytics → Admin → Data Streams → your web stream.
+     The ID always starts with "G-" followed by ~10 characters.
+================================================== -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- ===== GOOGLE TAG MANAGER ===== -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<!-- ===== END GOOGLE TAG MANAGER ===== -->
+
 <!-- ===== PRIMARY SEO ===== -->
 <title>Cold Plunge, Sauna & Reformer in East Dallas | Vital Athletic Recovery · Casa Linda, Lakewood, Lake Highlands</title>
 <meta name="description" content="East Dallas recovery and movement studio at 718 N. Buckner Blvd — cold plunge, infrared sauna, traditional sauna, compression, myofascial, red light, Reformer classes, and yoga. Serving Casa Linda, Casa View, Lakewood, White Rock Lake, Lake Highlands, Forest Hills, Lochwood, and the M Streets. Founding memberships open now. (214) 308-2123." />
@@ -58,7 +79,7 @@
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="dns-prefetch" href="https://vitalathleticrecovery.gymmasteronline.com">
 <link rel="preload" as="image" href="assets/var-logo-horizontal-light.png" fetchpriority="high" />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f2ebd8;           /* deeper, warmer parchment */
@@ -78,6 +99,7 @@
     --line-strong: rgba(20,17,12,0.24);
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -135,12 +157,12 @@
     -webkit-backdrop-filter: blur(14px) saturate(110%);
     background: rgba(250,246,239,0.72);
     border-bottom: 1px solid var(--line);
-    transition: padding 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+    transition: padding 0.35s ease, background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
   }
   nav.scrolled {
     padding: 12px 48px;
-    background: rgba(250,246,239,0.92);
-    border-bottom-color: var(--line-strong);
+    background: rgba(15, 13, 10, 0.92); /* edgy: dark glass on scroll */
+    border-bottom-color: rgba(138, 101, 54, 0.45);
   }
   .logo {
     display: inline-flex;
@@ -153,11 +175,13 @@
     width: auto;
     display: block;
     margin: -50px 0; /* overhang the nav so the mark reads big without ballooning the bar */
-    transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease;
+    transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease, filter 0.35s ease;
   }
   nav.scrolled .logo img {
     height: 225px;
     margin: -38px 0;
+    /* swap the dark-text logo to a light-text version when nav goes dark */
+    filter: brightness(0) invert(1);
   }
   .logo:hover img { opacity: 0.85; }
   .nav-links {
@@ -174,10 +198,13 @@
     transition: color 0.3s;
   }
   .nav-links a:hover { color: var(--accent); }
+  nav.scrolled .nav-links a { color: rgba(244, 238, 218, 0.78); }
+  nav.scrolled .nav-links a:hover { color: var(--accent-soft); }
   .nav-cta {
     padding: 10px 22px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--ink-inverse);
     text-decoration: none;
     font-size: 12px;
     letter-spacing: 0.12em;
@@ -186,7 +213,18 @@
   }
   .nav-cta:hover {
     background: var(--accent);
-    color: var(--bg);
+    border-color: var(--accent);
+    color: var(--ink-inverse);
+  }
+  nav.scrolled .nav-cta {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--ink);
+  }
+  nav.scrolled .nav-cta:hover {
+    background: var(--ink-inverse);
+    border-color: var(--ink-inverse);
+    color: var(--ink);
   }
   .nav-actions {
     display: flex;
@@ -204,6 +242,8 @@
     transition: color 0.3s;
   }
   .nav-login:hover { color: var(--accent); }
+  nav.scrolled .nav-login { color: rgba(244, 238, 218, 0.7); }
+  nav.scrolled .nav-login:hover { color: var(--accent-soft); }
 
   /* ===== MOBILE HAMBURGER + DRAWER ===== */
   .nav-burger {
@@ -214,7 +254,7 @@
     border: 1px solid var(--accent);
     background: transparent;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 0; /* squared for edgier feel */
     padding: 0;
     transition: background 0.25s ease, border-color 0.25s ease;
   }
@@ -233,6 +273,8 @@
   .nav-burger.open span:nth-child(1) { top: 21px; transform: rotate(45deg); }
   .nav-burger.open span:nth-child(2) { opacity: 0; }
   .nav-burger.open span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+  nav.scrolled .nav-burger { border-color: var(--accent-soft); }
+  nav.scrolled .nav-burger span { background: var(--accent-soft); }
 
   .mobile-drawer {
     position: fixed;
@@ -293,7 +335,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     font-weight: 600;
-    border-radius: 999px;
+    border-radius: 0; /* squared */
     text-decoration: none;
     transition: background 0.3s ease;
   }
@@ -330,46 +372,154 @@
     min-height: 100vh;
     padding: 140px 48px 80px;
     position: relative;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    text-align: center;
     overflow: hidden;
+    background: #0d0b08; /* dark fallback while the video loads */
   }
-  .hero::after {
-    content: '';
+  /* Single centered content column */
+  .hero > div {
+    max-width: 780px;
+    width: 100%;
+  }
+  .hero-eyebrow {
+    /* override the default left-aligned flex so it centers under text-align: center */
+    justify-content: center;
+  }
+  .hero p.lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .hero-ctas {
+    justify-content: center;
+  }
+  .hero .hero-stats {
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+  }
+  /* Fly-through background video — sits behind everything */
+  .hero-video {
     position: absolute;
-    top: 18%;
-    right: -10%;
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(201,168,117,0.28), transparent 60%);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
     pointer-events: none;
-    animation: drift 18s ease-in-out infinite alternate;
-    will-change: transform;
   }
+  /* Light vignette — just enough contrast for type to read; video stays vivid */
   .hero::before {
     content: '';
     position: absolute;
-    bottom: -15%;
-    left: -8%;
-    width: 560px;
-    height: 560px;
-    background: radial-gradient(circle, rgba(107,132,116,0.22), transparent 65%);
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 55%, rgba(13,11,8,0.35), rgba(13,11,8,0.18) 55%, transparent 80%),
+      linear-gradient(180deg, rgba(13,11,8,0.30) 0%, transparent 25%, transparent 75%, rgba(13,11,8,0.25) 100%);
+    z-index: 1;
     pointer-events: none;
-    animation: drift 22s ease-in-out infinite alternate-reverse;
-    will-change: transform;
   }
-  @keyframes drift {
-    0%   { transform: translate3d(0, 0, 0) scale(1); }
-    100% { transform: translate3d(-30px, 40px, 0) scale(1.08); }
+  /* Subtle instrument-panel grid on top of the dark overlay */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(244,238,218,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,238,218,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, #000 55%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, #000 55%, transparent 90%);
+    z-index: 2;
+  }
+  /* Direct hero children sit above the video + overlays.
+     Exclude .hero-video so its absolute positioning isn't overridden. */
+  .hero > *:not(.hero-video) { position: relative; z-index: 3; }
+
+  /* Hero text floats over the video — text shadows do the readability work
+     so the overlay can stay light and the footage stays vivid */
+  .hero h1 {
+    color: var(--ink-inverse);
+    text-shadow: 0 2px 30px rgba(13,11,8,0.65), 0 1px 3px rgba(13,11,8,0.55);
+  }
+  .hero h1 em {
+    color: var(--accent-soft);
+    text-shadow: 0 2px 30px rgba(13,11,8,0.65), 0 1px 3px rgba(13,11,8,0.55);
+  }
+  .hero-eyebrow {
+    color: var(--accent-soft);
+    text-shadow: 0 1px 8px rgba(13,11,8,0.6);
+  }
+  .hero-eyebrow::before { background: var(--accent-soft); }
+  .hero p.lede {
+    color: rgba(244, 238, 218, 0.92);
+    text-shadow: 0 1px 12px rgba(13,11,8,0.7), 0 1px 2px rgba(13,11,8,0.5);
+  }
+  .hero .hero-stats { border-top-color: rgba(244, 238, 218, 0.30); }
+  .hero .hero-stat-num {
+    color: var(--ink-inverse);
+    text-shadow: 0 1px 10px rgba(13,11,8,0.65);
+  }
+  .hero .hero-stat-label {
+    color: rgba(244, 238, 218, 0.78);
+    text-shadow: 0 1px 6px rgba(13,11,8,0.6);
+  }
+
+  /* Buttons re-tuned for dark hero */
+  .hero .btn-primary {
+    background: var(--ink-inverse);
+    color: var(--ink);
+    border-color: var(--ink-inverse);
+  }
+  .hero .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink-inverse);
+  }
+  .hero .btn-ghost {
+    color: var(--ink-inverse);
+    border-bottom-color: rgba(244, 238, 218, 0.42);
+  }
+  .hero .btn-ghost:hover { border-color: var(--accent-soft); }
+  /* Secondary CTA — outlined cream button (middle tier between primary + ghost) */
+  .btn-secondary {
+    display: inline-block;
+    padding: 18px 32px;
+    background: transparent;
+    color: var(--ink-inverse);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 1px solid rgba(244, 238, 218, 0.55);
+    transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.3s;
+  }
+  .btn-secondary:hover {
+    background: var(--ink-inverse);
+    color: var(--ink);
+    border-color: var(--ink-inverse);
+    transform: translateY(-2px);
+  }
+
+  /* Respect reduced-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video { display: none; }
+    .hero { background: #0d0b08 url('assets/hero-flythrough-poster.jpg') center/cover no-repeat; }
   }
   .hero-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 12px;
+    font-family: var(--mono);
     font-size: 11px;
-    letter-spacing: 0.24em;
+    font-weight: 500;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 32px;
@@ -389,9 +539,10 @@
     margin-bottom: 32px;
   }
   .hero h1 em {
-    font-style: italic;
-    font-weight: 500;
+    font-style: normal;
+    font-weight: 600;
     color: var(--accent);
+    /* Equinox: declarative, not poetic */
   }
   .hero p.lede {
     font-size: 18px;
@@ -408,8 +559,8 @@
   }
   .btn-primary {
     padding: 18px 36px;
-    background: var(--accent);
-    color: var(--bg);
+    background: var(--ink);
+    color: var(--ink-inverse);
     text-decoration: none;
     font-size: 13px;
     letter-spacing: 0.14em;
@@ -417,9 +568,11 @@
     font-weight: 500;
     transition: all 0.3s;
     display: inline-block;
+    border: 1px solid var(--ink);
   }
   .btn-primary:hover {
-    background: var(--ink);
+    background: var(--accent);
+    border-color: var(--accent);
     transform: translateY(-2px);
   }
   .btn-ghost {
@@ -433,6 +586,41 @@
     transition: border-color 0.3s;
   }
   .btn-ghost:hover { border-color: var(--accent); }
+
+  /* Hero stat strip — Equinox/instrument-panel feel */
+  .hero-stats {
+    list-style: none;
+    margin: 56px 0 0;
+    padding: 24px 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 48px;
+    justify-content: start;
+    border-top: 1px solid var(--line);
+    max-width: 480px;
+  }
+  .hero-stats li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .hero-stat-num {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .hero-stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
 
   /* Founder counter */
   .counter-card {
@@ -456,7 +644,9 @@
     font-weight: 600;
   }
   .counter-label {
-    font-size: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-mute);
@@ -481,9 +671,9 @@
     margin-bottom: 4px;
   }
   .counter-tagline em {
-    font-style: italic;
+    font-style: normal;
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
   }
   .counter-cta {
     display: inline-flex;
@@ -491,7 +681,7 @@
     gap: 10px;
     margin-top: 28px;
     padding: 16px 28px;
-    background: var(--accent);
+    background: var(--ink);
     color: var(--ink-inverse);
     text-decoration: none;
     font-size: 12px;
@@ -501,7 +691,7 @@
     transition: all 0.3s;
   }
   .counter-cta:hover {
-    background: var(--ink);
+    background: var(--accent);
     transform: translateY(-2px);
   }
   .counter-cta::after {
@@ -578,7 +768,7 @@
     letter-spacing: -0.025em;
     margin-bottom: 28px;
   }
-  .about-copy h2 em { font-style: italic; color: var(--accent); }
+  .about-copy h2 em { font-style: normal; color: var(--accent); font-weight: 600; }
   .about-copy p {
     color: var(--ink-dim);
     font-size: 17px;
@@ -693,7 +883,7 @@
     margin-bottom: 24px;
     max-width: 800px;
   }
-  .section-heading em { font-style: italic; color: var(--accent); }
+  .section-heading em { font-style: normal; color: var(--accent); font-weight: 600; }
 
   /* ===== MEMBERSHIPS ===== */
   .memberships { background: var(--bg); }
@@ -850,14 +1040,41 @@
   .mod {
     background: #ffffff;
     padding: 40px 28px;
-    transition: background 0.3s, transform 0.4s;
+    transition: background 0.3s, transform 0.4s, box-shadow 0.3s;
     position: relative;
+    /* Anchor reset — every card links to its detail on amenities.html */
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .mod::after {
+    /* Subtle click affordance — arrow appears on hover */
+    content: '→';
+    position: absolute;
+    bottom: 22px;
+    right: 24px;
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.3s, transform 0.3s;
   }
   .mod:hover {
     background: var(--bg);
     transform: translateY(-2px);
+    box-shadow: 0 24px 48px -28px rgba(20,17,12,0.18);
+  }
+  .mod:hover::after {
+    opacity: 1;
+    transform: translateX(0);
   }
   .mod:hover .mod-icon { transform: scale(1.08); color: var(--accent-deep); }
+  .mod:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
   .mod-icon {
     width: 40px;
     height: 40px;
@@ -868,8 +1085,18 @@
   .mod-name {
     font-family: var(--serif);
     font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 8px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .mod-spec {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: block;
   }
   .mod-desc {
     font-size: 14px;
@@ -936,8 +1163,10 @@
     max-width: 340px;
   }
   .step-meta {
+    font-family: var(--mono);
     font-size: 11px;
-    letter-spacing: 0.2em;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
     margin-top: 16px;
@@ -1310,7 +1539,7 @@
     line-height: 1;
     margin-bottom: 24px;
   }
-  .final h2 em { font-style: italic; color: var(--accent); }
+  .final h2 em { font-style: normal; color: var(--accent); font-weight: 600; }
   .final p {
     font-size: 18px;
     color: var(--ink-dim);
@@ -1322,9 +1551,10 @@
 
   /* ===== FOOTER ===== */
   footer {
-    background: var(--bg);
-    padding: 64px 48px 32px;
-    border-top: 1px solid var(--line);
+    background: #0d0b08; /* near-black, slightly warmer than pure */
+    color: var(--ink-inverse);
+    padding: 72px 48px 32px;
+    border-top: 1px solid rgba(138, 101, 54, 0.35);
   }
   .foot-grid {
     display: grid;
@@ -1341,10 +1571,12 @@
     width: auto;
     display: block;
     margin: -75px 0 -50px -50px; /* trim the built-in whitespace on all sides */
+    /* Force whichever logo file is used to render light-on-dark */
+    filter: brightness(0) invert(1);
   }
   .foot-tag {
     font-size: 14px;
-    color: var(--ink-dim);
+    color: rgba(244, 238, 218, 0.7);
     line-height: 1.6;
     max-width: 360px;
   }
@@ -1352,26 +1584,26 @@
     font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--accent-soft);
     margin-bottom: 20px;
     font-weight: 500;
   }
   .foot-col ul { list-style: none; }
   .foot-col li { margin-bottom: 10px; }
   .foot-col a {
-    color: var(--ink-dim);
+    color: rgba(244, 238, 218, 0.7);
     text-decoration: none;
     font-size: 14px;
     transition: color 0.3s;
   }
-  .foot-col a:hover { color: var(--accent); }
+  .foot-col a:hover { color: var(--accent-soft); }
   .foot-bottom {
     padding-top: 32px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid rgba(244, 238, 218, 0.12);
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: var(--ink-mute);
+    color: rgba(244, 238, 218, 0.5);
   }
 
   /* ===== RESPONSIVE ===== */
@@ -1384,9 +1616,7 @@
     .logo img { height: 200px; margin: -38px 0; }
     nav.scrolled .logo img { height: 160px; margin: -30px 0; }
     .hero {
-      grid-template-columns: 1fr;
       padding: 110px 24px 60px;
-      gap: 40px;
     }
     section { padding: 72px 24px; }
     .tier-grid { grid-template-columns: 1fr; }
@@ -1439,7 +1669,7 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 18px 36px;
-      border-radius: 999px;
+      border-radius: 0; /* squared */
       text-decoration: none;
       transition: background 0.3s ease, transform 0.3s ease;
     }
@@ -1481,12 +1711,22 @@
     .hero h1 { margin-bottom: 24px; }
     .hero-eyebrow { margin-bottom: 24px; font-size: 10px; letter-spacing: 0.2em; }
     .hero p.lede { font-size: 16px; }
-    .hero::after, .hero::before { width: 360px; height: 360px; }
+    /* Phones: slightly stronger vignette so type still floats over busier frames */
+    .hero::before {
+      background:
+        radial-gradient(ellipse at 50% 45%, rgba(13,11,8,0.5), rgba(13,11,8,0.28) 60%, rgba(13,11,8,0.18) 100%),
+        linear-gradient(180deg, rgba(13,11,8,0.35) 0%, transparent 30%, transparent 70%, rgba(13,11,8,0.35) 100%);
+    }
+    .hero::after { background-size: 60px 60px; } /* tighter grid on phones */
 
     /* CTA buttons stack instead of side-by-side */
     .hero-ctas { flex-direction: column; align-items: stretch; gap: 12px; }
     .hero-ctas .btn-primary,
     .hero-ctas .btn-ghost { width: 100%; text-align: center; box-sizing: border-box; }
+
+    /* Stat strip — single row on small phones */
+    .hero-stats { grid-template-columns: repeat(3, auto); gap: 24px; margin-top: 40px; }
+    .hero-stat-num { font-size: 22px; }
 
     /* Section padding tighter */
     section { padding: 60px 20px; }
@@ -1586,9 +1826,9 @@
     max-width: 460px;
     background: var(--bg);
     color: var(--ink);
-    border-radius: 18px;
-    border: 1px solid rgba(138, 101, 54, 0.25);
-    box-shadow: 0 30px 80px rgba(20, 17, 12, 0.45);
+    border-radius: 0; /* hard edges */
+    border: 1px solid var(--ink);
+    box-shadow: 0 30px 80px rgba(20, 17, 12, 0.55);
     text-align: center;
     overflow: hidden;
     transform: translateY(18px) scale(0.97);
@@ -1613,12 +1853,12 @@
     width: 36px;
     height: 36px;
     border: none;
-    background: rgba(20, 17, 12, 0.55);
+    background: rgba(20, 17, 12, 0.75);
     color: #fff;
     font-size: 22px;
     line-height: 1;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 0; /* squared */
     transition: background 0.2s ease;
     z-index: 2;
     backdrop-filter: blur(8px);
@@ -1644,8 +1884,9 @@
     letter-spacing: -0.01em;
   }
   .special-headline em {
-    font-style: italic;
+    font-style: normal;
     color: var(--accent);
+    font-weight: 600;
   }
   .special-sub {
     font-family: var(--serif);
@@ -1672,7 +1913,7 @@
     color: var(--accent);
     padding: 5px 11px;
     border: 1px solid rgba(138, 101, 54, 0.4);
-    border-radius: 999px;
+    border-radius: 0; /* squared chips */
     background: rgba(138, 101, 54, 0.06);
   }
   .special-cta {
@@ -1685,14 +1926,15 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 16px 34px;
-    border-radius: 999px;
-    border: none;
+    border-radius: 0; /* squared */
+    border: 1px solid var(--ink);
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
     text-decoration: none;
   }
   .special-cta:hover {
     background: var(--accent);
+    border-color: var(--accent);
     transform: translateY(-2px);
   }
   .special-dismiss {
@@ -1725,6 +1967,10 @@
 </style>
 </head>
 <body>
+<!-- ===== GOOGLE TAG MANAGER (noscript) ===== -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P73DQ4WR"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- ===== END GOOGLE TAG MANAGER (noscript) ===== -->
 
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -1735,13 +1981,14 @@
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#memberships">Memberships</a></li>
-    <li><a href="#modalities">Modalities</a></li>
+    <li><a href="amenities.html">Amenities</a></li>
+    <li><a href="instructors.html">Instructors</a></li>
     <li><a href="#classes">Classes</a></li>
     <li><a href="blog.html">Blog</a></li>
     <li><a href="#visit">Visit</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="#" class="nav-cta" data-cta="founder" data-product="founder">Become a Founder</a>
+    <a href="#memberships" class="nav-cta">Membership Offers</a>
     <a href="https://vitalathleticrecovery.gymmasteronline.com/portal"
        target="_blank" rel="noopener" class="nav-login">Member Login</a>
   </div>
@@ -1758,13 +2005,14 @@
   <ul class="mobile-links">
     <li><a href="#about" data-drawer-link>About</a></li>
     <li><a href="#memberships" data-drawer-link>Memberships</a></li>
-    <li><a href="#modalities" data-drawer-link>Modalities</a></li>
+    <li><a href="amenities.html" data-drawer-link>Amenities</a></li>
+    <li><a href="instructors.html" data-drawer-link>Instructors</a></li>
     <li><a href="#classes" data-drawer-link>Classes</a></li>
     <li><a href="blog.html" data-drawer-link>Blog</a></li>
     <li><a href="#visit" data-drawer-link>Visit</a></li>
   </ul>
   <div class="mobile-actions">
-    <a href="#" class="mobile-cta" data-cta="founder" data-product="founder" data-drawer-link>Become a Founder</a>
+    <a href="#memberships" class="mobile-cta" data-drawer-link>Membership Offers</a>
     <a href="https://vitalathleticrecovery.gymmasteronline.com/portal"
        target="_blank" rel="noopener" class="mobile-login" data-drawer-link>Member Login →</a>
   </div>
@@ -1774,23 +2022,310 @@
 
 <!-- HERO -->
 <section class="hero" aria-label="Hero — Recover smarter, live stronger">
+  <!-- ===================================================================
+       Background fly-through video. Loops silently behind the hero.
+       Poster image shows immediately while the video loads (and on
+       reduced-motion devices). Replace the .mp4 file at the path below
+       to swap footage; keep dimensions 16:9 for best framing.
+  ==================================================================== -->
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+         poster="assets/hero-flythrough-poster.jpg" aria-hidden="true">
+    <source src="assets/hero-flythrough.mp4" type="video/mp4" />
+  </video>
+
   <div>
     <div class="hero-eyebrow">Recover · Rebuild · Thrive</div>
     <h1>Recover smarter.<br>Live <em>stronger.</em></h1>
-    <p class="lede">A founding-member sanctuary for high performers who refuse to settle for fatigue. Cold plunge, infrared sauna, compression, red light, reformer, and yoga — built into one rhythm.</p>
     <div class="hero-ctas">
-      <a href="#memberships" class="btn-primary">View Founder Rates</a>
-      <a href="#" class="btn-ghost" data-cta="booking" data-product="day-pass">Half off first visit →</a>
+      <a href="#memberships" class="btn-primary">Membership Offers</a>
+      <a href="#class-packs" class="btn-secondary">Class Packages</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/596311050acf26264d12c556412cc66d"
+         class="btn-ghost" target="_blank" rel="noopener">Trial Offer →</a>
+    </div>
+    <ul class="hero-stats" aria-label="Studio at a glance">
+      <li><span class="hero-stat-num">8</span><span class="hero-stat-label">Modalities</span></li>
+      <li><span class="hero-stat-num">7</span><span class="hero-stat-label">Days / week</span></li>
+      <li><span class="hero-stat-num">75218</span><span class="hero-stat-label">East Dallas</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section class="modalities" id="modalities">
+  <div class="section-label">Amenities</div>
+  <h2 class="section-heading">Every tool, <em>under one roof.</em></h2>
+
+  <div class="mod-grid reveal stagger">
+    <a class="mod" href="amenities.html#cold-plunge" aria-label="Learn more about Cold Plunge">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M20 4 C 12 14, 12 22, 20 36 C 28 22, 28 14, 20 4 Z" />
+        <path d="M20 14 C 16 20, 16 24, 20 30" />
+      </svg>
+      <div class="mod-name">Cold Plunge</div>
+      <span class="mod-spec">39–55°F · 2–4 min</span>
+      <p class="mod-desc">Targeted cold exposure to reduce inflammation, sharpen focus, and prime the nervous system.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#infrared-sauna" aria-label="Learn more about Infrared Sauna">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="20" cy="20" r="6" />
+        <path d="M20 4 L20 10 M20 30 L20 36 M4 20 L10 20 M30 20 L36 20 M8 8 L12 12 M28 28 L32 32 M32 8 L28 12 M12 28 L8 32" />
+      </svg>
+      <div class="mod-name">Infrared Sauna</div>
+      <span class="mod-spec">120–140°F · 30–45 min</span>
+      <p class="mod-desc">Deep cellular heat for detoxification, muscle recovery, and a remarkable sense of calm.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#traditional-sauna" aria-label="Learn more about Traditional Sauna">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M8 28 L32 28 M8 32 L32 32" />
+        <path d="M14 22 Q 16 18, 14 14 Q 12 10, 14 6" />
+        <path d="M20 22 Q 22 18, 20 14 Q 18 10, 20 6" />
+        <path d="M26 22 Q 28 18, 26 14 Q 24 10, 26 6" />
+      </svg>
+      <div class="mod-name">Traditional Sauna</div>
+      <span class="mod-spec">160–180°F · 15–25 min</span>
+      <p class="mod-desc">Time-honored dry heat to open circulation, release stress, and finish your recovery the Finnish way.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#compression" aria-label="Learn more about Compression">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="14" y="6" width="12" height="28" rx="6" />
+        <path d="M14 14 L26 14 M14 20 L26 20 M14 26 L26 26" />
+      </svg>
+      <div class="mod-name">Compression</div>
+      <span class="mod-spec">60–100 mmHg · 20–30 min</span>
+      <p class="mod-desc">Pneumatic compression to flush lactic acid, restore circulation, and accelerate repair.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#myofascial" aria-label="Learn more about Myofascial Therapy">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M10 20 C 14 14, 18 26, 22 20 C 26 14, 30 26, 34 20" />
+        <path d="M10 28 C 14 22, 18 34, 22 28 C 26 22, 30 34, 34 28" />
+        <circle cx="8" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="32" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+      <div class="mod-name">Myofascial Therapy</div>
+      <span class="mod-spec">Soft-tissue release · 8–15 min</span>
+      <p class="mod-desc">Targeted soft-tissue release that unwinds chronic tension, restores range of motion, and resets your fascia.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#red-light" aria-label="Learn more about Red Light Therapy">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M8 20 Q 20 8, 32 20 Q 20 32, 8 20 Z" />
+        <circle cx="20" cy="20" r="3" />
+      </svg>
+      <div class="mod-name">Red Light Therapy</div>
+      <span class="mod-spec">660 / 850 nm · 10–20 min</span>
+      <p class="mod-desc">Wavelengths that stimulate mitochondrial function — skin, sleep, and recovery, optimized.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#reformer" aria-label="Learn more about Reformer Classes">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M6 28 Q 14 18, 20 22 Q 26 26, 34 16" />
+        <circle cx="6" cy="28" r="2" />
+        <circle cx="34" cy="16" r="2" />
+      </svg>
+      <div class="mod-name">Reformer Classes</div>
+      <span class="mod-spec">50 min · Group of 8</span>
+      <p class="mod-desc">Precision-led classes that build deep strength, control, and lasting postural integrity.</p>
+    </a>
+
+    <a class="mod" href="amenities.html#yoga" aria-label="Learn more about Yoga & MindBody">
+      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="20" cy="14" r="4" />
+        <path d="M20 18 L20 28 M14 24 L20 22 L26 24 M16 36 L20 28 L24 36" />
+      </svg>
+      <div class="mod-name">Yoga & MindBody</div>
+      <span class="mod-spec">45–60 min · All levels</span>
+      <p class="mod-desc">Restorative and flow practices that re-pattern the breath, the body, and the day ahead.</p>
+    </a>
+  </div>
+</section>
+
+<!-- MEMBERSHIPS -->
+<section class="memberships" id="memberships">
+  <div class="section-label">Memberships</div>
+  <h2 class="section-heading">Recover <em>your way.</em></h2>
+
+  <div class="tier-grid reveal stagger">
+
+    <div class="tier">
+      <div class="tier-name">Essential</div>
+      <div class="tier-badge">Founder Rate</div>
+      <div class="tier-price">
+        <span class="amount">$72</span>
+        <span class="period">/ month</span>
+      </div>
+      <div class="tier-strike">$84/mo standard</div>
+      <p class="tier-desc">For the steady recoverer. One weekly reset across every modality we offer.</p>
+      <ul class="tier-features">
+        <li>1 full recovery session / week</li>
+        <li>All modalities included</li>
+        <li>Discounted Reformer & Yoga classes</li>
+        <li>Founder rate locked for life</li>
+      </ul>
+      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-essential">Become a Founder</a>
+    </div>
+
+    <div class="tier featured">
+      <div class="tier-name">Vital</div>
+      <div class="tier-badge">Founder Rate</div>
+      <div class="tier-price">
+        <span class="amount">$140</span>
+        <span class="period">/ month</span>
+      </div>
+      <div class="tier-strike">$164/mo standard</div>
+      <p class="tier-desc">For those who treat recovery as non-negotiable. Unlimited access, bring a guest.</p>
+      <ul class="tier-features">
+        <li>Unlimited recovery, every modality</li>
+        <li>1 guest pass per month</li>
+        <li>Discounted Reformer & Yoga classes</li>
+        <li>Priority booking on classes</li>
+        <li>Founder rate locked for life</li>
+      </ul>
+      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-vital">Become a Founder</a>
+    </div>
+
+    <div class="tier">
+      <div class="tier-name">Ultimate</div>
+      <div class="tier-badge">Founder Rate</div>
+      <div class="tier-price">
+        <span class="amount">$299</span>
+        <span class="period">/ month</span>
+      </div>
+      <div class="tier-strike">$349/mo standard</div>
+      <p class="tier-desc">The everything-in. Recovery and movement, unlimited, woven into your week.</p>
+      <ul class="tier-features">
+        <li>Unlimited recovery, every modality</li>
+        <li>Unlimited Reformer & Yoga classes</li>
+        <li>2 guest passes per month</li>
+        <li>Priority booking on everything</li>
+        <li>Founder rate locked for life</li>
+      </ul>
+      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-ultimate">Become a Founder</a>
     </div>
   </div>
+</section>
 
-  <div class="counter-card">
-    <div class="counter-label">Founder Enrollment</div>
-    <div class="counter-tagline">Open <em>now.</em></div>
-    <p class="counter-sub">
-      The Founding membership locks in <strong>Founder pricing for life.</strong> When seats fill, rates return to standard &mdash; no re-opening, no grandfathering in later.
-    </p>
-    <a href="#" class="counter-cta" data-cta="founder" data-product="founder">Hold My Founder Rate</a>
+<!-- CLASSES -->
+<section class="classes" id="classes">
+  <div class="classes-inner">
+
+    <div class="classes-intro">
+      <div>
+        <div class="section-label">Classes</div>
+        <h2 class="section-heading">Reformer &amp; Yoga,<br><em>live schedule.</em></h2>
+      </div>
+      <p style="color: var(--ink-dim); font-size: 17px; max-width: 460px; justify-self: end;">
+        Class packs work across both Yoga and Reformer. Members save 20%. Auto-renew packs save another 10%. Book directly from the live schedule below.
+      </p>
+    </div>
+
+    <!-- ====================================================================
+         CLASS SCHEDULE IFRAME — GymMaster portal
+         --------------------------------------------------------------------
+         Pulls live from the GymMaster public booking portal. If the URL
+         below doesn't render the public class schedule, replace it with
+         the exact "Public Schedule" link from GymMaster:
+            Admin → Site Settings → Branded Members Area → Public Pages
+         You may also try the timetable URL: /portal/timetable
+         ==================================================================== -->
+    <div class="class-pack-list reveal stagger" id="class-packs">
+      <div class="pack">
+        <div class="pack-name">8-Pack <small>Best Value</small></div>
+        <div class="pack-price">$240</div>
+        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-8">Buy →</a>
+      </div>
+      <div class="pack">
+        <div class="pack-name">4-Pack <small>Flexible</small></div>
+        <div class="pack-price">$140</div>
+        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-4">Buy →</a>
+      </div>
+      <div class="pack">
+        <div class="pack-name">Single Class <small>One-Time</small></div>
+        <div class="pack-price">$40</div>
+        <a href="#" class="pack-cta" data-cta="booking" data-product="class-single">Buy →</a>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         CLASS SCHEDULE IFRAME — GymMaster portal
+         --------------------------------------------------------------------
+         Pulls live from the GymMaster public booking portal. If the URL
+         below doesn't render the public class schedule, replace it with
+         the exact "Public Schedule" link from GymMaster:
+            Admin → Site Settings → Branded Members Area → Public Pages
+         You may also try the timetable URL: /portal/timetable
+         ==================================================================== -->
+    <div class="schedule-wrap">
+      <iframe
+        class="schedule-frame"
+        src="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
+        title="Vital Athletic Recovery — Live Class Schedule"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allow="payment"
+      ></iframe>
+      <div class="schedule-fallback">
+        <p>Schedule not loading? Open it in a new tab.</p>
+        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
+           target="_blank" rel="noopener">Open Schedule →</a>
+      </div>
+
+      <!-- Mobile-only schedule card. The embedded GymMaster calendar
+           doesn't render reliably at phone widths, so on mobile we
+           replace the iframe with a clear CTA that opens the live
+           schedule in a new tab (GymMaster's own mobile portal). -->
+      <div class="schedule-mobile">
+        <div class="schedule-mobile-eyebrow">Live Schedule</div>
+        <h3 class="schedule-mobile-title">View this week's Reformer &amp; Yoga classes.</h3>
+        <p class="schedule-mobile-sub">
+          Tap below to open the live class schedule. Book directly from your phone — Reformer, Yoga, Pilates, and Sound sessions.
+        </p>
+        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
+           target="_blank" rel="noopener" class="schedule-mobile-cta">
+          Open Live Schedule
+        </a>
+        <p class="schedule-mobile-note">Opens in a new tab · Book + pay in one place</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <p class="testimonial-quote">I came in for the cold plunge. I stayed for what happened to my sleep, my back, and how I show up for my kids on Saturday mornings.</p>
+  <div class="testimonial-attr"><strong>Maya R.</strong> &nbsp;·&nbsp; Vital Member &nbsp;·&nbsp; East Dallas</div>
+</section>
+
+<!-- FIRST VISIT -->
+<section class="first-visit" id="first-visit">
+  <div class="section-label">Your First Visit</div>
+  <h2 class="section-heading">Simple, quiet, <em>and yours.</em></h2>
+  <p style="color: var(--ink-dim); font-size: 17px; max-width: 560px; margin-top: 16px;">
+    No upselling. No confusing menus. We meet you at the door and walk you through the studio at your pace.
+  </p>
+
+  <div class="visit-steps reveal stagger">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Walk in for recovery — or book a class</div>
+      <p class="step-desc">Three ways in: buy online ahead of time, walk in for a day pass or membership, or book a Reformer or Yoga class. First-time recovery visitors get the day at half off.</p>
+      <div class="step-meta">Open 7 Days · Walk-Ins Welcome</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Arrive a few minutes early</div>
+      <p class="step-desc">Bring a swimsuit, workout clothes for classes, and a water bottle. Towels are stocked in the wet and sauna area. First-time visitors sign a quick waiver at the front desk before any class or modality, then we'll walk you through the space.</p>
+      <div class="step-meta">Guided Walkthrough · 2-Minute Waiver</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Recover. Then decide.</div>
+      <p class="step-desc">Try the modalities that matter to you. Talk to a guide. No pressure — most members join after their second visit.</p>
+      <div class="step-meta">Founders Save 14%</div>
+    </div>
   </div>
 </section>
 
@@ -1867,277 +2402,6 @@
         <p class="benefit-desc">When stress and fatigue don't run you, you have more for the people and pursuits you love — family, fitness, or just feeling great in your own skin.</p>
       </div>
     </article>
-  </div>
-</section>
-
-<!-- MEMBERSHIPS -->
-<section class="memberships" id="memberships">
-  <div class="section-label">Memberships</div>
-  <h2 class="section-heading">Three rhythms.<br><em>One sanctuary.</em></h2>
-
-  <div class="tier-grid reveal stagger">
-
-    <div class="tier">
-      <div class="tier-name">Essential</div>
-      <div class="tier-badge">Founder Rate</div>
-      <div class="tier-price">
-        <span class="amount">$72</span>
-        <span class="period">/ month</span>
-      </div>
-      <div class="tier-strike">$84/mo standard</div>
-      <p class="tier-desc">For the steady recoverer. One weekly reset across every modality we offer.</p>
-      <ul class="tier-features">
-        <li>1 full recovery session / week</li>
-        <li>All modalities included</li>
-        <li>Discounted Reformer & Yoga classes</li>
-        <li>Founder rate locked for life</li>
-      </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-essential">Become a Founder</a>
-    </div>
-
-    <div class="tier featured">
-      <div class="tier-name">Vital</div>
-      <div class="tier-badge">Founder Rate</div>
-      <div class="tier-price">
-        <span class="amount">$140</span>
-        <span class="period">/ month</span>
-      </div>
-      <div class="tier-strike">$164/mo standard</div>
-      <p class="tier-desc">For those who treat recovery as non-negotiable. Unlimited access, bring a guest.</p>
-      <ul class="tier-features">
-        <li>Unlimited recovery, every modality</li>
-        <li>1 guest pass per month</li>
-        <li>Discounted Reformer & Yoga classes</li>
-        <li>Priority booking on classes</li>
-        <li>Founder rate locked for life</li>
-      </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-vital">Become a Founder</a>
-    </div>
-
-    <div class="tier">
-      <div class="tier-name">Ultimate</div>
-      <div class="tier-badge">Founder Rate</div>
-      <div class="tier-price">
-        <span class="amount">$299</span>
-        <span class="period">/ month</span>
-      </div>
-      <div class="tier-strike">$349/mo standard</div>
-      <p class="tier-desc">The everything-in. Recovery and movement, unlimited, woven into your week.</p>
-      <ul class="tier-features">
-        <li>Unlimited recovery, every modality</li>
-        <li>Unlimited Reformer & Yoga classes</li>
-        <li>2 guest passes per month</li>
-        <li>Priority booking on everything</li>
-        <li>Founder rate locked for life</li>
-      </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-ultimate">Become a Founder</a>
-    </div>
-  </div>
-</section>
-
-<!-- MODALITIES -->
-<section class="modalities" id="modalities">
-  <div class="section-label">What's Included</div>
-  <h2 class="section-heading">Every tool, <em>under one roof.</em></h2>
-
-  <div class="mod-grid reveal stagger">
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <path d="M20 4 C 12 14, 12 22, 20 36 C 28 22, 28 14, 20 4 Z" />
-        <path d="M20 14 C 16 20, 16 24, 20 30" />
-      </svg>
-      <div class="mod-name">Cold Plunge</div>
-      <p class="mod-desc">Targeted cold exposure to reduce inflammation, sharpen focus, and prime the nervous system.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <circle cx="20" cy="20" r="6" />
-        <path d="M20 4 L20 10 M20 30 L20 36 M4 20 L10 20 M30 20 L36 20 M8 8 L12 12 M28 28 L32 32 M32 8 L28 12 M12 28 L8 32" />
-      </svg>
-      <div class="mod-name">Infrared Sauna</div>
-      <p class="mod-desc">Deep cellular heat for detoxification, muscle recovery, and a remarkable sense of calm.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <path d="M8 28 L32 28 M8 32 L32 32" />
-        <path d="M14 22 Q 16 18, 14 14 Q 12 10, 14 6" />
-        <path d="M20 22 Q 22 18, 20 14 Q 18 10, 20 6" />
-        <path d="M26 22 Q 28 18, 26 14 Q 24 10, 26 6" />
-      </svg>
-      <div class="mod-name">Traditional Sauna</div>
-      <p class="mod-desc">Time-honored dry heat to open circulation, release stress, and finish your recovery the Finnish way.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <rect x="14" y="6" width="12" height="28" rx="6" />
-        <path d="M14 14 L26 14 M14 20 L26 20 M14 26 L26 26" />
-      </svg>
-      <div class="mod-name">Compression</div>
-      <p class="mod-desc">Pneumatic compression to flush lactic acid, restore circulation, and accelerate repair.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <path d="M10 20 C 14 14, 18 26, 22 20 C 26 14, 30 26, 34 20" />
-        <path d="M10 28 C 14 22, 18 34, 22 28 C 26 22, 30 34, 34 28" />
-        <circle cx="8" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-        <circle cx="32" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-      </svg>
-      <div class="mod-name">Myofascial Therapy</div>
-      <p class="mod-desc">Targeted soft-tissue release that unwinds chronic tension, restores range of motion, and resets your fascia.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <path d="M8 20 Q 20 8, 32 20 Q 20 32, 8 20 Z" />
-        <circle cx="20" cy="20" r="3" />
-      </svg>
-      <div class="mod-name">Red Light Therapy</div>
-      <p class="mod-desc">Wavelengths that stimulate mitochondrial function — skin, sleep, and recovery, optimized.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <path d="M6 28 Q 14 18, 20 22 Q 26 26, 34 16" />
-        <circle cx="6" cy="28" r="2" />
-        <circle cx="34" cy="16" r="2" />
-      </svg>
-      <div class="mod-name">Reformer Classes</div>
-      <p class="mod-desc">Precision-led classes that build deep strength, control, and lasting postural integrity.</p>
-    </div>
-
-    <div class="mod">
-      <svg class="mod-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2">
-        <circle cx="20" cy="14" r="4" />
-        <path d="M20 18 L20 28 M14 24 L20 22 L26 24 M16 36 L20 28 L24 36" />
-      </svg>
-      <div class="mod-name">Yoga & MindBody</div>
-      <p class="mod-desc">Restorative and flow practices that re-pattern the breath, the body, and the day ahead.</p>
-    </div>
-  </div>
-</section>
-
-<!-- FIRST VISIT -->
-<section class="first-visit" id="first-visit">
-  <div class="section-label">Your First Visit</div>
-  <h2 class="section-heading">Simple, quiet, <em>and yours.</em></h2>
-  <p style="color: var(--ink-dim); font-size: 17px; max-width: 560px; margin-top: 16px;">
-    No upselling. No confusing menus. We meet you at the door and walk you through the studio at your pace.
-  </p>
-
-  <div class="visit-steps reveal stagger">
-    <div class="step">
-      <div class="step-num">01</div>
-      <div class="step-title">Walk in for recovery — or book a class</div>
-      <p class="step-desc">Three ways in: buy online ahead of time, walk in for a day pass or membership, or book a Reformer or Yoga class. First-time recovery visitors get the day at half off.</p>
-      <div class="step-meta">Open 7 Days · Walk-Ins Welcome</div>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <div class="step-title">Arrive a few minutes early</div>
-      <p class="step-desc">Bring a swimsuit, workout clothes for classes, and a water bottle. Towels are stocked in the wet and sauna area. First-time visitors sign a quick waiver at the front desk before any class or modality, then we'll walk you through the space.</p>
-      <div class="step-meta">Guided Walkthrough · 2-Minute Waiver</div>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <div class="step-title">Recover. Then decide.</div>
-      <p class="step-desc">Try the modalities that matter to you. Talk to a guide. No pressure — most members join after their second visit.</p>
-      <div class="step-meta">Founders Save 14%</div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIAL -->
-<section class="testimonial">
-  <p class="testimonial-quote">I came in for the cold plunge. I stayed for what happened to my sleep, my back, and how I show up for my kids on Saturday mornings.</p>
-  <div class="testimonial-attr"><strong>Maya R.</strong> &nbsp;·&nbsp; Vital Member &nbsp;·&nbsp; East Dallas</div>
-</section>
-
-<!-- CLASSES -->
-<section class="classes" id="classes">
-  <div class="classes-inner">
-
-    <div class="classes-intro">
-      <div>
-        <div class="section-label">Classes</div>
-        <h2 class="section-heading">Reformer &amp; Yoga,<br><em>live schedule.</em></h2>
-      </div>
-      <p style="color: var(--ink-dim); font-size: 17px; max-width: 460px; justify-self: end;">
-        Class packs work across both Yoga and Reformer. Members save 20%. Auto-renew packs save another 10%. Book directly from the live schedule below.
-      </p>
-    </div>
-
-    <!-- ====================================================================
-         CLASS SCHEDULE IFRAME — GymMaster portal
-         --------------------------------------------------------------------
-         Pulls live from the GymMaster public booking portal. If the URL
-         below doesn't render the public class schedule, replace it with
-         the exact "Public Schedule" link from GymMaster:
-            Admin → Site Settings → Branded Members Area → Public Pages
-         You may also try the timetable URL: /portal/timetable
-         ==================================================================== -->
-    <div class="class-pack-list reveal stagger">
-      <div class="pack">
-        <div class="pack-name">8-Pack <small>Best Value</small></div>
-        <div class="pack-price">$240</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-8">Buy →</a>
-      </div>
-      <div class="pack">
-        <div class="pack-name">4-Pack <small>Flexible</small></div>
-        <div class="pack-price">$140</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-4">Buy →</a>
-      </div>
-      <div class="pack">
-        <div class="pack-name">Single Class <small>One-Time</small></div>
-        <div class="pack-price">$40</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-single">Buy →</a>
-      </div>
-    </div>
-
-    <!-- ====================================================================
-         CLASS SCHEDULE IFRAME — GymMaster portal
-         --------------------------------------------------------------------
-         Pulls live from the GymMaster public booking portal. If the URL
-         below doesn't render the public class schedule, replace it with
-         the exact "Public Schedule" link from GymMaster:
-            Admin → Site Settings → Branded Members Area → Public Pages
-         You may also try the timetable URL: /portal/timetable
-         ==================================================================== -->
-    <div class="schedule-wrap">
-      <iframe
-        class="schedule-frame"
-        src="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
-        title="Vital Athletic Recovery — Live Class Schedule"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        allow="payment"
-      ></iframe>
-      <div class="schedule-fallback">
-        <p>Schedule not loading? Open it in a new tab.</p>
-        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
-           target="_blank" rel="noopener">Open Schedule →</a>
-      </div>
-
-      <!-- Mobile-only schedule card. The embedded GymMaster calendar
-           doesn't render reliably at phone widths, so on mobile we
-           replace the iframe with a clear CTA that opens the live
-           schedule in a new tab (GymMaster's own mobile portal). -->
-      <div class="schedule-mobile">
-        <div class="schedule-mobile-eyebrow">Live Schedule</div>
-        <h3 class="schedule-mobile-title">View this week's Reformer &amp; Yoga classes.</h3>
-        <p class="schedule-mobile-sub">
-          Tap below to open the live class schedule. Book directly from your phone — Reformer, Yoga, Pilates, and Sound sessions.
-        </p>
-        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
-           target="_blank" rel="noopener" class="schedule-mobile-cta">
-          Open Live Schedule
-        </a>
-        <p class="schedule-mobile-note">Opens in a new tab · Book + pay in one place</p>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -2320,9 +2584,10 @@
     <div class="foot-col">
       <h4>Studio</h4>
       <ul>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Schedule</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="amenities.html">Amenities</a></li>
+        <li><a href="instructors.html">Instructors</a></li>
+        <li><a href="#classes">Schedule</a></li>
         <li><a href="blog.html">Blog</a></li>
       </ul>
     </div>
@@ -2911,7 +3176,6 @@
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.vitalathleticrecovery.com/" },
         { "@type": "ListItem", "position": 2, "name": "Memberships", "item": "https://www.vitalathleticrecovery.com/founding-memberships" }
       ]
     }
@@ -2921,15 +3185,9 @@
 
 <!-- ===================================================================
      SPECIALS MODAL
-     Appears 8 seconds after page load, once per visitor per 7 days.
-     Current offer: 7 Days for $59 — unlimited recovery + classes.
-     CTA routes to the GymMaster 7-day-pass product.
-     To rotate the offer:
-       1. Swap the hero image at assets/promo-7-days-reset.jpg
-       2. Edit the headline, sub, includes pills, and CTA copy below
-       3. Update the href on #specialClaim with the new product URL
-     To re-show to everyone after a new offer launches, bump the
-     STORAGE_KEY string in the script (e.g. v1 → v2).
+     Appears 8 seconds after page load. CTA routes to the GymMaster
+     7-day-pass product. Edit copy, imagery, or product URL in this
+     block; the entire popup behavior lives in the script below.
 ================================================================== -->
 <div class="special-overlay" id="specialOverlay" role="dialog" aria-modal="true" aria-labelledby="specialHeadline" aria-hidden="true">
   <div class="special-modal">
@@ -2961,8 +3219,8 @@
 
 <script>
   (function() {
-    // Popup surfaces on every page load / refresh. No dismissal suppression —
-    // visitors will see it again the next time they land on the page.
+    // Popup surfaces on every page load. No dismissal suppression —
+    // visitors see it again the next time they land on the page.
     const DELAY_MS = 8000;            // when to surface the modal
 
     const overlay  = document.getElementById('specialOverlay');
@@ -2985,7 +3243,6 @@
 
     closeBtn.addEventListener('click', close);
     dismiss.addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   })();
 </script>

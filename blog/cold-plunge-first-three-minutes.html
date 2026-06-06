@@ -4,6 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<!-- ===== GOOGLE ANALYTICS (GA4) =====
+     Replace G-XXXXXXXXXX (both places) with your real Measurement ID. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- ===== GOOGLE TAG MANAGER ===== -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<!-- ===== END GOOGLE TAG MANAGER ===== -->
+
 <title>The First Three Minutes: What Happens When You Step Into a Cold Plunge — Vital Athletic Recovery Blog</title>
 <meta name="description" content="Most members worry about the wrong thing in cold plunge. Here's a minute-by-minute look at what your body actually does in 50° water — and why the first 10 seconds are the loudest." />
 <meta name="author" content="Vital Athletic Recovery" />
@@ -71,21 +89,27 @@
     -webkit-backdrop-filter: blur(14px) saturate(110%);
     background: rgba(242,235,216,0.72);
     border-bottom: 1px solid var(--line);
-    transition: padding 0.35s ease, background 0.35s ease;
+    transition: padding 0.35s ease, background 0.35s ease, border-color 0.35s ease;
   }
-  nav.scrolled { padding: 12px 48px; background: rgba(242,235,216,0.92); border-bottom-color: var(--line-strong); }
+  nav.scrolled { padding: 12px 48px; background: rgba(15, 13, 10, 0.92); border-bottom-color: rgba(138, 101, 54, 0.45); }
   .logo { display: inline-flex; align-items: center; text-decoration: none; color: var(--ink); }
-  .logo img { height: 300px; width: auto; display: block; margin: -50px 0; transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease; }
-  nav.scrolled .logo img { height: 225px; margin: -38px 0; }
+  .logo img { height: 300px; width: auto; display: block; margin: -50px 0; transition: height 0.35s ease, margin 0.35s ease, opacity 0.3s ease, filter 0.35s ease; }
+  nav.scrolled .logo img { height: 225px; margin: -38px 0; filter: brightness(0) invert(1); }
   .logo:hover img { opacity: 0.85; }
   .nav-links { display: flex; gap: 36px; list-style: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
   .nav-links a { color: var(--ink-dim); text-decoration: none; transition: color 0.3s; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-  .nav-cta { padding: 10px 22px; border: 1px solid var(--accent); color: var(--accent); text-decoration: none; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.3s; }
-  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+  nav.scrolled .nav-links a { color: rgba(244, 238, 218, 0.78); }
+  nav.scrolled .nav-links a:hover, nav.scrolled .nav-links a.active { color: var(--accent-soft); }
+  .nav-cta { padding: 10px 22px; border: 1px solid var(--ink); background: var(--ink); color: var(--ink-inverse); text-decoration: none; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.3s; }
+  .nav-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--ink-inverse); }
+  nav.scrolled .nav-cta { border-color: var(--accent); background: var(--accent); color: var(--ink); }
+  nav.scrolled .nav-cta:hover { background: var(--ink-inverse); border-color: var(--ink-inverse); color: var(--ink); }
   .nav-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
   .nav-login { color: var(--ink-dim); text-decoration: none; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
   .nav-login:hover { color: var(--accent); }
+  nav.scrolled .nav-login { color: rgba(244, 238, 218, 0.7); }
+  nav.scrolled .nav-login:hover { color: var(--accent-soft); }
 
   .article-shell { max-width: 720px; margin: 0 auto; padding: 300px 32px 120px; }
   .breadcrumb { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); font-weight: 500; margin-bottom: 28px; }
@@ -119,17 +143,17 @@
   .cta-card p { color: rgba(244,238,218,0.7); font-size: 15px; margin-bottom: 28px; }
   .cta-card a { display: inline-block; padding: 14px 28px; background: var(--accent); color: var(--ink-inverse); text-decoration: none; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; transition: background 0.3s; }
   .cta-card a:hover { background: var(--accent-soft); }
-  footer { background: var(--bg); padding: 64px 48px 32px; border-top: 1px solid var(--line); }
+  footer { background: #0d0b08; color: var(--ink-inverse); padding: 72px 48px 32px; border-top: 1px solid rgba(138, 101, 54, 0.35); }
   .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; margin-bottom: 48px; }
   .foot-brand { display: inline-block; margin-bottom: 20px; }
-  .foot-brand img { height: 500px; width: auto; display: block; margin: -75px 0 -50px -50px; }
-  .foot-tag { font-size: 14px; color: var(--ink-dim); line-height: 1.6; max-width: 360px; }
-  .foot-col h4 { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; font-weight: 500; }
+  .foot-brand img { height: 500px; width: auto; display: block; margin: -75px 0 -50px -50px; filter: brightness(0) invert(1); }
+  .foot-tag { font-size: 14px; color: rgba(244, 238, 218, 0.7); line-height: 1.6; max-width: 360px; }
+  .foot-col h4 { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 20px; font-weight: 500; }
   .foot-col ul { list-style: none; }
   .foot-col li { margin-bottom: 10px; }
-  .foot-col a { color: var(--ink-dim); text-decoration: none; font-size: 14px; transition: color 0.3s; }
-  .foot-col a:hover { color: var(--accent); }
-  .foot-bottom { padding-top: 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-mute); }
+  .foot-col a { color: rgba(244, 238, 218, 0.7); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+  .foot-col a:hover { color: var(--accent-soft); }
+  .foot-bottom { padding-top: 32px; border-top: 1px solid rgba(244, 238, 218, 0.12); display: flex; justify-content: space-between; font-size: 12px; color: rgba(244, 238, 218, 0.5); }
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
     .nav-links { display: none; }
@@ -141,6 +165,10 @@
 </style>
 </head>
 <body>
+<!-- ===== GOOGLE TAG MANAGER (noscript) ===== -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P73DQ4WR"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- ===== END GOOGLE TAG MANAGER (noscript) ===== -->
 
 <nav aria-label="Primary">
   <a href="../index.html" class="logo" aria-label="Vital Athletic Recovery — home">
@@ -149,13 +177,14 @@
   <ul class="nav-links">
     <li><a href="../index.html#about">About</a></li>
     <li><a href="../index.html#memberships">Memberships</a></li>
-    <li><a href="../index.html#modalities">Modalities</a></li>
+    <li><a href="../amenities.html">Amenities</a></li>
+    <li><a href="../instructors.html">Instructors</a></li>
     <li><a href="../index.html#classes">Classes</a></li>
     <li><a href="../blog.html" class="active">Blog</a></li>
     <li><a href="../index.html#visit">Visit</a></li>
   </ul>
   <div class="nav-actions">
-    <a href="#" class="nav-cta" data-cta="founder" data-product="founder">Become a Founder</a>
+    <a href="../index.html#memberships" class="nav-cta">Membership Offers</a>
     <a href="https://vitalathleticrecovery.gymmasteronline.com/portal" target="_blank" rel="noopener" class="nav-login">Member Login</a>
   </div>
 </nav>
@@ -274,7 +303,8 @@
       <h4>Studio</h4>
       <ul>
         <li><a href="../index.html#about">About</a></li>
-        <li><a href="../index.html#modalities">Services</a></li>
+        <li><a href="../amenities.html">Amenities</a></li>
+        <li><a href="../instructors.html">Instructors</a></li>
         <li><a href="../index.html#classes">Schedule</a></li>
         <li><a href="../blog.html">Blog</a></li>
       </ul>
