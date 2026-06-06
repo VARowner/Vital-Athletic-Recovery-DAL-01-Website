@@ -1707,11 +1707,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .skip-link:focus { left: 12px; top: 12px; }
 
     /* Tighter hero */
-    .hero { padding: 96px 20px 48px; gap: 32px; min-height: auto; }
+    .hero {
+      padding: 96px 20px 48px; gap: 32px; min-height: auto;
+      /* Phones: skip the video, use the poster as a static background.
+         Avoids autoplay quirks on iOS/Android + saves bandwidth on cellular. */
+      background: #0d0b08 url('assets/hero-flythrough-poster.jpg') center/cover no-repeat;
+    }
+    .hero-video { display: none; }
     .hero h1 { margin-bottom: 24px; }
     .hero-eyebrow { margin-bottom: 24px; font-size: 10px; letter-spacing: 0.2em; }
     .hero p.lede { font-size: 16px; }
-    /* Phones: slightly stronger vignette so type still floats over busier frames */
+    /* Phones: slightly stronger vignette so type still floats over the poster */
     .hero::before {
       background:
         radial-gradient(ellipse at 50% 45%, rgba(13,11,8,0.5), rgba(13,11,8,0.28) 60%, rgba(13,11,8,0.18) 100%),
@@ -3238,11 +3244,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
-
     setTimeout(open, DELAY_MS);
 
     closeBtn.addEventListener('click', close);
     dismiss.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   })();
 </script>
