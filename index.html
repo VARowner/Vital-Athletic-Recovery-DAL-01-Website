@@ -4,20 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- ===== GOOGLE ANALYTICS (GA4) =====
-     Replace G-XXXXXXXXXX (both places) with your real Measurement ID
-     from Google Analytics → Admin → Data Streams → your web stream.
-     The ID always starts with "G-" followed by ~10 characters.
+<!-- ===== GOOGLE TAG MANAGER =====
+     GA4, Google Ads conversion tracking, and remarketing all fire via GTM
+     (container GTM-P73DQ4WR). To change any tag, log into GTM rather than
+     editing this HTML.
 ================================================== -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
-
-<!-- ===== GOOGLE TAG MANAGER ===== -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -2655,14 +2646,133 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     'class-single':      'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/962ef290f3056eebfff97be69bb5e015',
   };
 
+  // =====================================================================
+  // ANALYTICS — dataLayer event tracking
+  // ---------------------------------------------------------------------
+  // All trackable events get pushed to window.dataLayer so GTM can route
+  // them to GA4 and Google Ads. Names are stable — don't rename without
+  // also updating the GTM container.
+  //
+  // Events fired here:
+  //   cta_click       — any data-cta button (booking buttons, day pass, etc.)
+  //   portal_click    — KEY CONVERSION. Any click that opens GymMaster portal
+  //   phone_click     — tel: link tap (mobile-primary conversion proxy)
+  //   email_click     — mailto: link tap
+  //   scroll_depth    — fires at 25/50/75/100% of page scroll
+  //   popup_shown     — specials modal surfaces
+  //   popup_dismissed — user closes specials modal without clicking CTA
+  // =====================================================================
+  window.dataLayer = window.dataLayer || [];
+  function trackEvent(eventName, params) {
+    window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+  }
+
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const product = btn.dataset.product || '';
+      const ctaType = btn.dataset.cta || 'booking';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
+
+      // Push tracking BEFORE opening the new tab so events fire
+      // synchronously while the page is still active.
+      trackEvent('cta_click', {
+        cta_type: ctaType,
+        product: product,
+        destination_url: url,
+        button_text: (btn.textContent || '').trim().slice(0, 80),
+        page_section: (btn.closest('section') && btn.closest('section').id) || 'unknown'
+      });
+      // Booking CTAs all route to the GymMaster portal → conversion proxy.
+      trackEvent('portal_click', {
+        product: product,
+        source: 'cta_button'
+      });
+
       window.open(url, '_blank', 'noopener,noreferrer');
     });
   });
+
+  // Track direct GymMaster portal links (Member Login, mobile schedule,
+  // popup CTA, footer link). Skip ones already handled by [data-cta] above.
+  document.querySelectorAll('a[href*="gymmasteronline.com"]').forEach(link => {
+    if (link.hasAttribute('data-cta')) return;
+    link.addEventListener('click', () => {
+      const source =
+        link.closest('.special-modal')  ? 'popup' :
+        link.closest('footer')          ? 'footer' :
+        link.closest('.schedule-card')  ? 'mobile_schedule' :
+        link.closest('.classes-cta-row')? 'open_in_new_tab' :
+        'inline_link';
+      trackEvent('portal_click', {
+        product: 'direct_link',
+        source: source,
+        destination_url: link.href
+      });
+    });
+  });
+
+  // Phone clicks — primary mobile conversion path
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      trackEvent('phone_click', {
+        phone_number: link.href.replace('tel:', ''),
+        page_section: (link.closest('section') && link.closest('section').id) ||
+                      (link.closest('footer') ? 'footer' : 'unknown')
+      });
+    });
+  });
+
+  // Email clicks
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const addr = link.href.replace('mailto:', '').split('?')[0];
+      trackEvent('email_click', {
+        email_address: addr,
+        page_section: (link.closest('section') && link.closest('section').id) ||
+                      (link.closest('footer') ? 'footer' : 'unknown')
+      });
+    });
+  });
+
+  // Track modality card clicks (which recovery service draws the most interest)
+  document.querySelectorAll('a.mod[href*="amenities.html#"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const slug = (link.getAttribute('href') || '').split('#')[1] || 'unknown';
+      trackEvent('modality_click', {
+        modality: slug,
+        modality_label: (link.getAttribute('aria-label') || '').replace('Learn more about ', '')
+      });
+    });
+  });
+
+  // Scroll depth — fires once per threshold per page view
+  (function() {
+    const thresholds = [25, 50, 75, 100];
+    const fired = {};
+    let ticking = false;
+
+    function check() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      const percent = Math.round((scrollTop / docHeight) * 100);
+      thresholds.forEach(t => {
+        if (percent >= t && !fired[t]) {
+          fired[t] = true;
+          trackEvent('scroll_depth', { percent: t });
+        }
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(check);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
 
   // ===== MOBILE DRAWER =====
   (function() {
@@ -3200,7 +3310,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button class="special-close" id="specialClose" aria-label="Close offer">&times;</button>
     <img class="special-hero"
          src="assets/promo-7-days-reset.jpg"
-         alt="Reset your body — 7 days for $59 — Vital Athletic Recovery, White Rock Lake" />
+         alt="Reset your body — 7 days for $59 — Vital Athletic Recovery, White Rock Lake"
+         loading="lazy" decoding="async" />
     <div class="special-body">
       <p class="special-eyebrow">Limited-Time Special</p>
       <h2 class="special-headline" id="specialHeadline">Your body needs a <em>reset</em>.</h2>
@@ -3238,18 +3349,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'popup_shown', popup: '7day_reset' });
     }
-    function close() {
+    function close(reason) {
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'popup_dismissed',
+        popup: '7day_reset',
+        dismiss_method: reason || 'unknown'
+      });
     }
     setTimeout(open, DELAY_MS);
 
-    closeBtn.addEventListener('click', close);
-    dismiss.addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    closeBtn.addEventListener('click', () => close('close_button'));
+    dismiss.addEventListener('click', () => close('maybe_later'));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close('backdrop'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) close('escape_key'); });
   })();
 </script>
 

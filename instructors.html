@@ -4,17 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- ===== GOOGLE ANALYTICS (GA4) =====
-     Replace G-XXXXXXXXXX (both places) with your real Measurement ID. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
-
-<!-- ===== GOOGLE TAG MANAGER ===== -->
+<!-- ===== GOOGLE TAG MANAGER (GA4 + Ads route through this) ===== -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -238,7 +228,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
      TO USE A REAL PHOTO:
      1. Drop a square photo at assets/instructors/firstname-lastname.jpg
      2. In the card markup below, replace the <div class="ix-avatar">…</div>
-        block with: <img class="ix-photo" src="assets/instructors/firstname-lastname.jpg" alt="Instructor Name" />
+        block with: <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/firstname-lastname.jpg" alt="Instructor Name" />
      The .ix-photo class below keeps real photos the same size and shape. */
   .ix-avatar {
     width: 100%;
@@ -610,7 +600,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      HOW TO REPLACE A PLACEHOLDER CARD:
      1. Replace the initials in `<div class="ix-avatar">XX</div>` with a
         real photo:
-            <img class="ix-photo" src="assets/instructors/firstname-lastname.jpg"
+            <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/firstname-lastname.jpg"
                  alt="Firstname Lastname" />
      2. Update ix-name, ix-title (specialty), ix-bio, and ix-creds.
      3. Remove the `data-placeholder` attribute on the card so the
@@ -628,7 +618,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="roster-grid">
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/adrienne-barrett.jpg" alt="Adrienne Barrett" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/adrienne-barrett.jpg" alt="Adrienne Barrett" />
       <div class="ix-name">Adrienne Barrett</div>
       <div class="ix-title">Reformer · Strength &amp; Recovery</div>
       <p class="ix-bio">Adrienne brings a strategic, detail-oriented approach to every class, with a background in rehabilitation-focused movement — she came to Pilates through her own recovery from a torn hip tendon. Her reformer programming is intentional and full-body, emphasizing precise sequencing, breath, and alignment to build strength, restore balance, and move with purpose.</p>
@@ -648,7 +638,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/sarah-carlberg.jpg" alt="Sarah Carlberg" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/sarah-carlberg.jpg" alt="Sarah Carlberg" />
       <div class="ix-name">Sarah Carlberg</div>
       <div class="ix-title">Reformer · Strength &amp; Flow</div>
       <p class="ix-bio">Sarah C. is a movement specialist certified in Pilates, Barre, Personal Training, and Group Fitness. Her reformer classes focus on functional movement to build core strength, challenge balance, and increase stamina — high energy and a great playlist.</p>
@@ -668,7 +658,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/shay-gastellum.jpg" alt="Shay Gastellum" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/shay-gastellum.jpg" alt="Shay Gastellum" />
       <div class="ix-name">Shay Gastellum</div>
       <div class="ix-title">Reformer · Strength &amp; Performance</div>
       <p class="ix-bio">Shay combines contemporary Pilates with intentional, individualized programming, drawing on her background as an NASM-certified personal trainer to build sessions that are challenging, supportive, and empowering. She teaches to the body in front of her, with deep experience working with athletes and women through every life stage.</p>
@@ -688,7 +678,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/julia-anderson.jpg" alt="Julia Anderson" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/julia-anderson.jpg" alt="Julia Anderson" />
       <div class="ix-name">Julia Anderson</div>
       <div class="ix-title">Reformer · Alignment &amp; Precision</div>
       <p class="ix-bio">Julia is comprehensively certified through Balanced Body and brings a thoughtful, precise approach to every session. Her path began in Austin, where her father's experience with Parkinson's drew her into the healing potential of mindful movement; she was mentored by Karen Sanzo at Pilates Unlimited. Known for intentional cueing and a focus on alignment that helps clients connect deeply with their bodies.</p>
@@ -713,7 +703,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="roster-grid">
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/amelia-sweet.jpg" alt="Amelia Sweet" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/amelia-sweet.jpg" alt="Amelia Sweet" />
       <div class="ix-name">Amelia Sweet</div>
       <div class="ix-title">Yoga · Mobility &amp; Deep Stretch</div>
       <p class="ix-bio">Amelia teaches yoga full time, having completed her 200-hour certification in March 2025. Her classes treat your mat as a space to explore, move intuitively, and leave more connected to your body — with a special focus on mobility and deep stretch that pairs beautifully with the recovery suite.</p>
@@ -723,7 +713,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/joseph-maul.jpg" alt="Joseph Maul" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/joseph-maul.jpg" alt="Joseph Maul" />
       <div class="ix-name">Joseph Maul</div>
       <div class="ix-title">Yoga · Meditation · MindBody</div>
       <p class="ix-bio">Joseph found yoga and meditation in 2014 during his own search for peace in a chaotic world, and has taught both as a certified instructor since 2019. His training spans 23 distinct meditation modalities, weaving Eastern philosophy, yoga, and Western psychology into a grounded space for clarity and calm.</p>
@@ -733,7 +723,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </article>
 
     <article class="ix-card">
-      <img class="ix-photo" src="assets/instructors/keera-ketterman.jpg" alt="Keera Ketterman" />
+      <img class="ix-photo" loading="lazy" decoding="async" src="assets/instructors/keera-ketterman.jpg" alt="Keera Ketterman" />
       <div class="ix-name">Keera Ketterman</div>
       <div class="ix-title">Vinyasa · Restorative · Deep Stretch</div>
       <p class="ix-bio">Keera has practiced yoga since she was a teenager in small-town Texas — 20+ years of devoted personal practice with deep roots in vinyasa flow, restorative, deep stretch, and meditation. Having rehabbed a major spinal injury herself, she's passionate about the intersection of performance and recovery. Her classes are fitness-forward and breath-centered, equal parts mindfulness and levity.</p>
@@ -806,12 +796,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const BOOKING_URLS = {
     'founder': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
   };
+  // ===== ANALYTICS (mirrors index.html — keep in sync) =====
+  window.dataLayer = window.dataLayer || [];
+  function trackEvent(eventName, params) {
+    window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+  }
+
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const product = btn.dataset.product || '';
+      const ctaType = btn.dataset.cta || 'booking';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
+      trackEvent('cta_click', {
+        cta_type: ctaType,
+        product: product,
+        destination_url: url,
+        button_text: (btn.textContent || '').trim().slice(0, 80),
+        page_section: 'instructors_page'
+      });
+      trackEvent('portal_click', { product: product, source: 'cta_button' });
       window.open(url, '_blank', 'noopener,noreferrer');
+    });
+  });
+
+  // Direct GymMaster portal links
+  document.querySelectorAll('a[href*="gymmasteronline.com"]').forEach(link => {
+    if (link.hasAttribute('data-cta')) return;
+    link.addEventListener('click', () => {
+      trackEvent('portal_click', {
+        product: 'direct_link',
+        source: link.closest('footer') ? 'footer' : 'inline_link',
+        destination_url: link.href
+      });
+    });
+  });
+
+  // Phone + email — instructors page has Apply to Teach mailto + footer phone
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', () => trackEvent('phone_click', {
+      phone_number: link.href.replace('tel:', ''),
+      page_section: link.closest('footer') ? 'footer' : 'unknown'
+    }));
+  });
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      const addr = link.href.replace('mailto:', '').split('?')[0];
+      trackEvent('email_click', {
+        email_address: addr,
+        page_section: link.classList.contains('btn-primary') ? 'apply_to_teach' :
+                      (link.closest('footer') ? 'footer' : 'unknown')
+      });
     });
   });
 

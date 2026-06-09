@@ -4,17 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- ===== GOOGLE ANALYTICS (GA4) =====
-     Replace G-XXXXXXXXXX (both places) with your real Measurement ID. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
-
-<!-- ===== GOOGLE TAG MANAGER ===== -->
+<!-- ===== GOOGLE TAG MANAGER (GA4 + Ads route through this) ===== -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -1117,13 +1107,54 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const BOOKING_URLS = {
     'founder': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
   };
+  // ===== ANALYTICS (mirrors index.html — keep in sync) =====
+  window.dataLayer = window.dataLayer || [];
+  function trackEvent(eventName, params) {
+    window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+  }
+
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const product = btn.dataset.product || '';
+      const ctaType = btn.dataset.cta || 'booking';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
+      trackEvent('cta_click', {
+        cta_type: ctaType,
+        product: product,
+        destination_url: url,
+        button_text: (btn.textContent || '').trim().slice(0, 80),
+        page_section: (btn.closest('section') && btn.closest('section').id) || 'amenities_page'
+      });
+      trackEvent('portal_click', { product: product, source: 'cta_button' });
       window.open(url, '_blank', 'noopener,noreferrer');
     });
+  });
+
+  // Direct GymMaster portal links
+  document.querySelectorAll('a[href*="gymmasteronline.com"]').forEach(link => {
+    if (link.hasAttribute('data-cta')) return;
+    link.addEventListener('click', () => {
+      trackEvent('portal_click', {
+        product: 'direct_link',
+        source: link.closest('footer') ? 'footer' : 'inline_link',
+        destination_url: link.href
+      });
+    });
+  });
+
+  // Phone + email tracking
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', () => trackEvent('phone_click', {
+      phone_number: link.href.replace('tel:', ''),
+      page_section: link.closest('footer') ? 'footer' : 'unknown'
+    }));
+  });
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', () => trackEvent('email_click', {
+      email_address: link.href.replace('mailto:', '').split('?')[0],
+      page_section: link.closest('footer') ? 'footer' : 'unknown'
+    }));
   });
 
   // ===== NAV SCROLL =====
