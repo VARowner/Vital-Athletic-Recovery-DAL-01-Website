@@ -4,20 +4,9 @@
 
   <url>
     <loc>https://www.vitalathleticrecovery.com/</loc>
-    <lastmod>2026-05-20</lastmod>
+    <lastmod>2026-06-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://content.app-sources.com/s/364947973119715621/uploads/Images/VAR_logo_for_dark_background_500x133-0480222.png</image:loc>
-      <image:title>Vital Athletic Recovery</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/founding-memberships</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
     <image:image>
       <image:loc>https://content.app-sources.com/s/364947973119715621/uploads/Images/DSC1814-6103948.jpg?format=webp</image:loc>
       <image:title>Inside the Vital Athletic Recovery studio in East Dallas</image:title>
@@ -25,104 +14,29 @@
   </url>
 
   <url>
-    <loc>https://www.vitalathleticrecovery.com/about-us</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/services</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://www.vitalathleticrecovery.com/amenities.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://www.vitalathleticrecovery.com/reformer</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://www.vitalathleticrecovery.com/instructors.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.vitalathleticrecovery.com/mindbody</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/memberships</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/contact-us</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/amenities</loc>
-    <lastmod>2026-05-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/instructors</loc>
-    <lastmod>2026-06-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/blog</loc>
-    <lastmod>2026-05-20</lastmod>
+    <loc>https://www.vitalathleticrecovery.com/blog.html</loc>
+    <lastmod>2026-06-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Blog posts -->
   <url>
     <loc>https://www.vitalathleticrecovery.com/blog/cold-plunge-first-three-minutes.html</loc>
     <lastmod>2026-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Neighborhood landing pages (placeholders — create when ready) -->
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/east-dallas-cold-plunge</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/lakewood-recovery-studio</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/casa-linda-sauna</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/white-rock-lake-recovery</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.vitalathleticrecovery.com/lake-highlands-reformer</loc>
-    <lastmod>2026-05-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
