@@ -1831,13 +1831,49 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .special-overlay.open .special-modal { transform: translateY(0) scale(1); }
+  /* ===== POPUP HERO CAROUSEL =====
+     Rotates through 3 images (promo → cold plunge → Hyperice).
+     A 4th slide duplicates image 1 so the animation can complete
+     a full leftward cycle and reset to 0 invisibly.
+     Pure CSS — no JS dependency. Respects prefers-reduced-motion. */
   .special-hero {
+    position: relative;
     display: block;
     width: 100%;
-    height: auto;
     aspect-ratio: 1 / 1;
-    object-fit: cover;
+    overflow: hidden;
     background: #1a1714;
+  }
+  .special-hero-track {
+    display: flex;
+    width: 400%;  /* 4 slides */
+    height: 100%;
+    animation: heroCarousel 16s ease-in-out infinite;
+  }
+  .special-hero-slide {
+    width: 25%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+  }
+  @keyframes heroCarousel {
+    /* Image 1 hold */
+    0%, 22% { transform: translateX(0); }
+    /* Slide to image 2 */
+    27%, 47% { transform: translateX(-25%); }
+    /* Slide to image 3 */
+    52%, 72% { transform: translateX(-50%); }
+    /* Slide to image 4 (clone of image 1) */
+    77%, 100% { transform: translateX(-75%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .special-hero-track {
+      animation: none;
+    }
+    .special-hero-slide:not(:first-child) {
+      display: none;
+    }
   }
   .special-body {
     padding: 26px 32px 32px;
@@ -1913,7 +1949,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     background: rgba(138, 101, 54, 0.06);
   }
   .special-cta {
-    display: inline-block;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--ink);
     color: var(--bg);
     font-family: var(--sans);
@@ -1927,11 +1966,48 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     cursor: pointer;
     transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
     text-decoration: none;
+    min-width: 240px;
+    min-height: 22px;
   }
   .special-cta:hover {
     background: var(--accent);
     border-color: var(--accent);
     transform: translateY(-2px);
+  }
+  /* Rotating CTA text — syncs with .special-hero-track timing.
+     First span is the natural-flow item; the others overlay it
+     and fade in/out so the button height never jumps. */
+  .cta-text {
+    display: inline-block;
+    transition: opacity 0.4s ease;
+  }
+  .cta-text-2, .cta-text-3 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    pointer-events: none;
+  }
+  .cta-text-1 { animation: ctaText1 16s ease-in-out infinite; }
+  .cta-text-2 { animation: ctaText2 16s ease-in-out infinite; opacity: 0; }
+  .cta-text-3 { animation: ctaText3 16s ease-in-out infinite; opacity: 0; }
+  @keyframes ctaText1 {
+    0%, 22%, 77%, 100% { opacity: 1; }
+    27%, 72% { opacity: 0; }
+  }
+  @keyframes ctaText2 {
+    0%, 22% { opacity: 0; }
+    27%, 47% { opacity: 1; }
+    52%, 100% { opacity: 0; }
+  }
+  @keyframes ctaText3 {
+    0%, 47% { opacity: 0; }
+    52%, 72% { opacity: 1; }
+    77%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-text-1 { animation: none; opacity: 1; }
+    .cta-text-2, .cta-text-3 { animation: none; display: none; }
   }
   .special-dismiss {
     display: block;
@@ -3291,7 +3367,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 2, "name": "Memberships", "item": "https://www.vitalathleticrecovery.com/founding-memberships" }
+        { "@type": "ListItem", "position": 2, "name": "Memberships", "item": "https://www.vitalathleticrecovery.com/#memberships" }
       ]
     }
   ]
@@ -3307,10 +3383,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="special-overlay" id="specialOverlay" role="dialog" aria-modal="true" aria-labelledby="specialHeadline" aria-hidden="true">
   <div class="special-modal">
     <button class="special-close" id="specialClose" aria-label="Close offer">&times;</button>
-    <img class="special-hero"
-         src="assets/promo-7-days-reset.jpg"
-         alt="Reset your body — 7 days for $59 — Vital Athletic Recovery, White Rock Lake"
-         loading="lazy" decoding="async" />
+    <div class="special-hero" aria-label="Studio tour images">
+      <div class="special-hero-track">
+        <img class="special-hero-slide"
+             src="assets/promo-7-days-reset.jpg"
+             alt="Reset your body — 7 days for $59 — Vital Athletic Recovery, White Rock Lake"
+             loading="lazy" decoding="async" />
+        <img class="special-hero-slide"
+             src="assets/popup-image-2.jpg"
+             alt="Cold plunge tubs at Vital Athletic Recovery in East Dallas"
+             loading="lazy" decoding="async" />
+        <img class="special-hero-slide"
+             src="assets/popup-image-3.jpg"
+             alt="Hyperice and Normatec recovery equipment at Vital Athletic Recovery"
+             loading="lazy" decoding="async" />
+        <img class="special-hero-slide"
+             src="assets/promo-7-days-reset.jpg"
+             alt=""
+             aria-hidden="true"
+             loading="lazy" decoding="async" />
+      </div>
+    </div>
     <div class="special-body">
       <p class="special-eyebrow">Limited-Time Special</p>
       <h2 class="special-headline" id="specialHeadline">Your body needs a <em>reset</em>.</h2>
@@ -3326,7 +3419,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
          class="special-cta"
          id="specialClaim"
          target="_blank"
-         rel="noopener">Claim 7 days for $59</a>
+         rel="noopener"
+         aria-label="Claim seven days for fifty-nine dollars">
+        <span class="cta-text cta-text-1">Claim 7 days for $59</span>
+        <span class="cta-text cta-text-2" aria-hidden="true">Plunge included &middot; 7 days $59</span>
+        <span class="cta-text cta-text-3" aria-hidden="true">It's all yours &middot; 7 days $59</span>
+      </a>
       <button class="special-dismiss" id="specialDismiss">Maybe later</button>
       <p class="special-fineprint">New guests · White Rock Lake studio</p>
     </div>
