@@ -1832,8 +1832,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .special-overlay.open .special-modal { transform: translateY(0) scale(1); }
   /* ===== POPUP HERO CAROUSEL =====
-     Rotates through 3 images (promo → cold plunge → Hyperice).
-     A 4th slide duplicates image 1 so the animation can complete
+     Rotates through 4 studio images:
+       1. Cold plunge tubs
+       2. Infrared sauna exterior (three cabins)
+       3. Infrared sauna interior (red constellation lights)
+       4. Recovery lounge (Dallas mural)
+     A 5th slide duplicates image 1 so the animation can complete
      a full leftward cycle and reset to 0 invisibly.
      Pure CSS — no JS dependency. Respects prefers-reduced-motion. */
   .special-hero {
@@ -1846,26 +1850,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .special-hero-track {
     display: flex;
-    width: 400%;  /* 4 slides */
+    width: 500%;  /* 5 slides (4 unique + 1 clone) */
     height: 100%;
     animation: heroCarousel 16s ease-in-out infinite;
   }
   .special-hero-slide {
-    width: 25%;
+    width: 20%;
     height: 100%;
     object-fit: cover;
     flex-shrink: 0;
     display: block;
   }
   @keyframes heroCarousel {
-    /* Image 1 hold */
-    0%, 22% { transform: translateX(0); }
-    /* Slide to image 2 */
-    27%, 47% { transform: translateX(-25%); }
-    /* Slide to image 3 */
-    52%, 72% { transform: translateX(-50%); }
-    /* Slide to image 4 (clone of image 1) */
-    77%, 100% { transform: translateX(-75%); }
+    /* Image 1 (plunge) */
+    0%, 18% { transform: translateX(0); }
+    /* Image 2 (sauna exterior) */
+    24%, 43% { transform: translateX(-20%); }
+    /* Image 3 (sauna interior) */
+    49%, 68% { transform: translateX(-40%); }
+    /* Image 4 (lounge) */
+    74%, 93% { transform: translateX(-60%); }
+    /* Image 5 (clone of image 1) — invisible seam at loop point */
+    100% { transform: translateX(-80%); }
   }
   @media (prefers-reduced-motion: reduce) {
     .special-hero-track {
@@ -1974,14 +1980,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     border-color: var(--accent);
     transform: translateY(-2px);
   }
-  /* Rotating CTA text — syncs with .special-hero-track timing.
-     First span is the natural-flow item; the others overlay it
-     and fade in/out so the button height never jumps. */
+  /* Rotating CTA text — syncs with .special-hero-track timing (16s cycle).
+     Two CTA variants alternate, each visible for ~half the cycle (covers
+     2 images at a time). First span is the natural-flow item; the second
+     overlays it and fades in/out so the button height never jumps. */
   .cta-text {
     display: inline-block;
     transition: opacity 0.4s ease;
   }
-  .cta-text-2, .cta-text-3 {
+  .cta-text-2 {
     position: absolute;
     left: 0;
     right: 0;
@@ -1990,24 +1997,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .cta-text-1 { animation: ctaText1 16s ease-in-out infinite; }
   .cta-text-2 { animation: ctaText2 16s ease-in-out infinite; opacity: 0; }
-  .cta-text-3 { animation: ctaText3 16s ease-in-out infinite; opacity: 0; }
   @keyframes ctaText1 {
-    0%, 22%, 77%, 100% { opacity: 1; }
-    27%, 72% { opacity: 0; }
+    0%, 43%, 100% { opacity: 1; }
+    49%, 93% { opacity: 0; }
   }
   @keyframes ctaText2 {
-    0%, 22% { opacity: 0; }
-    27%, 47% { opacity: 1; }
-    52%, 100% { opacity: 0; }
-  }
-  @keyframes ctaText3 {
-    0%, 47% { opacity: 0; }
-    52%, 72% { opacity: 1; }
-    77%, 100% { opacity: 0; }
+    0%, 43% { opacity: 0; }
+    49%, 93% { opacity: 1; }
+    100% { opacity: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     .cta-text-1 { animation: none; opacity: 1; }
-    .cta-text-2, .cta-text-3 { animation: none; display: none; }
+    .cta-text-2 { animation: none; display: none; }
   }
   .special-dismiss {
     display: block;
@@ -3386,28 +3387,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="special-hero" aria-label="Studio tour images">
       <div class="special-hero-track">
         <img class="special-hero-slide"
-             src="assets/promo-7-days-reset.jpg"
-             alt="Reset your body — 7 days for $59 — Vital Athletic Recovery, White Rock Lake"
-             loading="lazy" decoding="async" />
-        <img class="special-hero-slide"
              src="assets/popup-image-2.jpg"
              alt="Cold plunge tubs at Vital Athletic Recovery in East Dallas"
              loading="lazy" decoding="async" />
         <img class="special-hero-slide"
-             src="assets/popup-image-3.jpg"
-             alt="Hyperice and Normatec recovery equipment at Vital Athletic Recovery"
+             src="assets/popup-image-4.jpg"
+             alt="Infrared sauna cabins at Vital Athletic Recovery"
              loading="lazy" decoding="async" />
         <img class="special-hero-slide"
-             src="assets/promo-7-days-reset.jpg"
+             src="assets/popup-image-5.jpg"
+             alt="Infrared sauna interior with red light therapy"
+             loading="lazy" decoding="async" />
+        <img class="special-hero-slide"
+             src="assets/popup-image-3.jpg"
+             alt="Recovery lounge at Vital Athletic Recovery"
+             loading="lazy" decoding="async" />
+        <img class="special-hero-slide"
+             src="assets/popup-image-2.jpg"
              alt=""
              aria-hidden="true"
              loading="lazy" decoding="async" />
       </div>
     </div>
     <div class="special-body">
-      <p class="special-eyebrow">Limited-Time Special</p>
-      <h2 class="special-headline" id="specialHeadline">Your body needs a <em>reset</em>.</h2>
-      <p class="special-sub">Seven days of unlimited recovery + classes. De-stress, loosen up, and recharge after long workdays.</p>
+      <p class="special-eyebrow">First-Visit Special</p>
+      <h2 class="special-headline" id="specialHeadline">Half off your <em>first visit.</em></h2>
+      <p class="special-sub">Single day pass &mdash; 50% off your first time in. Cold plunge, sauna, red light, compression, yoga, reformer. Try everything before you commit.</p>
       <div class="special-includes" aria-label="What's included">
         <span>Cold Plunge</span>
         <span>Sauna</span>
@@ -3415,15 +3420,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span>Compression</span>
         <span>Yoga + Reformer</span>
       </div>
-      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/596311050acf26264d12c556412cc66d"
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88"
          class="special-cta"
          id="specialClaim"
          target="_blank"
          rel="noopener"
-         aria-label="Claim seven days for fifty-nine dollars">
-        <span class="cta-text cta-text-1">Claim 7 days for $59</span>
-        <span class="cta-text cta-text-2" aria-hidden="true">Plunge included &middot; 7 days $59</span>
-        <span class="cta-text cta-text-3" aria-hidden="true">It's all yours &middot; 7 days $59</span>
+         aria-label="Claim fifty percent off your first day pass">
+        <span class="cta-text cta-text-1">Half off first visit</span>
+        <span class="cta-text cta-text-2" aria-hidden="true">First day &middot; 50% off</span>
       </a>
       <button class="special-dismiss" id="specialDismiss">Maybe later</button>
       <p class="special-fineprint">New guests · White Rock Lake studio</p>
