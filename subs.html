@@ -95,8 +95,7 @@ button.btn-full{width:100%;justify-content:center}
 .badge-instructor{background:rgba(90,50,120,.2);color:#b39ddb;border:1px solid rgba(179,157,219,.2)}
 .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
 .tag-yoga{background:rgba(46,125,50,.2);color:#a5d6a7;border:1px solid rgba(165,214,167,.2)}
-.tag-pilates{background:rgba(21,101,192,.2);color:#90caf9;border:1px solid rgba(144,202,249,.2)}
-.tag-barre{background:rgba(136,14,79,.2);color:#f48fb1;border:1px solid rgba(244,143,177,.2)}
+.tag-reformer{background:rgba(21,101,192,.2);color:#90caf9;border:1px solid rgba(144,202,249,.2)}
 .tag-other{background:var(--surface-3);color:var(--text-muted);border:1px solid var(--border)}
 .form-row{margin-bottom:14px;display:flex;flex-direction:column;gap:5px}
 .form-row:last-of-type{margin-bottom:0}
@@ -144,6 +143,20 @@ select option{background:var(--surface-2)}
 .site-footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;font-size:12px;color:var(--text-dim)}
 .site-footer a{color:var(--text-muted);text-decoration:none}
 .site-footer a:hover{color:var(--text)}
+/* PIN lock screen */
+.lock-overlay{position:fixed;inset:0;z-index:500;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
+body.unlocked .lock-overlay{display:none}
+.lock-card{width:min(360px,100%)}
+.lock-logo img{height:30px;margin-bottom:2rem}
+.lock-icon{width:54px;height:54px;border-radius:50%;background:var(--gold-tint);border:1px solid var(--gold-dim);color:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 1.25rem}
+.lock-card h2{font-size:18px;font-weight:600;color:var(--text);margin-bottom:.375rem}
+.lock-card p{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.pin-input{font-size:28px;letter-spacing:.6em;text-align:center;padding:14px 12px 14px 24px;font-variant-numeric:tabular-nums;caret-color:var(--gold-light)}
+.pin-input::placeholder{letter-spacing:.6em;color:var(--text-dim)}
+.lock-err{font-size:13px;color:#e57373;min-height:18px;margin-top:.75rem}
+.lock-foot{font-size:11px;color:var(--text-dim);margin-top:1.5rem}
+#lock-btn{font-size:11px;padding:3px 10px;color:var(--text-muted);border-color:var(--border)}
+#lock-btn:hover{color:var(--text);border-color:var(--border-mid)}
 @media(max-width:700px){
   .form-grid{grid-template-columns:1fr}
   .nav-links,.nav-cta{display:none}
@@ -159,6 +172,19 @@ select option{background:var(--surface-2)}
 </head>
 <body>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P73DQ4WR" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- PIN lock screen -->
+<div class="lock-overlay" id="lock-overlay">
+  <div class="lock-card">
+    <div class="lock-logo"><img src="/assets/var-logo-horizontal-light.png" alt="Vital Athletic Recovery"></div>
+    <div class="lock-icon"><i class="ti ti-lock" aria-hidden="true"></i></div>
+    <h2>Staff access</h2>
+    <p>Enter the 4-digit PIN to open the sub board.</p>
+    <input id="pin-entry" class="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="&#8226;&#8226;&#8226;&#8226;" aria-label="4-digit PIN" oninput="onPinInput(event)" onkeydown="onPinKey(event)">
+    <div class="lock-err" id="lock-err" role="alert"></div>
+    <div class="lock-foot">Vital Athletic Recovery &mdash; instructors &amp; staff only</div>
+  </div>
+</div>
 
 <nav class="site-nav" role="navigation" aria-label="Site navigation">
   <a href="/" class="nav-logo"><img src="/assets/var-logo-horizontal-light.png" alt="Vital Athletic Recovery" height="28"></a>
@@ -184,15 +210,17 @@ select option{background:var(--surface-2)}
   <div class="sync-bar">
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-status">Connecting to sub board…</span>
+    <button id="lock-btn" onclick="lockPage()" style="margin-left:auto" title="Lock the board"><i class="ti ti-lock" aria-hidden="true"></i> Lock</button>
   </div>
 
   <div class="view-toggle" role="group">
-    <button class="vt-btn active" id="pill-admin" onclick="switchView('admin')">Admin</button>
-    <button class="vt-btn" id="pill-instructor" onclick="switchView('instructor')">Instructor</button>
+    <button class="vt-btn" id="pill-admin" onclick="switchView('admin')">Admin</button>
+    <button class="vt-btn active" id="pill-instructor" onclick="switchView('instructor')">Instructor</button>
   </div>
 
   <!-- ADMIN VIEW -->
-  <div class="view active" id="view-admin">
+  <div class="view" id="view-admin">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.5rem"><button class="btn-sm" onclick="exitAdmin()" title="Lock admin and return to instructor view"><i class="ti ti-lock" aria-hidden="true"></i> Exit admin</button></div>
     <div class="tabs">
       <button class="tab-btn active" id="atab-btn-board" onclick="adminTab('board')">Board</button>
       <button class="tab-btn" id="atab-btn-roster" onclick="adminTab('roster')">Roster</button>
@@ -223,11 +251,24 @@ select option{background:var(--surface-2)}
 
     <div class="sub-view" id="atab-settings">
       <div class="settings-section">
+        <h4>Access PINs</h4>
+        <div class="form-grid">
+          <div class="form-row"><label>Page PIN (everyone)</label><input id="cfg-page-pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="2468" oninput="onPinFieldInput()"></div>
+          <div class="form-row"><label>Admin PIN (this section)</label><input id="cfg-admin-pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234" oninput="onAdminPinFieldInput()"></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Page PIN opens the board for all staff. Admin PIN is required to enter this Admin section, so instructors can't reach it. Changing a PIN signs out other devices. Defaults: page <code>2468</code>, admin <code>1234</code>.</p>
+      </div>
+      <div class="settings-section">
         <h4>Admin contact — you</h4>
         <div class="form-grid">
           <div class="form-row"><label>Your email</label><input id="cfg-admin-email" type="email" placeholder="you@studio.com" oninput="saveCfg()"></div>
           <div class="form-row"><label>Your phone (E.164)</label><input id="cfg-admin-phone" placeholder="+12145550100" oninput="saveCfg()"></div>
         </div>
+      </div>
+      <div class="settings-section">
+        <h4>Class schedule (GymMaster)</h4>
+        <div class="form-row"><label>Proxy URL</label><input id="cfg-gm-proxy" placeholder="https://var-gm-proxy.yourname.workers.dev" oninput="saveCfg()"></div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Paste your Cloudflare Worker URL (see <strong style="color:var(--text-muted)">gymmaster-setup.md</strong>). The GymMaster API key stays in the Worker, never on this page.</p>
       </div>
       <div class="settings-section">
         <h4>EmailJS — email notifications (free)</h4>
@@ -236,7 +277,8 @@ select option{background:var(--surface-2)}
         <div class="form-row"><label>Public key</label><input id="cfg-ejs-key" placeholder="xxxxxxxxxxxxxxxxxxxx" oninput="saveCfg()"></div>
         <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Set up at <strong style="color:var(--text-muted)">emailjs.com</strong> · Template vars: <code>{{to_email}}</code> <code>{{subject}}</code> <code>{{message}}</code></p>
       </div>
-      <div class="settings-section">
+      <!-- SMS / Twilio notifications — hidden pending A2P 10DLC registration. Re-enable by deleting style="display:none" below. Fields, IDs, and sending code remain intact. -->
+      <div class="settings-section" id="sms-settings" style="display:none">
         <h4>Twilio — SMS notifications</h4>
         <div class="form-row"><label>Account SID</label><input id="cfg-twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" oninput="saveCfg()"></div>
         <div class="form-row"><label>Auth token</label><input id="cfg-twilio-token" type="password" placeholder="••••••••••••••••" oninput="saveCfg()"></div>
@@ -251,7 +293,7 @@ select option{background:var(--surface-2)}
   </div>
 
   <!-- INSTRUCTOR VIEW -->
-  <div class="view" id="view-instructor">
+  <div class="view active" id="view-instructor">
     <div class="itabs">
       <button class="itab-btn active" id="itab-available" onclick="iTab('available')">
         <i class="ti ti-layout-list" aria-hidden="true"></i>Available subs
@@ -279,10 +321,11 @@ select option{background:var(--surface-2)}
       </div>
       <div class="inline-form">
         <div class="form-row"><label>Your name</label><select id="req-who"><option value="">Select your name…</option></select></div>
+        <div class="gm-trigger" style="margin-bottom:14px;display:none"><button type="button" class="btn-sm" onclick="openGmPicker('req')"><i class="ti ti-calendar-search" aria-hidden="true"></i> Find my class in GymMaster</button></div>
         <div class="form-grid">
           <div class="form-row"><label>Class name</label><input id="req-class" placeholder="9am Vinyasa Flow"></div>
           <div class="form-row"><label>Type</label>
-            <select id="req-type"><option value="yoga">Yoga</option><option value="pilates">Pilates</option><option value="barre">Barre</option><option value="other">Other</option></select>
+            <select id="req-type"><option value="yoga">Yoga</option><option value="reformer">Reformer</option><option value="other">Other</option></select>
           </div>
         </div>
         <div class="form-grid">
@@ -318,9 +361,10 @@ select option{background:var(--surface-2)}
 <div class="modal-overlay" id="modal-sub">
   <div class="modal">
     <div class="modal-hdr"><h3 id="modal-sub-title">Post a sub need</h3><button class="modal-close" onclick="closeModal('modal-sub')">&times;</button></div>
+    <div class="gm-trigger" style="margin-bottom:1rem;display:none"><button type="button" class="btn-sm" onclick="openGmPicker('admin')"><i class="ti ti-calendar-search" aria-hidden="true"></i> Pull from GymMaster</button></div>
     <div class="form-grid">
       <div class="form-row"><label>Class name</label><input id="f-class" placeholder="9am Vinyasa Flow"></div>
-      <div class="form-row"><label>Type</label><select id="f-type"><option value="yoga">Yoga</option><option value="pilates">Pilates</option><option value="barre">Barre</option><option value="other">Other</option></select></div>
+      <div class="form-row"><label>Type</label><select id="f-type"><option value="yoga">Yoga</option><option value="reformer">Reformer</option><option value="other">Other</option></select></div>
     </div>
     <div class="form-grid">
       <div class="form-row"><label>Date</label><input type="date" id="f-date"></div>
@@ -360,7 +404,7 @@ select option{background:var(--surface-2)}
 
 <div class="modal-overlay" id="modal-instructor">
   <div class="modal">
-    <div class="modal-hdr"><h3>Add instructor</h3><button class="modal-close" onclick="closeModal('modal-instructor')">&times;</button></div>
+    <div class="modal-hdr"><h3 id="modal-instructor-title">Add instructor</h3><button class="modal-close" onclick="closeModal('modal-instructor')">&times;</button></div>
     <div class="form-row"><label>Name</label><input id="i-name" placeholder="Full name"></div>
     <div class="form-grid">
       <div class="form-row"><label>Email</label><input id="i-email" type="email" placeholder="instructor@studio.com"></div>
@@ -369,15 +413,37 @@ select option{background:var(--surface-2)}
     <div class="form-row"><label>Specialties</label>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px">
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="sp-yoga"> Yoga</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="sp-pilates"> Pilates</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="sp-barre"> Barre</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="sp-reformer"> Reformer</label>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="sp-other"> Other</label>
       </div>
     </div>
     <div class="modal-foot">
       <button onclick="closeModal('modal-instructor')">Cancel</button>
-      <button class="btn-primary" onclick="saveInstructor()">Add instructor</button>
+      <button class="btn-primary" id="save-instructor-btn" onclick="saveInstructor()">Add instructor</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-gm">
+  <div class="modal" style="width:min(560px,100%)">
+    <div class="modal-hdr"><h3>Pull class from GymMaster</h3><button class="modal-close" onclick="closeModal('modal-gm')">&times;</button></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+      <button type="button" class="btn-sm" onclick="gmShiftWeek(-7)" title="Previous week"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+      <div id="gm-week-label" style="flex:1;text-align:center;font-size:13px;color:var(--text-muted)"></div>
+      <button type="button" class="btn-sm" onclick="gmShiftWeek(7)" title="Next week"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+      <button type="button" class="btn-sm" onclick="loadGmIntoPicker(true)" title="Refresh live from GymMaster"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+    <div id="gm-list"><div class="empty"><i class="ti ti-loader" aria-hidden="true"></i><p>Loading…</p></div></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-admin-pin">
+  <div class="modal" style="width:min(360px,100%)">
+    <div class="modal-hdr"><h3>Admin access</h3><button class="modal-close" onclick="closeModal('modal-admin-pin')">&times;</button></div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1rem">Enter the admin PIN to manage the board, roster, and notifications.</p>
+    <input id="admin-pin-entry" class="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="&#8226;&#8226;&#8226;&#8226;" aria-label="Admin PIN" style="width:100%" oninput="onAdminPinInput(event)" onkeydown="onAdminPinKey(event)">
+    <div class="lock-err" id="admin-pin-err" role="alert" style="text-align:center"></div>
+    <div class="modal-foot"><button onclick="closeModal('modal-admin-pin')">Cancel</button><button class="btn-primary" onclick="submitAdminPin()">Enter admin</button></div>
   </div>
 </div>
 
@@ -406,10 +472,12 @@ const instructorsCol = db.collection('instructors');
 const pendingCol     = db.collection('pending');
 const historyCol     = db.collection('history');
 const cfgRef         = db.collection('config').doc('settings');
+const gmSchedRef     = db.collection('config').doc('gmSchedule');
 
 /* ── State mirrors ──────────────────────────────────────── */
 let SUBS=[], INSTRUCTORS=[], PENDING=[], HISTORY=[], CFG={};
-let claimingId=null, editingId=null, approvingId=null;
+let GMSCHED=null, GM_TARGET='admin', GM_WEEK=null, GM_CURRENT=[];
+let claimingId=null, editingId=null, approvingId=null, editingInstructorId=null;
 let readyCount=0;
 
 /* ── Helpers ────────────────────────────────────────────── */
@@ -467,11 +535,19 @@ historyCol.orderBy('completedAt','desc').onSnapshot(snap => {
 }, err=>handleFirebaseError(err));
 
 cfgRef.onSnapshot(snap => {
-  if(snap.exists){ CFG=snap.data(); loadCfgFields(); }
+  CFG = snap.exists ? snap.data() : {};
+  loadCfgFields();
+  applyPinState();
 }, err=>console.warn('cfg error:',err));
+
+gmSchedRef.onSnapshot(snap => {
+  GMSCHED = snap.exists ? snap.data() : null;
+  updateGmButtons();
+}, err=>console.warn('gmSchedule error:',err));
 
 /* ── View switching ─────────────────────────────────────── */
 function switchView(v) {
+  if(v==='admin' && !isAdminUnlocked()){ openAdminPinModal(); return; }
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.getElementById('pill-admin').classList.toggle('active',v==='admin');
@@ -495,7 +571,7 @@ function iTab(t) {
 }
 
 /* ── Render ─────────────────────────────────────────────── */
-function render() { renderBoard(); renderRoster(); updateMetrics(); }
+function render() { renderBoard(); renderRoster(); updateMetrics(); renderInstructorBoard(); renderMyStatus(); }
 
 function updateMetrics() {
   document.getElementById('m-open').textContent    = SUBS.filter(s=>s.status==='open').length;
@@ -563,7 +639,10 @@ function renderRoster() {
         <div style="font-size:12px;color:var(--text-muted)">${i.email?esc(i.email):''}${i.phone?' · '+esc(i.phone):''}</div>
         <div style="margin-top:4px">${(i.specialties||[]).map(s=>`<span class="tag tag-${s}" style="margin-right:3px">${s}</span>`).join('')}</div>
       </div>
-      <button class="btn-danger btn-sm" onclick="deleteInstructor('${i.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button class="btn-sm" onclick="editInstructor('${i.id}')" title="Edit"><i class="ti ti-edit" aria-hidden="true"></i></button>
+        <button class="btn-danger btn-sm" onclick="deleteInstructor('${i.id}')" title="Remove"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div>
     </div>`).join('');
 }
 
@@ -786,15 +865,37 @@ async function deleteSub(id) {
 
 /* ── Instructor CRUD ────────────────────────────────────── */
 function openAddInstructor() {
+  editingInstructorId=null;
+  document.getElementById('modal-instructor-title').textContent='Add instructor';
+  document.getElementById('save-instructor-btn').textContent='Add instructor';
   ['i-name','i-email','i-phone'].forEach(id=>document.getElementById(id).value='');
-  ['yoga','pilates','barre','other'].forEach(s=>document.getElementById('sp-'+s).checked=false);
+  ['yoga','reformer','other'].forEach(s=>document.getElementById('sp-'+s).checked=false);
+  openModal('modal-instructor');
+}
+function editInstructor(id) {
+  const ins=INSTRUCTORS.find(x=>x.id===id); if(!ins) return;
+  editingInstructorId=id;
+  document.getElementById('modal-instructor-title').textContent='Edit instructor';
+  document.getElementById('save-instructor-btn').textContent='Save changes';
+  document.getElementById('i-name').value=ins.name||'';
+  document.getElementById('i-email').value=ins.email||'';
+  document.getElementById('i-phone').value=ins.phone||'';
+  ['yoga','reformer','other'].forEach(s=>document.getElementById('sp-'+s).checked=(ins.specialties||[]).includes(s));
   openModal('modal-instructor');
 }
 async function saveInstructor() {
   const name=document.getElementById('i-name').value.trim();
   if(!name){ showToast('Name is required','err'); return; }
-  await instructorsCol.add({name,email:document.getElementById('i-email').value.trim(),phone:document.getElementById('i-phone').value.trim(),specialties:['yoga','pilates','barre','other'].filter(s=>document.getElementById('sp-'+s).checked),createdAt:Date.now()});
-  closeModal('modal-instructor'); showToast(`${name} added`,'ok');
+  const data={name,email:document.getElementById('i-email').value.trim(),phone:document.getElementById('i-phone').value.trim(),specialties:['yoga','reformer','other'].filter(s=>document.getElementById('sp-'+s).checked)};
+  if(editingInstructorId){
+    await instructorsCol.doc(editingInstructorId).update(data);
+    editingInstructorId=null;
+    closeModal('modal-instructor'); showToast(`${name} updated`,'ok');
+  } else {
+    data.createdAt=Date.now();
+    await instructorsCol.add(data);
+    closeModal('modal-instructor'); showToast(`${name} added`,'ok');
+  }
 }
 async function deleteInstructor(id) {
   if(!confirm('Remove this instructor?')) return;
@@ -803,9 +904,9 @@ async function deleteInstructor(id) {
 
 /* ── Notification config ────────────────────────────────── */
 async function saveCfg() {
-  const data={adminEmail:document.getElementById('cfg-admin-email').value.trim(),adminPhone:document.getElementById('cfg-admin-phone').value.trim(),ejsService:document.getElementById('cfg-ejs-service').value.trim(),ejsTemplate:document.getElementById('cfg-ejs-template').value.trim(),ejsKey:document.getElementById('cfg-ejs-key').value.trim(),twilioSid:document.getElementById('cfg-twilio-sid').value.trim(),twilioToken:document.getElementById('cfg-twilio-token').value.trim(),twilioFrom:document.getElementById('cfg-twilio-from').value.trim()};
-  await cfgRef.set(data);
-  CFG=data;
+  const data={adminEmail:document.getElementById('cfg-admin-email').value.trim(),adminPhone:document.getElementById('cfg-admin-phone').value.trim(),ejsService:document.getElementById('cfg-ejs-service').value.trim(),ejsTemplate:document.getElementById('cfg-ejs-template').value.trim(),ejsKey:document.getElementById('cfg-ejs-key').value.trim(),twilioSid:document.getElementById('cfg-twilio-sid').value.trim(),twilioToken:document.getElementById('cfg-twilio-token').value.trim(),twilioFrom:document.getElementById('cfg-twilio-from').value.trim(),gmProxy:document.getElementById('cfg-gm-proxy').value.trim()};
+  await cfgRef.set(data,{merge:true});
+  CFG={...CFG,...data};
 }
 function loadCfgFields() {
   const c=CFG||{};
@@ -813,6 +914,12 @@ function loadCfgFields() {
   set('cfg-admin-email',c.adminEmail); set('cfg-admin-phone',c.adminPhone);
   set('cfg-ejs-service',c.ejsService); set('cfg-ejs-template',c.ejsTemplate); set('cfg-ejs-key',c.ejsKey);
   set('cfg-twilio-sid',c.twilioSid); set('cfg-twilio-token',c.twilioToken); set('cfg-twilio-from',c.twilioFrom);
+  set('cfg-gm-proxy',c.gmProxy);
+  const pinEl=document.getElementById('cfg-page-pin');
+  if(pinEl && document.activeElement!==pinEl) pinEl.value=c.pagePin||'';
+  const apinEl=document.getElementById('cfg-admin-pin');
+  if(apinEl && document.activeElement!==apinEl) apinEl.value=c.adminPin||'';
+  updateGmButtons();
 }
 
 /* ── Notifications ──────────────────────────────────────── */
@@ -848,6 +955,188 @@ async function testNotify() {
 }
 
 /* ── Modals ─────────────────────────────────────────────── */
+/* ── GymMaster schedule sync ────────────────────── */
+function gmProxyUrl(){ return (CFG.gmProxy||'').replace(/\/+$/,''); }
+function updateGmButtons(){
+  const show = !!(gmProxyUrl() || (GMSCHED && Array.isArray(GMSCHED.classes) && GMSCHED.classes.length));
+  document.querySelectorAll('.gm-trigger').forEach(b=>{ b.style.display = show ? '' : 'none'; });
+}
+function guessType(name,location){
+  const loc=(location||'').toLowerCase();
+  if(/reformer|pilates/.test(loc)) return 'reformer';
+  if(/yoga/.test(loc)) return 'yoga';
+  const n=(name||'').toLowerCase();
+  if(/reformer|pilates|mat/.test(n)) return 'reformer';
+  if(/yoga|vinyasa|flow|hatha|yin|restorative|restore|sculpt|power|stretch|mobility/.test(n)) return 'yoga';
+  return 'other';
+}
+function normName(s){
+  s=(s||'').trim().toLowerCase();
+  if(s.includes(',')){ const parts=s.split(','); s=(parts[1]||'').trim()+' '+(parts[0]||'').trim(); }
+  return s.replace(/\s+/g,' ').trim();
+}
+function matchStaffId(staffname){
+  if(!staffname) return '';
+  const t=normName(staffname);
+  const hit=INSTRUCTORS.find(i=>normName(i.name)===t);
+  return hit?hit.id:'';
+}
+function normalizeGmClass(c){
+  return {
+    name: c.name || c.className || '',
+    date: (c.date || c.arrival || '').slice(0,10),
+    time: (c.time || c.starttime || '').slice(0,5),
+    staffname: c.staffname || '',
+    location: c.location || '',
+    spacesfree: (c.spacesfree===0||c.spacesfree)?c.spacesfree:null
+  };
+}
+function todayISO(){ const t=new Date(); const p=x=>String(x).padStart(2,'0'); return `${t.getFullYear()}-${p(t.getMonth()+1)}-${p(t.getDate())}`; }
+function addDaysISO(iso,n){ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d+n); const p=x=>String(x).padStart(2,'0'); return `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`; }
+function gmSort(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); }
+async function gmFetchWeek(weekISO){
+  const base=gmProxyUrl(); if(!base) throw new Error('No proxy URL set');
+  const r=await fetch(`${base}/schedule?week=${encodeURIComponent(weekISO)}`,{headers:{'Accept':'application/json'}});
+  const d=await r.json().catch(()=>({error:'Bad response'}));
+  if(!r.ok || d.error) throw new Error(d.error || ('HTTP '+r.status));
+  return (d.classes||d.result||[]).map(normalizeGmClass).filter(c=>c.name);
+}
+function openGmPicker(target){
+  GM_TARGET=target;
+  if(!GM_WEEK) GM_WEEK=todayISO();
+  openModal('modal-gm');
+  gmWeekLabel();
+  loadGmIntoPicker(false);
+}
+function gmShiftWeek(delta){ GM_WEEK=addDaysISO(GM_WEEK||todayISO(),delta); gmWeekLabel(); loadGmIntoPicker(false); }
+function gmWeekLabel(){
+  const el=document.getElementById('gm-week-label'); if(!el) return;
+  el.textContent='Week of '+fmtDate(GM_WEEK)+' – '+fmtDate(addDaysISO(GM_WEEK,6));
+}
+async function loadGmIntoPicker(force){
+  const list=document.getElementById('gm-list'); if(!list) return;
+  const weekStart=GM_WEEK||todayISO(), weekEnd=addDaysISO(weekStart,7);
+  if(!force && GMSCHED && Array.isArray(GMSCHED.classes)){
+    const cached=GMSCHED.classes.map(normalizeGmClass).filter(c=>c.name && c.date>=weekStart && c.date<weekEnd).sort(gmSort);
+    if(cached.length){ GM_CURRENT=cached; renderGmList(cached,'cached'); return; }
+  }
+  if(!gmProxyUrl()){ list.innerHTML='<div class="empty"><i class="ti ti-plug-connected-x" aria-hidden="true"></i><p>No GymMaster proxy set. Add it in Admin → Notifications, or enable the scheduled mirror.</p></div>'; return; }
+  list.innerHTML='<div class="empty"><span class="spinner"></span> Loading from GymMaster…</div>';
+  try{
+    const classes=(await gmFetchWeek(weekStart)).sort(gmSort);
+    GM_CURRENT=classes; renderGmList(classes,'live');
+  }catch(e){
+    list.innerHTML=`<div class="empty"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p>Couldn't reach GymMaster proxy.<br><span style="font-size:12px;color:var(--text-dim)">${esc(e.message||'')}</span></p></div>`;
+  }
+}
+function renderGmList(classes,source){
+  const list=document.getElementById('gm-list'); if(!list) return;
+  if(!classes.length){ list.innerHTML='<div class="empty"><i class="ti ti-calendar-off" aria-hidden="true"></i><p>No classes found this week. Use the arrows to change weeks.</p></div>'; return; }
+  let html = source==='cached' ? '<div style="font-size:11px;color:var(--text-dim);margin-bottom:.5rem"><i class="ti ti-refresh-dot" aria-hidden="true"></i> Synced schedule — tap refresh for live</div>' : '';
+  let cur='';
+  classes.forEach((c,idx)=>{
+    if(c.date!==cur){ cur=c.date; html+=`<div class="section-label">${esc(fmtDate(c.date))}</div>`; }
+    const free=(c.spacesfree!=null)?` · ${c.spacesfree} free`:'';
+    html+=`<div class="card card-open" style="cursor:pointer;padding:.7rem 1rem;margin-bottom:.5rem" onclick="gmPick(${idx})">
+      <div class="class-title" style="font-size:14px">${esc(c.time?fmtTime(c.time):'')} · ${esc(c.name)} ${typeTag(guessType(c.name,c.location))}</div>
+      <div class="card-meta" style="margin-top:2px">${c.staffname?'<i class="ti ti-user" aria-hidden="true"></i>'+esc(c.staffname):''}${esc(free)}</div>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+function gmPick(i){
+  const c=GM_CURRENT[i]; if(!c) return;
+  const sid=matchStaffId(c.staffname);
+  if(GM_TARGET==='admin'){
+    document.getElementById('f-class').value=c.name;
+    document.getElementById('f-type').value=guessType(c.name,c.location);
+    document.getElementById('f-date').value=c.date;
+    document.getElementById('f-time').value=c.time;
+    if(sid) document.getElementById('f-orig').value=sid;
+  } else {
+    document.getElementById('req-class').value=c.name;
+    document.getElementById('req-type').value=guessType(c.name,c.location);
+    document.getElementById('req-date').value=c.date;
+    document.getElementById('req-time').value=c.time;
+    if(sid){ const el=document.getElementById('req-who'); if(el) el.value=sid; }
+  }
+  closeModal('modal-gm');
+  showToast('Filled from GymMaster — review and submit','ok');
+}
+
+/* ── PIN lock ─────────────────────────────────── */
+const DEFAULT_PIN='2468';
+const PIN_KEY='var_sub_unlock';
+function effectivePin(){ return /^\d{4}$/.test(CFG.pagePin||'') ? CFG.pagePin : DEFAULT_PIN; }
+function isUnlocked(){ try{ return localStorage.getItem(PIN_KEY)===effectivePin(); }catch(e){ return false; } }
+function setUnlocked(pin){ try{ localStorage.setItem(PIN_KEY,pin); }catch(e){} document.body.classList.add('unlocked'); }
+function applyPinState(){
+  if(isUnlocked()) document.body.classList.add('unlocked');
+  else { document.body.classList.remove('unlocked'); const el=document.getElementById('pin-entry'); if(el) el.focus(); }
+}
+function submitPin(){
+  const el=document.getElementById('pin-entry'), err=document.getElementById('lock-err');
+  const val=(el.value||'').replace(/\D/g,'');
+  if(val===effectivePin()){ err.textContent=''; setUnlocked(val); el.value=''; }
+  else{ err.textContent='Incorrect PIN'; el.value=''; el.focus(); }
+}
+function onPinKey(e){ if(e.key==='Enter') submitPin(); }
+function onPinInput(e){
+  const el=e.target; el.value=el.value.replace(/\D/g,'').slice(0,4);
+  document.getElementById('lock-err').textContent='';
+  if(el.value.length===4) submitPin();
+}
+function lockPage(){ try{ localStorage.removeItem(PIN_KEY); }catch(e){} document.body.classList.remove('unlocked'); const el=document.getElementById('pin-entry'); if(el){ el.value=''; el.focus(); } }
+/* admin sets/changes the page PIN from the Notifications tab */
+function onPinFieldInput(){
+  const el=document.getElementById('cfg-page-pin');
+  el.value=el.value.replace(/\D/g,'').slice(0,4);
+  const v=el.value;
+  if(v.length===4 || v.length===0){
+    CFG.pagePin=v;
+    cfgRef.set({pagePin:v},{merge:true});
+    setUnlocked(v.length===4 ? v : DEFAULT_PIN);  // keep this device signed in under the new PIN
+    showToast(v.length===4 ? 'Page PIN updated — other devices must re-enter' : 'PIN cleared — default 2468 in effect','ok');
+  }
+}
+/* ── Admin section PIN ──────────────────────────── */
+const DEFAULT_ADMIN_PIN='1234';
+const ADMIN_KEY='var_sub_admin';
+function effectiveAdminPin(){ return /^\d{4}$/.test(CFG.adminPin||'') ? CFG.adminPin : DEFAULT_ADMIN_PIN; }
+function isAdminUnlocked(){ try{ return localStorage.getItem(ADMIN_KEY)===effectiveAdminPin(); }catch(e){ return false; } }
+function setAdminUnlocked(pin){ try{ localStorage.setItem(ADMIN_KEY,pin); }catch(e){} }
+function openAdminPinModal(){
+  const el=document.getElementById('admin-pin-entry'); if(el) el.value='';
+  const err=document.getElementById('admin-pin-err'); if(err) err.textContent='';
+  openModal('modal-admin-pin');
+  setTimeout(()=>{ const e=document.getElementById('admin-pin-entry'); if(e) e.focus(); },50);
+}
+function submitAdminPin(){
+  const el=document.getElementById('admin-pin-entry'), err=document.getElementById('admin-pin-err');
+  const val=(el.value||'').replace(/\D/g,'');
+  if(val===effectiveAdminPin()){ err.textContent=''; setAdminUnlocked(val); closeModal('modal-admin-pin'); switchView('admin'); }
+  else{ err.textContent='Incorrect admin PIN'; el.value=''; el.focus(); }
+}
+function onAdminPinKey(e){ if(e.key==='Enter') submitAdminPin(); }
+function onAdminPinInput(e){
+  const el=e.target; el.value=el.value.replace(/\D/g,'').slice(0,4);
+  document.getElementById('admin-pin-err').textContent='';
+  if(el.value.length===4) submitAdminPin();
+}
+function exitAdmin(){ try{ localStorage.removeItem(ADMIN_KEY); }catch(e){} switchView('instructor'); showToast('Exited admin','ok'); }
+function onAdminPinFieldInput(){
+  const el=document.getElementById('cfg-admin-pin');
+  el.value=el.value.replace(/\D/g,'').slice(0,4);
+  const v=el.value;
+  if(v.length===4 || v.length===0){
+    CFG.adminPin=v;
+    cfgRef.set({adminPin:v},{merge:true});
+    setAdminUnlocked(v.length===4 ? v : DEFAULT_ADMIN_PIN);  // keep this device in under the new PIN
+    showToast(v.length===4 ? 'Admin PIN updated — other devices must re-enter' : 'Admin PIN cleared — default 1234 in effect','ok');
+  }
+}
+window.addEventListener('DOMContentLoaded',applyPinState);
+
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
