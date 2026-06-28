@@ -684,7 +684,7 @@ function renderMyStatus() {
   if(cur) filterEl.value=cur;
   const sel=filterEl.value;
   const el=document.getElementById('mystatus-list');
-  const myPend  =PENDING.filter(r=>!sel||r.origId===sel);
+  const myPend  =PENDING.filter(r=>r.status==='pending' && (!sel||r.origId===sel));
   const myActive=SUBS.filter(s=>!sel||s.origId===sel||s.claimedBy===sel);
   const myDone  =HISTORY.filter(s=>!sel||s.origId===sel||s.claimedBy===sel).slice(0,8);
   if(!myPend.length&&!myActive.length&&!myDone.length){
@@ -801,7 +801,7 @@ function openApprove(id) {
 }
 async function approveRequest() {
   const r=PENDING.find(x=>x.id===approvingId); if(!r) return;
-  await pendingCol.doc(approvingId).update({status:'approved'});
+  await pendingCol.doc(approvingId).delete();
   await subsCol.add({className:r.className,type:r.type,date:r.date,time:r.time,origId:r.origId,notes:r.notes,status:'open',claimedBy:null,postedByInstructor:true,createdAt:Date.now()});
   closeModal('modal-approve');
   const orig=INSTRUCTORS.find(i=>i.id===r.origId);
