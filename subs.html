@@ -956,7 +956,7 @@ async function testNotify() {
 
 /* ── Modals ─────────────────────────────────────────────── */
 /* ── GymMaster schedule sync ────────────────────── */
-function gmProxyUrl(){ return (CFG.gmProxy||'').replace(/\/+$/,''); }
+function gmProxyUrl(){ return (CFG.gmProxy||'').trim().replace(/\/+$/,''); }
 function updateGmButtons(){
   const show = !!(gmProxyUrl() || (GMSCHED && Array.isArray(GMSCHED.classes) && GMSCHED.classes.length));
   document.querySelectorAll('.gm-trigger').forEach(b=>{ b.style.display = show ? '' : 'none'; });
