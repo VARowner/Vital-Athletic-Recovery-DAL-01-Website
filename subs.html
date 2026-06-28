@@ -244,7 +244,10 @@ body.unlocked .lock-overlay{display:none}
     <div class="sub-view" id="atab-roster">
       <div class="sec-hdr">
         <h3>Instructors</h3>
-        <button class="btn-primary" onclick="openAddInstructor()"><i class="ti ti-plus" aria-hidden="true"></i> Add instructor</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn-sm gm-trigger" style="display:none" onclick="syncInstructorsFromGm()" title="Add instructors found in the GymMaster schedule"><i class="ti ti-refresh" aria-hidden="true"></i> Sync from GymMaster</button>
+          <button class="btn-primary" onclick="openAddInstructor()"><i class="ti ti-plus" aria-hidden="true"></i> Add instructor</button>
+        </div>
       </div>
       <div id="roster-list"><div class="empty"><i class="ti ti-loader" aria-hidden="true"></i><p>Loading…</p></div></div>
     </div>
@@ -428,9 +431,10 @@ body.unlocked .lock-overlay{display:none}
   <div class="modal" style="width:min(560px,100%)">
     <div class="modal-hdr"><h3>Pull class from GymMaster</h3><button class="modal-close" onclick="closeModal('modal-gm')">&times;</button></div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
-      <button type="button" class="btn-sm" onclick="gmShiftWeek(-7)" title="Previous week"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+      <button type="button" class="btn-sm" onclick="gmShiftWeek(-GM_SPAN_DAYS)" title="Previous 4 weeks"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
       <div id="gm-week-label" style="flex:1;text-align:center;font-size:13px;color:var(--text-muted)"></div>
-      <button type="button" class="btn-sm" onclick="gmShiftWeek(7)" title="Next week"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+      <button type="button" class="btn-sm" onclick="gmShiftWeek(GM_SPAN_DAYS)" title="Next 4 weeks"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+      <button type="button" class="btn-sm" onclick="gmToday()" title="Jump to today">Today</button>
       <button type="button" class="btn-sm" onclick="loadGmIntoPicker(true)" title="Refresh live from GymMaster"><i class="ti ti-refresh" aria-hidden="true"></i></button>
     </div>
     <div id="gm-list"><div class="empty"><i class="ti ti-loader" aria-hidden="true"></i><p>Loading…</p></div></div>
@@ -636,7 +640,7 @@ function renderRoster() {
       <div class="avatar">${inits(i.name)}</div>
       <div style="flex:1">
         <div style="font-weight:600;font-size:14px;color:var(--text)">${esc(i.name)}</div>
-        <div style="font-size:12px;color:var(--text-muted)">${i.email?esc(i.email):''}${i.phone?' · '+esc(i.phone):''}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${(i.email||i.phone)?(esc(i.email||'')+(i.phone?' · '+esc(i.phone):'')):'<span style=\'color:var(--text-dim)\'>No contact yet — tap edit to add</span>'}</div>
         <div style="margin-top:4px">${(i.specialties||[]).map(s=>`<span class="tag tag-${s}" style="margin-right:3px">${s}</span>`).join('')}</div>
       </div>
       <div style="display:flex;gap:5px;flex-shrink:0">
@@ -956,6 +960,7 @@ async function testNotify() {
 
 /* ── Modals ─────────────────────────────────────────────── */
 /* ── GymMaster schedule sync ────────────────────── */
+const GM_SPAN_WEEKS=4, GM_SPAN_DAYS=28;  // picker shows ~one month at a time
 function gmProxyUrl(){ return (CFG.gmProxy||'').trim().replace(/\/+$/,''); }
 function updateGmButtons(){
   const show = !!(gmProxyUrl() || (GMSCHED && Array.isArray(GMSCHED.classes) && GMSCHED.classes.length));
@@ -975,11 +980,20 @@ function normName(s){
   if(s.includes(',')){ const parts=s.split(','); s=(parts[1]||'').trim()+' '+(parts[0]||'').trim(); }
   return s.replace(/\s+/g,' ').trim();
 }
-function matchStaffId(staffname){
+function matchStaffId(staffname,staffid){
+  if(staffid!=null && staffid!==''){
+    const byId=INSTRUCTORS.find(i=>i.gmStaffId!=null && String(i.gmStaffId)===String(staffid));
+    if(byId) return byId.id;
+  }
   if(!staffname) return '';
   const t=normName(staffname);
   const hit=INSTRUCTORS.find(i=>normName(i.name)===t);
   return hit?hit.id:'';
+}
+function gmDisplayName(staffname){
+  const s=(staffname||'').trim();
+  if(s.includes(',')){ const parts=s.split(','); return ((parts[1]||'').trim()+' '+(parts[0]||'').trim()).trim(); }
+  return s;
 }
 function normalizeGmClass(c){
   return {
@@ -987,6 +1001,7 @@ function normalizeGmClass(c){
     date: (c.date || c.arrival || '').slice(0,10),
     time: (c.time || c.starttime || '').slice(0,5),
     staffname: c.staffname || '',
+    staffid: (c.staffid!=null && c.staffid!=='') ? c.staffid : '',
     location: c.location || '',
     spacesfree: (c.spacesfree===0||c.spacesfree)?c.spacesfree:null
   };
@@ -994,9 +1009,9 @@ function normalizeGmClass(c){
 function todayISO(){ const t=new Date(); const p=x=>String(x).padStart(2,'0'); return `${t.getFullYear()}-${p(t.getMonth()+1)}-${p(t.getDate())}`; }
 function addDaysISO(iso,n){ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d+n); const p=x=>String(x).padStart(2,'0'); return `${dt.getFullYear()}-${p(dt.getMonth()+1)}-${p(dt.getDate())}`; }
 function gmSort(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); }
-async function gmFetchWeek(weekISO){
+async function gmFetchWeek(weekISO,weeks){
   const base=gmProxyUrl(); if(!base) throw new Error('No proxy URL set');
-  const r=await fetch(`${base}/schedule?week=${encodeURIComponent(weekISO)}`,{headers:{'Accept':'application/json'}});
+  const r=await fetch(`${base}/schedule?week=${encodeURIComponent(weekISO)}&weeks=${weeks||GM_SPAN_WEEKS}`,{headers:{'Accept':'application/json'}});
   const d=await r.json().catch(()=>({error:'Bad response'}));
   if(!r.ok || d.error) throw new Error(d.error || ('HTTP '+r.status));
   return (d.classes||d.result||[]).map(normalizeGmClass).filter(c=>c.name);
@@ -1009,13 +1024,46 @@ function openGmPicker(target){
   loadGmIntoPicker(false);
 }
 function gmShiftWeek(delta){ GM_WEEK=addDaysISO(GM_WEEK||todayISO(),delta); gmWeekLabel(); loadGmIntoPicker(false); }
+function gmToday(){ GM_WEEK=todayISO(); gmWeekLabel(); loadGmIntoPicker(false); }
+async function syncInstructorsFromGm(){
+  if(!gmProxyUrl()){ showToast('Set the GymMaster proxy URL first','err'); return; }
+  showToast('Checking GymMaster schedule…','ok');
+  let classes;
+  try{ classes=await gmFetchWeek(todayISO(),6); }
+  catch(e){ showToast("Couldn't reach GymMaster: "+(e.message||''),'err'); return; }
+  const byKey={};
+  classes.forEach(c=>{
+    if(!c.staffname) return;
+    const key=(c.staffid!=null&&c.staffid!=='')?('id:'+c.staffid):('nm:'+normName(c.staffname));
+    if(!byKey[key]) byKey[key]={staffid:c.staffid, name:gmDisplayName(c.staffname), types:new Set()};
+    const t=guessType(c.name,c.location); if(t!=='other') byKey[key].types.add(t);
+  });
+  const staff=Object.values(byKey);
+  if(!staff.length){ showToast('No instructors found in the schedule','err'); return; }
+  const toAdd=[], toLink=[];
+  staff.forEach(st=>{
+    const existing=INSTRUCTORS.find(i=>
+      (st.staffid!=null&&st.staffid!==''&&i.gmStaffId!=null&&String(i.gmStaffId)===String(st.staffid))
+      || normName(i.name)===normName(st.name));
+    if(existing){ if((existing.gmStaffId==null||existing.gmStaffId==='') && st.staffid!=null && st.staffid!=='') toLink.push({id:existing.id,gmStaffId:st.staffid}); }
+    else toAdd.push(st);
+  });
+  if(!toAdd.length && !toLink.length){ showToast('Roster already matches GymMaster','ok'); return; }
+  if(toAdd.length){
+    const msg='Add '+toAdd.length+' instructor'+(toAdd.length>1?'s':'')+' from GymMaster?\n\n'+toAdd.map(s=>'- '+s.name).join('\n')+'\n\nEmail & phone are added manually after.';
+    if(!confirm(msg)) return;
+  }
+  for(const st of toAdd){ await instructorsCol.add({name:st.name,email:'',phone:'',specialties:[...st.types],gmStaffId:st.staffid,createdAt:Date.now()}); }
+  for(const l of toLink){ await instructorsCol.doc(l.id).update({gmStaffId:l.gmStaffId}); }
+  showToast('Synced — '+toAdd.length+' added, '+toLink.length+' linked','ok');
+}
 function gmWeekLabel(){
   const el=document.getElementById('gm-week-label'); if(!el) return;
-  el.textContent='Week of '+fmtDate(GM_WEEK)+' – '+fmtDate(addDaysISO(GM_WEEK,6));
+  el.textContent=fmtDate(GM_WEEK)+' – '+fmtDate(addDaysISO(GM_WEEK,GM_SPAN_DAYS-1));
 }
 async function loadGmIntoPicker(force){
   const list=document.getElementById('gm-list'); if(!list) return;
-  const weekStart=GM_WEEK||todayISO(), weekEnd=addDaysISO(weekStart,7);
+  const weekStart=GM_WEEK||todayISO(), weekEnd=addDaysISO(weekStart,GM_SPAN_DAYS);
   if(!force && GMSCHED && Array.isArray(GMSCHED.classes)){
     const cached=GMSCHED.classes.map(normalizeGmClass).filter(c=>c.name && c.date>=weekStart && c.date<weekEnd).sort(gmSort);
     if(cached.length){ GM_CURRENT=cached; renderGmList(cached,'cached'); return; }
@@ -1046,7 +1094,7 @@ function renderGmList(classes,source){
 }
 function gmPick(i){
   const c=GM_CURRENT[i]; if(!c) return;
-  const sid=matchStaffId(c.staffname);
+  const sid=matchStaffId(c.staffname,c.staffid);
   if(GM_TARGET==='admin'){
     document.getElementById('f-class').value=c.name;
     document.getElementById('f-type').value=guessType(c.name,c.location);
