@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
 <!-- Firebase compat SDKs (classic script tags, no module/CSP issues) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -394,7 +394,8 @@ const firebaseConfig = {
   projectId:         "var-instructor-sub",
   storageBucket:     "var-instructor-sub.firebasestorage.app",
   messagingSenderId: "774566296605",
-  appId:             "1:774566296605:web:b75055c1d8fef8af7f1af4"
+  appId:             "1:774566296605:web:b75055c1d8fef8af7f1af4",
+  measurementId:     "G-NKV8X7DQ9G"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -433,33 +434,41 @@ function onReady() {
 }
 
 /* ── Real-time listeners ────────────────────────────────── */
+function handleFirebaseError(err) {
+  const lbl = document.getElementById('sync-status');
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot error';
+  lbl.textContent = 'Error: ' + (err.code || err.message || JSON.stringify(err));
+  console.error('Firebase error:', err);
+}
+
 subsCol.orderBy('date').orderBy('time').onSnapshot(snap => {
   SUBS = snap.docs.map(d=>({id:d.id,...d.data()}));
   if(readyCount>=4){ render(); populateDropdowns(); }
   onReady();
-}, ()=>setSyncStatus('error'));
+}, err=>handleFirebaseError(err));
 
 instructorsCol.orderBy('name').onSnapshot(snap => {
   INSTRUCTORS = snap.docs.map(d=>({id:d.id,...d.data()}));
   if(readyCount>=4){ render(); populateDropdowns(); }
   onReady();
-}, ()=>setSyncStatus('error'));
+}, err=>handleFirebaseError(err));
 
 pendingCol.orderBy('createdAt').onSnapshot(snap => {
   PENDING = snap.docs.map(d=>({id:d.id,...d.data()}));
   if(readyCount>=4) render();
   onReady();
-}, ()=>setSyncStatus('error'));
+}, err=>handleFirebaseError(err));
 
 historyCol.orderBy('completedAt','desc').onSnapshot(snap => {
   HISTORY = snap.docs.map(d=>({id:d.id,...d.data()}));
   if(readyCount>=4) render();
   onReady();
-}, ()=>setSyncStatus('error'));
+}, err=>handleFirebaseError(err));
 
 cfgRef.onSnapshot(snap => {
   if(snap.exists){ CFG=snap.data(); loadCfgFields(); }
-});
+}, err=>console.warn('cfg error:',err));
 
 /* ── View switching ─────────────────────────────────────── */
 function switchView(v) {
