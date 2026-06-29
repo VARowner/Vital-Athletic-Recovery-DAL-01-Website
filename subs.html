@@ -233,6 +233,7 @@ body.unlocked .lock-overlay{display:none}
       <button class="tab-btn active" id="atab-btn-board" onclick="adminTab('board')">Board</button>
       <button class="tab-btn" id="atab-btn-roster" onclick="adminTab('roster')">Roster</button>
       <button class="tab-btn" id="atab-btn-settings" onclick="adminTab('settings')">Notifications</button>
+      <button class="tab-btn" id="atab-btn-history" onclick="adminTab('history')">History</button>
     </div>
 
     <div class="sub-view active" id="atab-board">
@@ -300,6 +301,14 @@ body.unlocked .lock-overlay{display:none}
         <button onclick="testNotify()" id="test-btn">Send test notification</button>
         <span class="status-text" id="test-status"></span>
       </div>
+    </div>
+
+    <div class="sub-view" id="atab-history">
+      <div class="sec-hdr">
+        <h3>Activity history</h3>
+        <button class="btn-primary" onclick="exportHistoryCsv()"><i class="ti ti-download" aria-hidden="true"></i> Export CSV</button>
+      </div>
+      <div id="history-list"><div class="empty"><i class="ti ti-history" aria-hidden="true"></i><p>No activity yet.</p></div></div>
     </div>
   </div>
 
@@ -483,12 +492,14 @@ const subsCol        = db.collection('subs');
 const instructorsCol = db.collection('instructors');
 const pendingCol     = db.collection('pending');
 const historyCol     = db.collection('history');
+const logCol         = db.collection('activity');
 const cfgRef         = db.collection('config').doc('settings');
 const gmSchedRef     = db.collection('config').doc('gmSchedule');
 
 /* ── State mirrors ──────────────────────────────────────── */
 let SUBS=[], INSTRUCTORS=[], PENDING=[], HISTORY=[], CFG={};
 let GMSCHED=null, GM_TARGET='admin', GM_WEEK=null, GM_CURRENT=[];
+let LOG=[];
 let claimingId=null, editingId=null, approvingId=null, editingInstructorId=null;
 let readyCount=0;
 
@@ -499,6 +510,7 @@ const inits   = n  => (n||'?').split(' ').map(w=>w[0]||'').slice(0,2).join('').t
 const fmtDate = d  => { if(!d) return ''; const [y,m,day]=d.split('-'); return new Date(+y,+m-1,+day).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); };
 const fmtTime = t  => { if(!t) return ''; const [h,m]=t.split(':'); const hr=+h; return `${hr>12?hr-12:hr||12}:${m}${hr>=12?'pm':'am'}`; };
 const dtStr   = (d,t) => [d?fmtDate(d):'TBD',t?fmtTime(t):''].filter(Boolean).join(' · ');
+const fmtDateTime = ts => { if(!ts) return ''; return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); };
 const typeTag = t  => `<span class="tag tag-${t}">${t}</span>`;
 
 /* ── Sync bar ───────────────────────────────────────────── */
@@ -557,6 +569,11 @@ gmSchedRef.onSnapshot(snap => {
   updateGmButtons();
 }, err=>console.warn('gmSchedule error:',err));
 
+logCol.orderBy('ts','desc').onSnapshot(snap => {
+  LOG = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderHistory();
+}, err=>console.warn('activity log error:',err));
+
 /* ── View switching ─────────────────────────────────────── */
 function switchView(v) {
   if(v==='admin' && !isAdminUnlocked()){ openAdminPinModal(); return; }
@@ -567,10 +584,11 @@ function switchView(v) {
   if(v==='instructor'){ populateDropdowns(); renderInstructorBoard(); renderMyStatus(); }
 }
 function adminTab(t) {
-  ['board','roster','settings'].forEach(n=>{
+  ['board','roster','settings','history'].forEach(n=>{
     document.getElementById('atab-btn-'+n).classList.toggle('active',n===t);
     document.getElementById('atab-'+n).classList.toggle('active',n===t);
   });
+  if(t==='history') renderHistory();
 }
 function iTab(t) {
   ['available','request','mystatus'].forEach(n=>{
@@ -583,7 +601,7 @@ function iTab(t) {
 }
 
 /* ── Render ─────────────────────────────────────────────── */
-function render() { renderBoard(); renderRoster(); updateMetrics(); renderInstructorBoard(); renderMyStatus(); }
+function render() { renderBoard(); renderRoster(); updateMetrics(); renderInstructorBoard(); renderMyStatus(); renderHistory(); }
 
 function updateMetrics() {
   document.getElementById('m-open').textContent    = SUBS.filter(s=>s.status==='open').length;
@@ -631,6 +649,7 @@ function renderBoard() {
     </div><div class="card-actions">
       <span class="badge ${isOpen?'badge-open':'badge-claimed'}">${isOpen?'Needs sub':'Confirmed'}</span>
       <div style="display:flex;gap:5px">
+        ${s.status==='claimed'?`<button class="btn-sm" onclick="undoClaim('${s.id}')" title="Reopen and notify all"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> Undo</button>`:''}
         ${s.status==='claimed'?`<button class="btn-success btn-sm" onclick="markDone('${s.id}')">Done</button>`:''}
         <button class="btn-sm" onclick="editSub('${s.id}')"><i class="ti ti-edit" aria-hidden="true"></i></button>
         <button class="btn-danger btn-sm" onclick="deleteSub('${s.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
@@ -783,6 +802,7 @@ async function saveSub() {
     const orig=INSTRUCTORS.find(i=>i.id===data.origId);
     const msg=`Sub needed: ${data.className} (${data.type}) on ${fmtDate(data.date)} at ${fmtTime(data.time)}. ${orig?'Original: '+orig.name+'.':''} ${data.notes?'Notes: '+data.notes:''} Open vitalathleticrecovery.com/subs to claim it.`;
     await notifyAll(`Sub available: ${data.className} on ${fmtDate(data.date)}`,msg);
+    await logEvent('posted', data, null);
     showToast('Posted — instructors notified','ok');
   }
 }
@@ -807,10 +827,13 @@ async function approveRequest() {
   const orig=INSTRUCTORS.find(i=>i.id===r.origId);
   const msg=`Sub needed: ${r.className} (${r.type}) on ${fmtDate(r.date)} at ${fmtTime(r.time)}. ${orig?orig.name+' needs a sub.':''} ${r.notes?'Notes: '+r.notes:''} Open vitalathleticrecovery.com/subs to claim it.`;
   await notifyAll(`Sub available: ${r.className} on ${fmtDate(r.date)}`,msg);
+  await logEvent('posted', r, null);
   showToast('Approved and posted','ok');
 }
 async function rejectById(id) {
   if(!confirm('Decline this sub request?')) return;
+  const r=PENDING.find(x=>x.id===id);
+  if(r) await logEvent('declined', r, r.origId);
   await pendingCol.doc(id).delete();
   showToast('Request declined','err');
 }
@@ -826,6 +849,7 @@ async function submitSubRequest() {
   btn.disabled=true; st.innerHTML='<span class="spinner"></span>Submitting…';
   const data={origId:who,className,type:document.getElementById('req-type').value,date:document.getElementById('req-date').value,time:document.getElementById('req-time').value,notes:document.getElementById('req-notes').value.trim(),status:'pending',createdAt:Date.now()};
   await pendingCol.add(data);
+  await logEvent('requested', data, data.origId);
   const orig=INSTRUCTORS.find(i=>i.id===who);
   const msg=`${orig?orig.name:'An instructor'} needs a sub for ${data.className} (${data.type}) on ${fmtDate(data.date)} at ${fmtTime(data.time)}. ${data.notes?'Notes: '+data.notes:''} Review at vitalathleticrecovery.com/subs (Admin view).`;
   await notifyAdmin(`Sub request from ${orig?orig.name:'instructor'}: ${data.className}`,msg);
@@ -856,6 +880,7 @@ async function confirmClaim(instructorId) {
   const s=SUBS.find(x=>x.id===claimingId); if(!s) return;
   const instructor=INSTRUCTORS.find(i=>i.id===instructorId);
   await subsCol.doc(claimingId).update({status:'claimed',claimedBy:instructorId,claimedAt:Date.now()});
+  await logEvent('claimed', s, instructorId);
   closeModal('modal-claim');
   showToast(`${instructor?instructor.name:'Instructor'} claimed ${s.className}!`,'ok');
   const orig=INSTRUCTORS.find(i=>i.id===s.origId);
@@ -867,12 +892,58 @@ async function confirmClaim(instructorId) {
 async function markDone(id) {
   const s=SUBS.find(x=>x.id===id); if(!s) return;
   await historyCol.add({...s,completedAt:Date.now()});
+  await logEvent('completed', s, s.claimedBy);
   await subsCol.doc(id).delete();
   showToast('Marked complete','ok');
 }
 async function deleteSub(id) {
   if(!confirm('Remove this sub request?')) return;
   await subsCol.doc(id).delete();
+}
+async function undoClaim(id){
+  const s=SUBS.find(x=>x.id===id); if(!s) return;
+  if(!confirm('Undo this claim? The class reopens and all instructors are notified.')) return;
+  const prev=INSTRUCTORS.find(i=>i.id===s.claimedBy);
+  await logEvent('unclaimed', s, s.claimedBy);
+  await subsCol.doc(id).update({status:'open',claimedBy:null,updatedAt:Date.now()});
+  showToast('Sub reopened — notifying instructors','ok');
+  const orig=INSTRUCTORS.find(i=>i.id===s.origId);
+  const msg=`The sub for ${s.className} (${s.type}) on ${fmtDate(s.date)} at ${fmtTime(s.time)} is OPEN again${prev?` (was taken by ${prev.name})`:''}. ${orig?orig.name+' still needs a sub.':''} Open vitalathleticrecovery.com/subs to claim it.`;
+  await notifyAll(`Sub reopened: ${s.className} on ${fmtDate(s.date)}`,msg);
+}
+
+/* ── Activity log + CSV export ──────────────────── */
+async function logEvent(event, o, actorId){
+  try{
+    const orig  = INSTRUCTORS.find(i=>i.id===o.origId);
+    const actor = actorId ? INSTRUCTORS.find(i=>i.id===actorId) : null;
+    await logCol.add({ ts:Date.now(), event, className:o.className||'', classType:o.type||'', date:o.date||'', time:o.time||'', origId:o.origId||'', origName:orig?orig.name:'', actorId:actorId||'', actorName:actor?actor.name:'', notes:o.notes||'' });
+  }catch(e){ console.warn('logEvent',e); }
+}
+function eventLabel(e){ return ({requested:'Requested',posted:'Posted',claimed:'Claimed',unclaimed:'Reopened',completed:'Completed',declined:'Declined'})[e]||e; }
+function eventBadge(e){ return ({requested:'badge-pending',posted:'badge-open',claimed:'badge-claimed',unclaimed:'badge-open',completed:'badge-done',declined:'badge-done'})[e]||'badge-done'; }
+function renderHistory(){
+  const el=document.getElementById('history-list'); if(!el) return;
+  if(!LOG.length){ el.innerHTML='<div class="empty"><i class="ti ti-history" aria-hidden="true"></i><p>No activity yet. Requests, claims, reopens, and completions will show here.</p></div>'; return; }
+  el.innerHTML=LOG.slice(0,200).map(e=>`<div class="card" style="padding:.7rem 1rem;margin-bottom:.5rem">
+    <div class="card-meta" style="margin-bottom:3px"><span class="badge ${eventBadge(e.event)}">${eventLabel(e.event)}</span> <span style="color:var(--text-dim)">${esc(fmtDateTime(e.ts))}</span></div>
+    <div class="class-title" style="font-size:14px">${esc(e.className||'(class)')} ${e.classType?typeTag(e.classType):''}</div>
+    <div class="card-meta">${dtStr(e.date,e.time)}${e.origName?` · <span style="color:var(--text-dim)">orig:</span> ${esc(e.origName)}`:''}${e.actorName?` · <span style="color:var(--text-dim)">by:</span> ${esc(e.actorName)}`:''}</div>
+  </div>`).join('');
+}
+function csvCell(v){ v=String(v==null?'':v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function buildHistoryCsv(){
+  const cols=['When','Event','Class','Type','Class date','Class time','Original instructor','Action by','Notes'];
+  const rows=LOG.map(e=>[fmtDateTime(e.ts),eventLabel(e.event),e.className,e.classType,e.date,e.time,e.origName,e.actorName,(e.notes||'').replace(/[\r\n]+/g,' ')]);
+  return [cols,...rows].map(r=>r.map(csvCell).join(',')).join('\r\n');
+}
+function exportHistoryCsv(){
+  if(!LOG.length){ showToast('No history to export yet','err'); return; }
+  const blob=new Blob(['\ufeff'+buildHistoryCsv()],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='sub-board-history-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('History exported','ok');
 }
 
 /* ── Instructor CRUD ────────────────────────────────────── */
