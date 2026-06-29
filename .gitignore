@@ -1,6 +1,30 @@
-# wrangler files
-.wrangler
-.dev.vars*
-!.dev.vars.example
-.env*
-!.env.example
+# ===== OS / editor cruft =====
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ===== Office lock files =====
+~$*
+*.tmp
+
+# ===== Source / internal files (not part of the live site) =====
+internal/
+Updated VAR LOGO/
+VAR_Staff_Guide_Modality_Benefits.pdf
+
+# ===== Build / cache =====
+node_modules/
+.cache/
+dist/
+build/
+
+# ===== Logs =====
+*.log
+npm-debug.log*
+yarn-debug.log*

@@ -1,0 +1,16 @@
+{
+  "name": "Vital Athletic Recovery — Sub Board",
+  "short_name": "VAR Subs",
+  "description": "Claim and request class subs at Vital Athletic Recovery.",
+  "start_url": "/subs.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f0f",
+  "theme_color": "#8a6536",
+  "icons": [
+    { "src": "/assets/var-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/var-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/var-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

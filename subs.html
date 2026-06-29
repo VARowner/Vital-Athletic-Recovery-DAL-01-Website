@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#8a6536">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="VAR Subs">
+<link rel="apple-touch-icon" href="/assets/var-icon-180.png">
 <meta name="robots" content="noindex, nofollow">
 <title>Sub Board — Vital Athletic Recovery</title>
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
@@ -219,6 +225,7 @@ body.unlocked .lock-overlay{display:none}
     <div class="sync-dot" id="sync-dot"></div>
     <span id="sync-status">Connecting to sub board…</span>
     <button id="lock-btn" onclick="lockPage()" style="margin-left:auto" title="Lock the board"><i class="ti ti-lock" aria-hidden="true"></i> Lock</button>
+    <button id="install-btn" onclick="installPwa()" style="display:none" title="Install as an app"><i class="ti ti-download" aria-hidden="true"></i> Install app</button>
   </div>
 
   <div class="view-toggle" role="group">
@@ -1282,6 +1289,13 @@ function showToast(msg,type='ok') {
   t.textContent=msg; t.className='toast show '+(type==='err'?'err':'ok');
   setTimeout(()=>t.classList.remove('show'),3500);
 }
+
+/* ── PWA: install prompt + service worker ───────── */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; const b=document.getElementById('install-btn'); if(b) b.style.display=''; });
+function installPwa(){ if(!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>{ deferredPrompt=null; const b=document.getElementById('install-btn'); if(b) b.style.display='none'; }); }
+window.addEventListener('appinstalled',()=>{ const b=document.getElementById('install-btn'); if(b) b.style.display='none'; });
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/sw.js').catch(e=>console.warn('SW register failed',e)); }); }
 </script>
 </body>
 </html>
