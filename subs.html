@@ -970,8 +970,14 @@ async function testNotify() {
 /* ── GymMaster schedule sync ────────────────────── */
 const GM_SPAN_WEEKS=4, GM_SPAN_DAYS=28;  // picker shows ~one month at a time
 function gmProxyUrl(){ return (CFG.gmProxy||'').trim().replace(/\/+$/,''); }
+function gmCachedClasses(){
+  if(!GMSCHED) return [];
+  if(typeof GMSCHED.classesJson==='string'){ try{ return JSON.parse(GMSCHED.classesJson)||[]; }catch(e){ return []; } }
+  if(Array.isArray(GMSCHED.classes)) return GMSCHED.classes;
+  return [];
+}
 function updateGmButtons(){
-  const show = !!(gmProxyUrl() || (GMSCHED && Array.isArray(GMSCHED.classes) && GMSCHED.classes.length));
+  const show = !!(gmProxyUrl() || gmCachedClasses().length);
   document.querySelectorAll('.gm-trigger').forEach(b=>{ b.style.display = show ? '' : 'none'; });
 }
 function guessType(name,location){
@@ -1072,8 +1078,9 @@ function gmWeekLabel(){
 async function loadGmIntoPicker(force){
   const list=document.getElementById('gm-list'); if(!list) return;
   const weekStart=GM_WEEK||todayISO(), weekEnd=addDaysISO(weekStart,GM_SPAN_DAYS);
-  if(!force && GMSCHED && Array.isArray(GMSCHED.classes)){
-    const cached=GMSCHED.classes.map(normalizeGmClass).filter(c=>c.name && c.date>=weekStart && c.date<weekEnd).sort(gmSort);
+  if(!force){
+    const all=gmCachedClasses();
+    const cached=all.map(normalizeGmClass).filter(c=>c.name && c.date>=weekStart && c.date<weekEnd).sort(gmSort);
     if(cached.length){ GM_CURRENT=cached; renderGmList(cached,'cached'); return; }
   }
   if(!gmProxyUrl()){ list.innerHTML='<div class="empty"><i class="ti ti-plug-connected-x" aria-hidden="true"></i><p>No GymMaster proxy set. Add it in Admin → Notifications, or enable the scheduled mirror.</p></div>'; return; }
