@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>TV Slideshow — Shay Gastellum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0b08;
+    --ink-inverse: #f4eeda;
+    --accent: #8a6536;
+    --accent-soft: #b88a55;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #444; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; font-family: var(--sans); }
+  .slide {
+    width: 1920px; height: 1080px;
+    background: var(--ink);
+    color: var(--ink-inverse);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  /* LEFT: photo */
+  .photo-side {
+    position: relative;
+    height: 100%;
+    background: #1a1714;
+    overflow: hidden;
+  }
+  .photo-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    display: block;
+  }
+  /* RIGHT: content */
+  .content-side {
+    padding: 100px 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.30em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 80px;
+    height: 2px;
+    background: var(--accent-soft);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 132px;
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    color: var(--ink-inverse);
+    margin-bottom: 42px;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--accent-soft);
+    font-weight: 500;
+  }
+  .title {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    margin-bottom: 44px;
+  }
+  .bio {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1.5;
+    color: rgba(244, 238, 218, 0.92);
+    max-width: 720px;
+    font-style: italic;
+  }
+  /* Bottom URL bar */
+  .url-bar {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    bottom: 80px;
+    padding-top: 32px;
+    border-top: 2px solid var(--accent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-inverse);
+  }
+  .url-bar .right { color: var(--accent-soft); }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="photo-side">
+    <img src="../../assets/instructors/shay-gastellum.jpg" alt="Shay Gastellum" />
+  </div>
+  <div class="content-side">
+    <div class="eyebrow">Meet your instructor</div>
+    <h1>Shay<br><em>Gastellum.</em></h1>
+    <div class="title">Reformer &middot; Strength &amp; Performance</div>
+    <p class="bio">Contemporary Pilates programmed for the body in front of her. Deep experience with athletes and women through every life stage.</p>
+    <div class="url-bar">
+      <span>vitalathleticrecovery.com</span>
+      <span class="right">Book &rarr;</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

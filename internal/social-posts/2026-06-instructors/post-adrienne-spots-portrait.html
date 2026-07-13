@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>VAR Social — Adrienne spots open (Portrait 1080×1350) — webpage-style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2ebd8;
+    --ink: #14110c;
+    --ink-dim: #5d564a;
+    --ink-mute: #8a8275;
+    --ink-inverse: #f4eeda;
+    --accent: #8a6536;
+    --accent-soft: #b88a55;
+    --line: rgba(20,17,12,0.14);
+    --line-strong: rgba(20,17,12,0.28);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #888; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; font-family: var(--sans); }
+  .post {
+    width: 1080px; height: 1350px;
+    background: var(--bg);
+    color: var(--ink);
+    position: relative;
+    display: flex; flex-direction: column;
+    padding: 56px 72px;
+  }
+  /* Urgency pill above card — pulsing bronze */
+  .spots-pill {
+    align-self: center;
+    background: var(--accent);
+    color: var(--ink-inverse);
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    display: inline-flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+  }
+  .spots-pill::before {
+    content: '';
+    width: 12px; height: 12px;
+    background: var(--ink-inverse);
+    border-radius: 50%;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  /* Card mirrors webpage but with bronze accent border to signal urgency */
+  .ix-card {
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    padding: 56px 56px 52px;
+    flex: 1;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .ix-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 36px;
+  }
+  .ix-name {
+    font-family: var(--serif);
+    font-size: 64px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.0;
+    margin-bottom: 14px;
+  }
+  .ix-title {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  /* Replace bio paragraph with an action callout */
+  .ix-action {
+    font-family: var(--serif);
+    font-size: 38px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 16px;
+    flex-grow: 1;
+  }
+  .ix-action em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .ix-sub {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink-dim);
+    line-height: 1.45;
+    margin-bottom: 28px;
+  }
+  .ix-creds {
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    font-family: var(--mono);
+    font-size: 16px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .ix-creds span + span::before {
+    content: ' · ';
+    color: var(--line-strong);
+    margin: 0 4px;
+  }
+  .url-strip {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 16px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .url-strip .right { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="spots-pill">Few spots left &middot; This week</div>
+  <article class="ix-card">
+    <img class="ix-photo" src="../../../assets/instructors/adrienne-barrett.jpg" alt="Adrienne Barrett" />
+    <div class="ix-name">Adrienne Barrett</div>
+    <div class="ix-title">Reformer &middot; Strength &amp; Recovery</div>
+    <p class="ix-action">Spots open with <em>Adrienne</em> this week.</p>
+    <p class="ix-sub">Reformer programming that's intentional, full-body, and built to last. Book before they fill.</p>
+    <div class="ix-creds">
+      <span>The Lab Certified</span><span>Mat &middot; Reformer &middot; Chair</span>
+    </div>
+  </article>
+  <div class="url-strip">
+    <span>vitalathleticrecovery.com</span>
+    <span class="right">Reserve now &rarr;</span>
+  </div>
+</div>
+</body>
+</html>

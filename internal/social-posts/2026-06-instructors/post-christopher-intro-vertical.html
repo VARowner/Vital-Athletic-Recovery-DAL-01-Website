@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>VAR Social — Christopher intro (Vertical 1080×1920 / TikTok) — webpage-style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2ebd8;
+    --ink: #14110c;
+    --ink-dim: #5d564a;
+    --ink-mute: #8a8275;
+    --accent: #8a6536;
+    --accent-soft: #b88a55;
+    --line: rgba(20,17,12,0.14);
+    --line-strong: rgba(20,17,12,0.28);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #888; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; font-family: var(--sans); }
+  .post {
+    width: 1080px; height: 1920px;
+    background: var(--bg);
+    color: var(--ink);
+    display: flex; flex-direction: column;
+    padding: 88px 72px;
+  }
+  .page-eyebrow {
+    font-family: var(--mono);
+    font-size: 26px; font-weight: 600;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 52px;
+    display: flex; align-items: center; justify-content: center; gap: 28px;
+  }
+  .page-eyebrow::before, .page-eyebrow::after {
+    content: ''; flex: 0 0 100px; height: 2px; background: var(--accent);
+  }
+  .ix-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 64px 64px 60px;
+    flex: 1;
+    display: flex; flex-direction: column;
+  }
+  .ix-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 48px;
+  }
+  .ix-name {
+    font-family: var(--serif);
+    font-size: 80px; font-weight: 500;
+    letter-spacing: -0.015em; line-height: 1.0;
+    margin-bottom: 18px;
+  }
+  .ix-title {
+    font-family: var(--mono);
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .ix-bio {
+    color: var(--ink-dim);
+    font-family: var(--serif);
+    font-size: 32px; line-height: 1.5;
+    margin-bottom: 36px;
+    flex-grow: 1;
+  }
+  .ix-creds {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    font-family: var(--mono);
+    font-size: 18px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .ix-creds span + span::before { content: ' · '; color: var(--line-strong); margin: 0 4px; }
+  .url-strip {
+    margin-top: 36px; padding-top: 28px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 20px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); font-weight: 600;
+  }
+  .url-strip .right { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="page-eyebrow">Meet your instructor</div>
+  <article class="ix-card">
+    <img class="ix-photo" src="../../../assets/instructors/christopher-jackson.jpg" alt="Christopher Jackson" />
+    <div class="ix-name">Christopher Jackson</div>
+    <div class="ix-title">Yoga &middot; Breath &amp; Presence</div>
+    <p class="ix-bio">For Christopher, movement is a way to slow down, breathe deeply, and reconnect. His classes are grounded and intentional &mdash; building strength, restoring mobility, and creating space to quiet the noise of everyday life. Designed to meet you wherever you are, whether you're brand new to the mat or years into your practice.</p>
+    <div class="ix-creds">
+      <span>Certified Yoga Instructor</span><span>Breath &middot; Mindful Movement</span>
+    </div>
+  </article>
+  <div class="url-strip">
+    <span>vitalathleticrecovery.com</span>
+    <span class="right">Book her class &rarr;</span>
+  </div>
+</div>
+</body>
+</html>
