@@ -12,6 +12,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
 <!-- ===== END GOOGLE TAG MANAGER ===== -->
 
+<!-- ===== META PIXEL =====
+     Facebook Ads conversion tracking (pixel ID 1119343175171253).
+     Fires PageView on load. Additional Standard Events can be added
+     via Meta Events Manager or by extending the tracking JS on the page.
+================================================== -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1119343175171253');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+     src="https://www.facebook.com/tr?id=1119343175171253&ev=PageView&noscript=1"/></noscript>
+<!-- ===== END META PIXEL ===== -->
+
 <title>Blog — Vital Athletic Recovery · East Dallas</title>
 <meta name="description" content="Notes from the studio. Recovery science, member stories, and what we're learning at Vital Athletic Recovery in East Dallas." />
 <meta name="robots" content="index, follow" />
@@ -515,6 +536,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   window.dataLayer = window.dataLayer || [];
   function trackEvent(eventName, params) {
     window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+    // Meta Pixel — mirror the high-intent portal_click as a Lead conversion
+    if (eventName === 'portal_click' && typeof fbq === 'function') {
+      fbq('track', 'Lead', params || {});
+    }
   }
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
