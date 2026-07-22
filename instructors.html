@@ -33,6 +33,9 @@ fbq('track', 'PageView');
      src="https://www.facebook.com/tr?id=1119343175171253&ev=PageView&noscript=1"/></noscript>
 <!-- ===== END META PIXEL ===== -->
 
+<!-- Facebook domain verification (Meta Business) -->
+<meta name="facebook-domain-verification" content="5jzzvwg6kc0d48ahudl6fr8oq4cdzf" />
+
 <title>Instructors — Vital Athletic Recovery · East Dallas</title>
 <meta name="description" content="Meet the Pilates and Yoga instructors at Vital Athletic Recovery in East Dallas — certified, experienced, and obsessed with helping you move better." />
 <meta name="robots" content="index, follow" />
@@ -831,9 +834,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   window.dataLayer = window.dataLayer || [];
   function trackEvent(eventName, params) {
     window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
-    // Meta Pixel — mirror the high-intent portal_click as a Lead conversion
+    // Meta Pixel — mirror the high-intent portal_click as both Lead
+    // and InitiateCheckout so Meta has a purchase-adjacent standard event
+    // to optimize toward. (We can't fire Purchase honestly since the actual
+    // transaction happens on GymMaster.)
     if (eventName === 'portal_click' && typeof fbq === 'function') {
       fbq('track', 'Lead', params || {});
+      fbq('track', 'InitiateCheckout', params || {});
     }
   }
 
