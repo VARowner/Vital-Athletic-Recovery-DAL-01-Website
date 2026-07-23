@@ -33,6 +33,30 @@ fbq('track', 'PageView');
      src="https://www.facebook.com/tr?id=1119343175171253&ev=PageView&noscript=1"/></noscript>
 <!-- ===== END META PIXEL ===== -->
 
+<!-- ===== META PIXEL #2 (DORMANT) =====
+     Second pixel (Vital Athletic Recovery - Pixel 2, ID 2029641160995228).
+     Kept off by default. To activate site-wide, set VAR_PIXEL2_ENABLED = true
+     below (or set window.VAR_PIXEL2_ENABLED = true from GTM / dev console).
+================================================== -->
+<script>
+  window.VAR_PIXEL2_ENABLED = false; // <-- flip to true to activate
+  if (window.VAR_PIXEL2_ENABLED) {
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq2)return;n=f.fbq2=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq2)f._fbq2=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2029641160995228');
+    fbq('track', 'PageView');
+  }
+</script>
+<noscript><img height="1" width="1" style="display:none"
+     src="https://www.facebook.com/tr?id=2029641160995228&ev=PageView&noscript=1"/></noscript>
+<!-- ===== END META PIXEL #2 ===== -->
+
 <!-- Facebook domain verification (Meta Business) -->
 <meta name="facebook-domain-verification" content="5jzzvwg6kc0d48ahudl6fr8oq4cdzf" />
 
