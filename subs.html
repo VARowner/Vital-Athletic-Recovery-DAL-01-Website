@@ -264,6 +264,7 @@ body.unlocked .lock-overlay{display:none}
         <h3>Instructors</h3>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn-sm gm-trigger" style="display:none" onclick="syncInstructorsFromGm()" title="Add instructors found in the GymMaster schedule"><i class="ti ti-refresh" aria-hidden="true"></i> Sync from GymMaster</button>
+          <button class="btn-sm gm-trigger" style="display:none" onclick="rederiveAllSpecialties()" title="Recalculate every instructor's yoga/reformer tags from the classes they teach"><i class="ti ti-tag" aria-hidden="true"></i> Re-derive specialties</button>
           <button class="btn-primary" onclick="openAddInstructor()"><i class="ti ti-plus" aria-hidden="true"></i> Add instructor</button>
         </div>
       </div>
@@ -507,6 +508,12 @@ const gmSchedRef     = db.collection('config').doc('gmSchedule');
 
 /* ── State mirrors ──────────────────────────────────────── */
 let SUBS=[], INSTRUCTORS=[], PENDING=[], HISTORY=[], CFG={};
+let currentInstructorId = (function(){ try { return localStorage.getItem('subs_me') || ''; } catch(e){ return ''; } })();
+function setCurrentInstructor(id){
+  currentInstructorId = id || '';
+  try { if(currentInstructorId) localStorage.setItem('subs_me', currentInstructorId); else localStorage.removeItem('subs_me'); } catch(e){}
+  renderInstructorBoard();
+}
 let GMSCHED=null, GM_TARGET='admin', GM_WEEK=null, GM_CURRENT=[];
 let LOG=[];
 let claimingId=null, editingId=null, approvingId=null, editingInstructorId=null;
@@ -649,15 +656,27 @@ function renderBoard() {
     const orig=INSTRUCTORS.find(i=>i.id===s.origId);
     const sub =INSTRUCTORS.find(i=>i.id===s.claimedBy);
     const isOpen=s.status==='open';
+    // Response tally for open subs — how many instructors have responded vs still pending
+    const pendCount = (s.pendingResponses || []).length;
+    const decCount  = (s.declined || []).length;
+    const totalAsked = pendCount + decCount;
+    const noTakers = isOpen && s.noTakers === true;
+    const respLine = isOpen && totalAsked > 0
+      ? `<div style="font-size:12px;margin-top:4px;color:${noTakers?'#c0392b':'var(--text-dim)'}">
+           ${noTakers?'<i class="ti ti-alert-triangle" aria-hidden="true"></i> <strong>No takers</strong> — everyone declined.':''}
+           ${decCount?`<span>${decCount} declined</span>`:''}${decCount&&pendCount?' · ':''}${pendCount?`<span>${pendCount} still to respond</span>`:''}
+         </div>`
+      : '';
     return `<div class="card ${isOpen?'card-open':'card-claimed'}"><div class="card-row"><div class="card-main">
-      <div class="class-title">${esc(s.className)} ${typeTag(s.type)}${s.postedByInstructor?' <span class="badge badge-instructor">Instructor posted</span>':''}</div>
+      <div class="class-title">${esc(s.className)} ${typeTag(s.type)}${s.postedByInstructor?' <span class="badge badge-instructor">Instructor posted</span>':''}${noTakers?' <span class="badge badge-danger" style="background:var(--danger-tint);color:#c0392b">No takers</span>':''}</div>
       <div class="card-meta"><i class="ti ti-calendar" aria-hidden="true"></i>${dtStr(s.date,s.time)}
         ${orig?`<span>· <span style="color:var(--text-dim)">Original:</span> ${esc(orig.name)}</span>`:''}
         ${sub ?`<span>· <span style="color:#2e7d32">Sub:</span> ${esc(sub.name)}</span>`:''}
-      </div>${s.notes?`<div class="card-note">${esc(s.notes)}</div>`:''}
+      </div>${respLine}${s.notes?`<div class="card-note">${esc(s.notes)}</div>`:''}
     </div><div class="card-actions">
       <span class="badge ${isOpen?'badge-open':'badge-claimed'}">${isOpen?'Needs sub':'Confirmed'}</span>
-      <div style="display:flex;gap:5px">
+      <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+        ${isOpen && (decCount>0 || noTakers) ? `<button class="btn-sm" onclick="adminResetResponses('${s.id}')" title="Clear declines and re-open to everyone"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>` : ''}
         ${s.status==='claimed'?`<button class="btn-sm" onclick="undoClaim('${s.id}')" title="Reopen and notify all"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> Undo</button>`:''}
         ${s.status==='claimed'?`<button class="btn-success btn-sm" onclick="markDone('${s.id}')">Done</button>`:''}
         <button class="btn-sm" onclick="editSub('${s.id}')"><i class="ti ti-edit" aria-hidden="true"></i></button>
@@ -689,19 +708,69 @@ function renderRoster() {
 function renderInstructorBoard() {
   const el=document.getElementById('instructor-board');
   const open=SUBS.filter(s=>s.status==='open');
-  if(!open.length){ el.innerHTML=`<div class="empty"><i class="ti ti-circle-check" aria-hidden="true"></i><p>All classes are covered. Check back later or post a sub need.</p></div>`; return; }
-  el.innerHTML=open.map(s=>{
-    const orig=INSTRUCTORS.find(i=>i.id===s.origId);
-    return `<div class="card card-open" style="cursor:pointer" onclick="openClaim('${s.id}')">
+
+  // "I am..." picker — persists to localStorage so instructors set it once per device
+  const opts = INSTRUCTORS.map(i => `<option value="${i.id}"${i.id===currentInstructorId?' selected':''}>${esc(i.name)}</option>`).join('');
+  const picker = `<div class="sync-bar" style="margin-bottom:1rem">
+    <i class="ti ti-user" aria-hidden="true"></i>
+    <span>I am:</span>
+    <select onchange="setCurrentInstructor(this.value)" style="flex:1;max-width:280px;padding:6px 8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px">
+      <option value="">— pick your name —</option>${opts}
+    </select>
+    ${currentInstructorId?`<button class="btn-sm" onclick="setCurrentInstructor('')" title="Sign out on this device"><i class="ti ti-logout" aria-hidden="true"></i></button>`:''}
+  </div>`;
+
+  if(!open.length){
+    el.innerHTML = picker + `<div class="empty"><i class="ti ti-circle-check" aria-hidden="true"></i><p>All classes are covered. Check back later or post a sub need.</p></div>`;
+    return;
+  }
+
+  // Segment subs into three groups based on this instructor's response state
+  const forMe = { pending: [], declined: [], others: [] };
+  open.forEach(s => {
+    const pend = s.pendingResponses || [];
+    const dec = s.declined || [];
+    if(!currentInstructorId){ forMe.others.push(s); return; }
+    if(dec.includes(currentInstructorId)) forMe.declined.push(s);
+    else if(pend.includes(currentInstructorId)) forMe.pending.push(s);
+    else forMe.others.push(s);
+  });
+
+  const subCard = (s, mode) => {
+    const orig = INSTRUCTORS.find(i => i.id === s.origId);
+    const meta = `<div class="card-meta"><i class="ti ti-calendar" aria-hidden="true"></i>${dtStr(s.date,s.time)}${orig?`<span>· ${esc(orig.name)}</span>`:''}</div>`;
+    const notes = s.notes ? `<div class="card-note">${esc(s.notes)}</div>` : '';
+    let actions = '';
+    if(mode === 'pending'){
+      actions = `<button class="btn-success btn-sm" onclick="openClaim('${s.id}');event.stopPropagation()">Claim it</button>
+                 <button class="btn-danger btn-sm" onclick="declineSub('${s.id}');event.stopPropagation()"><i class="ti ti-x" aria-hidden="true"></i> Decline</button>`;
+    } else if(mode === 'declined'){
+      actions = `<button class="btn-sm" onclick="undeclineSub('${s.id}');event.stopPropagation()"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> Actually claim</button>`;
+    } else {
+      actions = `<button class="btn-success btn-sm" onclick="openClaim('${s.id}');event.stopPropagation()">Claim it</button>`;
+    }
+    return `<div class="card ${mode==='declined'?'card-done':'card-open'}" style="cursor:pointer" onclick="${mode==='pending'?`openClaim('${s.id}')`:''}">
       <div class="card-row"><div class="card-main">
-        <div class="class-title">${esc(s.className)} ${typeTag(s.type)}</div>
-        <div class="card-meta"><i class="ti ti-calendar" aria-hidden="true"></i>${dtStr(s.date,s.time)}${orig?`<span>· ${esc(orig.name)}</span>`:''}</div>
-        ${s.notes?`<div class="card-note">${esc(s.notes)}</div>`:''}
-      </div><div class="card-actions">
-        <button class="btn-success btn-sm" onclick="openClaim('${s.id}');event.stopPropagation()">Claim it</button>
-      </div></div>
+        <div class="class-title">${esc(s.className)} ${typeTag(s.type)}${mode==='declined'?' <span class="badge badge-done">You declined</span>':''}</div>
+        ${meta}${notes}
+      </div><div class="card-actions" style="display:flex;gap:5px;flex-shrink:0">${actions}</div></div>
     </div>`;
-  }).join('');
+  };
+
+  let html = picker;
+  if(currentInstructorId && forMe.pending.length){
+    html += `<div class="section-label">Awaiting your response (${forMe.pending.length})</div>`;
+    html += forMe.pending.map(s => subCard(s, 'pending')).join('');
+  }
+  if(forMe.others.length){
+    html += `<div class="section-label" style="margin-top:${currentInstructorId && forMe.pending.length?'1rem':'0'}">${currentInstructorId?'Also open (not your specialty)':'Open subs'} (${forMe.others.length})</div>`;
+    html += forMe.others.map(s => subCard(s, 'other')).join('');
+  }
+  if(currentInstructorId && forMe.declined.length){
+    html += `<div class="section-label" style="margin-top:1rem">Declined by you (${forMe.declined.length})</div>`;
+    html += forMe.declined.map(s => subCard(s, 'declined')).join('');
+  }
+  el.innerHTML = html;
 }
 
 function renderMyStatus() {
@@ -797,7 +866,9 @@ async function saveSub() {
   const className=document.getElementById('f-class').value.trim();
   if(!className){ showToast('Class name is required','err'); return; }
   const isNew=!editingId;
-  const data={ className, type:document.getElementById('f-type').value, date:document.getElementById('f-date').value, time:document.getElementById('f-time').value, origId:document.getElementById('f-orig').value, notes:document.getElementById('f-notes').value.trim(), status:'open', claimedBy:null, updatedAt:Date.now() };
+  const subType=document.getElementById('f-type').value;
+  const subOrig=document.getElementById('f-orig').value;
+  const data={ className, type:subType, date:document.getElementById('f-date').value, time:document.getElementById('f-time').value, origId:subOrig, notes:document.getElementById('f-notes').value.trim(), status:'open', claimedBy:null, pendingResponses: eligibleInstructorIds(subType, subOrig), declined: [], updatedAt:Date.now() };
   if(editingId){
     const ex=SUBS.find(s=>s.id===editingId);
     data.status=ex.status; data.claimedBy=ex.claimedBy;
@@ -809,10 +880,10 @@ async function saveSub() {
   closeModal('modal-sub');
   if(isNew){
     const orig=INSTRUCTORS.find(i=>i.id===data.origId);
-    const msg=`Sub needed: ${data.className} (${data.type}) on ${fmtDate(data.date)} at ${fmtTime(data.time)}. ${orig?'Original: '+orig.name+'.':''} ${data.notes?'Notes: '+data.notes:''} Open vitalathleticrecovery.com/subs to claim it.`;
-    await notifyAll(`Sub available: ${data.className} on ${fmtDate(data.date)}`,msg);
+    const msg=`Sub needed: ${data.className} (${data.type}) on ${fmtDate(data.date)} at ${fmtTime(data.time)}. ${orig?'Original: '+orig.name+'.':''} ${data.notes?'Notes: '+data.notes:''} Open vitalathleticrecovery.com/subs to claim or decline.`;
+    await notifyAll(`Sub available: ${data.className} on ${fmtDate(data.date)}`,msg,data.pendingResponses);
     await logEvent('posted', data, null);
-    showToast('Posted — instructors notified','ok');
+    showToast('Posted — matching instructors notified','ok');
   }
 }
 
@@ -831,11 +902,12 @@ function openApprove(id) {
 async function approveRequest() {
   const r=PENDING.find(x=>x.id===approvingId); if(!r) return;
   await pendingCol.doc(approvingId).delete();
-  await subsCol.add({className:r.className,type:r.type,date:r.date,time:r.time,origId:r.origId,notes:r.notes,status:'open',claimedBy:null,postedByInstructor:true,createdAt:Date.now()});
+  const pending = eligibleInstructorIds(r.type, r.origId);
+  await subsCol.add({className:r.className,type:r.type,date:r.date,time:r.time,origId:r.origId,notes:r.notes,status:'open',claimedBy:null,postedByInstructor:true,pendingResponses:pending,declined:[],createdAt:Date.now()});
   closeModal('modal-approve');
   const orig=INSTRUCTORS.find(i=>i.id===r.origId);
-  const msg=`Sub needed: ${r.className} (${r.type}) on ${fmtDate(r.date)} at ${fmtTime(r.time)}. ${orig?orig.name+' needs a sub.':''} ${r.notes?'Notes: '+r.notes:''} Open vitalathleticrecovery.com/subs to claim it.`;
-  await notifyAll(`Sub available: ${r.className} on ${fmtDate(r.date)}`,msg);
+  const msg=`Sub needed: ${r.className} (${r.type}) on ${fmtDate(r.date)} at ${fmtTime(r.time)}. ${orig?orig.name+' needs a sub.':''} ${r.notes?'Notes: '+r.notes:''} Open vitalathleticrecovery.com/subs to claim or decline.`;
+  await notifyAll(`Sub available: ${r.className} on ${fmtDate(r.date)}`,msg,pending);
   await logEvent('posted', r, null);
   showToast('Approved and posted','ok');
 }
@@ -888,13 +960,48 @@ function openClaim(id) {
 async function confirmClaim(instructorId) {
   const s=SUBS.find(x=>x.id===claimingId); if(!s) return;
   const instructor=INSTRUCTORS.find(i=>i.id===instructorId);
-  await subsCol.doc(claimingId).update({status:'claimed',claimedBy:instructorId,claimedAt:Date.now()});
+  await subsCol.doc(claimingId).update({status:'claimed',claimedBy:instructorId,claimedAt:Date.now(),pendingResponses:[]});
   await logEvent('claimed', s, instructorId);
   closeModal('modal-claim');
   showToast(`${instructor?instructor.name:'Instructor'} claimed ${s.className}!`,'ok');
   const orig=INSTRUCTORS.find(i=>i.id===s.origId);
   const msg=`${instructor?instructor.name:'Someone'} claimed the sub for ${s.className} (${s.type}) on ${fmtDate(s.date)} at ${fmtTime(s.time)}. ${orig?orig.name+' is covered.':''} No further action needed.`;
   await notifyAll(`Sub filled: ${s.className} on ${fmtDate(s.date)}`,msg);
+}
+
+/* ── Decline (instructor says no to a sub) ──────────────── */
+async function declineSub(subId){
+  if(!currentInstructorId){ showToast('Set who you are first (top of the board)','err'); return; }
+  const s=SUBS.find(x=>x.id===subId); if(!s) return;
+  const pending=(s.pendingResponses||[]).filter(id=>id!==currentInstructorId);
+  const declined=[...new Set([...(s.declined||[]), currentInstructorId])];
+  const noTakers = pending.length===0;
+  await subsCol.doc(subId).update({pendingResponses:pending, declined, noTakers, updatedAt:Date.now()});
+  await logEvent('declined_sub', s, currentInstructorId);
+  const me=INSTRUCTORS.find(i=>i.id===currentInstructorId);
+  showToast(`Declined — ${pending.length} instructor${pending.length===1?'':'s'} still to respond`,'ok');
+  if(noTakers){
+    const orig=INSTRUCTORS.find(i=>i.id===s.origId);
+    await notifyAdmin(`No takers: ${s.className} on ${fmtDate(s.date)}`,
+      `${me?me.name:'An instructor'} declined — every matching instructor has now passed on the ${s.className} (${s.type}) sub for ${fmtDate(s.date)} ${fmtTime(s.time)}. ${orig?orig.name+' still needs coverage.':''} Widen the pool or reach out directly.`);
+  }
+}
+async function undeclineSub(subId){
+  if(!currentInstructorId) return;
+  const s=SUBS.find(x=>x.id===subId); if(!s) return;
+  const declined=(s.declined||[]).filter(id=>id!==currentInstructorId);
+  const pending=[...new Set([...(s.pendingResponses||[]), currentInstructorId])];
+  await subsCol.doc(subId).update({pendingResponses:pending, declined, noTakers:false, updatedAt:Date.now()});
+  showToast('Back in the pool — you can claim it now','ok');
+}
+async function adminResetResponses(subId){
+  const s=SUBS.find(x=>x.id===subId); if(!s) return;
+  if(!confirm('Reset all responses and re-open this sub to every eligible instructor?')) return;
+  const pending=eligibleInstructorIds(s.type, s.origId);
+  await subsCol.doc(subId).update({pendingResponses:pending, declined:[], noTakers:false, updatedAt:Date.now()});
+  showToast('Responses reset — everyone can respond again','ok');
+  await notifyAll(`Sub reopened: ${s.className} on ${fmtDate(s.date)}`,
+    `The sub for ${s.className} (${s.type}) on ${fmtDate(s.date)} at ${fmtTime(s.time)} is back open. Please claim or decline at vitalathleticrecovery.com/subs.`, pending);
 }
 
 /* ── Done / delete ──────────────────────────────────────── */
@@ -914,11 +1021,12 @@ async function undoClaim(id){
   if(!confirm('Undo this claim? The class reopens and all instructors are notified.')) return;
   const prev=INSTRUCTORS.find(i=>i.id===s.claimedBy);
   await logEvent('unclaimed', s, s.claimedBy);
-  await subsCol.doc(id).update({status:'open',claimedBy:null,updatedAt:Date.now()});
+  const pending = eligibleInstructorIds(s.type, s.origId);
+  await subsCol.doc(id).update({status:'open',claimedBy:null,pendingResponses:pending,declined:[],updatedAt:Date.now()});
   showToast('Sub reopened — notifying instructors','ok');
   const orig=INSTRUCTORS.find(i=>i.id===s.origId);
-  const msg=`The sub for ${s.className} (${s.type}) on ${fmtDate(s.date)} at ${fmtTime(s.time)} is OPEN again${prev?` (was taken by ${prev.name})`:''}. ${orig?orig.name+' still needs a sub.':''} Open vitalathleticrecovery.com/subs to claim it.`;
-  await notifyAll(`Sub reopened: ${s.className} on ${fmtDate(s.date)}`,msg);
+  const msg=`The sub for ${s.className} (${s.type}) on ${fmtDate(s.date)} at ${fmtTime(s.time)} is OPEN again${prev?` (was taken by ${prev.name})`:''}. ${orig?orig.name+' still needs a sub.':''} Open vitalathleticrecovery.com/subs to claim or decline.`;
+  await notifyAll(`Sub reopened: ${s.className} on ${fmtDate(s.date)}`,msg,pending);
 }
 
 /* ── Activity log + CSV export ──────────────────── */
@@ -979,6 +1087,12 @@ async function saveInstructor() {
   const name=document.getElementById('i-name').value.trim();
   if(!name){ showToast('Name is required','err'); return; }
   const data={name,email:document.getElementById('i-email').value.trim(),phone:document.getElementById('i-phone').value.trim(),specialties:['yoga','reformer','other'].filter(s=>document.getElementById('sp-'+s).checked)};
+  // Auto-derive specialties from GymMaster schedule when we can — overrides the manual
+  // checkboxes so the roster stays accurate as instructors' schedules evolve.
+  const existing = editingInstructorId ? INSTRUCTORS.find(x=>x.id===editingInstructorId) : null;
+  const forDerive = { name, gmStaffId: existing ? existing.gmStaffId : null };
+  const derived = deriveSpecialties(forDerive);
+  if(derived && derived.length){ data.specialties = derived; }
   if(editingInstructorId){
     await instructorsCol.doc(editingInstructorId).update(data);
     editingInstructorId=null;
@@ -1027,9 +1141,63 @@ async function sendSMS(toPhone,body) {
     const d=await r.json(); return d.content?.[0]?.text?.toLowerCase().includes('sent');
   }catch(e){ console.warn('SMS',e); return false; }
 }
-async function notifyAll(subject,message) {
-  const targets=[{email:CFG.adminEmail,phone:CFG.adminPhone},...INSTRUCTORS.map(i=>({email:i.email,phone:i.phone}))].filter(t=>t.email||t.phone);
+async function notifyAll(subject,message,targetIds) {
+  // targetIds optional — when provided, only those instructor IDs are notified (plus admin).
+  const pool = Array.isArray(targetIds)
+    ? INSTRUCTORS.filter(i => targetIds.includes(i.id))
+    : INSTRUCTORS;
+  const targets=[{email:CFG.adminEmail,phone:CFG.adminPhone},...pool.map(i=>({email:i.email,phone:i.phone}))].filter(t=>t.email||t.phone);
   for(const t of targets){ if(t.email) await sendEmail(t.email,subject,message); if(t.phone) await sendSMS(t.phone,`${subject}\n${message}`); }
+}
+
+/* Bulk-update every instructor's specialties from the GymMaster schedule.
+   Only touches instructors we can match against the schedule (by staffid or name);
+   others keep their manually-set specialties. */
+async function rederiveAllSpecialties(){
+  const changes = [];
+  INSTRUCTORS.forEach(i => {
+    const derived = deriveSpecialties(i);
+    if(!derived) return; // no GM match, skip
+    const cur = (i.specialties || []).slice().sort().join(',');
+    const nxt = derived.slice().sort().join(',');
+    if(cur !== nxt) changes.push({ id: i.id, name: i.name, from: i.specialties||[], to: derived });
+  });
+  if(!changes.length){ showToast('Everyone is already up to date','ok'); return; }
+  if(!confirm(`Update specialties for ${changes.length} instructor${changes.length===1?'':'s'} based on the GymMaster schedule?`)) return;
+  for(const c of changes){
+    await instructorsCol.doc(c.id).update({ specialties: c.to });
+  }
+  showToast(`${changes.length} instructor${changes.length===1?'':'s'} updated from schedule`,'ok');
+}
+
+/* Which instructor IDs should be asked to respond to a sub of this type?
+   Yoga sub → yoga instructors. Reformer sub → reformer instructors. Other → everyone.
+   The originating instructor (whoever is asking for the sub) is always excluded. */
+function eligibleInstructorIds(subType, origId){
+  const t = subType || 'other';
+  return INSTRUCTORS
+    .filter(i => i.id !== origId)
+    .filter(i => t === 'other' ? true : (i.specialties || []).includes(t))
+    .map(i => i.id);
+}
+
+/* Derive instructor specialties (yoga / reformer / other) from their GymMaster class history.
+   Returns a de-duplicated set of specialty strings. Returns null if no GM data available
+   for this instructor — caller should keep the existing manual specialties in that case. */
+function deriveSpecialties(instructor){
+  const all = gmCachedClasses().map(normalizeGmClass);
+  if(!all.length) return null;
+  const staffId = instructor && instructor.gmStaffId != null ? String(instructor.gmStaffId) : '';
+  const nameKey = normName(instructor && instructor.name || '');
+  const mine = all.filter(c => {
+    if(staffId && String(c.staffid) === staffId) return true;
+    if(!staffId && nameKey && normName(c.staffname) === nameKey) return true;
+    return false;
+  });
+  if(!mine.length) return null;
+  const set = new Set();
+  mine.forEach(c => set.add(guessType(c.name, c.location)));
+  return [...set];
 }
 async function notifyAdmin(subject,message) {
   if(CFG.adminEmail) await sendEmail(CFG.adminEmail,subject,message);
