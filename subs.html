@@ -725,15 +725,26 @@ function renderInstructorBoard() {
     return;
   }
 
-  // Segment subs into three groups based on this instructor's response state
+  // Segment subs into three groups based on this instructor's response state.
+  // For legacy subs posted BEFORE this feature (no pendingResponses field), fall back
+  // to specialty matching so they still show the Claim/Decline UI.
   const forMe = { pending: [], declined: [], others: [] };
+  const me = INSTRUCTORS.find(i => i.id === currentInstructorId);
+  const mySpecs = me ? (me.specialties || []) : [];
   open.forEach(s => {
-    const pend = s.pendingResponses || [];
     const dec = s.declined || [];
     if(!currentInstructorId){ forMe.others.push(s); return; }
-    if(dec.includes(currentInstructorId)) forMe.declined.push(s);
-    else if(pend.includes(currentInstructorId)) forMe.pending.push(s);
-    else forMe.others.push(s);
+    if(dec.includes(currentInstructorId)){ forMe.declined.push(s); return; }
+    if(Array.isArray(s.pendingResponses)){
+      if(s.pendingResponses.includes(currentInstructorId)) forMe.pending.push(s);
+      else forMe.others.push(s);
+    } else {
+      // Legacy sub — decide by specialty match, excluding the originator
+      const specOK = (s.type === 'other') || mySpecs.includes(s.type) || mySpecs.length === 0;
+      const notPoster = s.origId !== currentInstructorId;
+      if(specOK && notPoster) forMe.pending.push(s);
+      else forMe.others.push(s);
+    }
   });
 
   const subCard = (s, mode) => {
@@ -973,7 +984,10 @@ async function confirmClaim(instructorId) {
 async function declineSub(subId){
   if(!currentInstructorId){ showToast('Set who you are first (top of the board)','err'); return; }
   const s=SUBS.find(x=>x.id===subId); if(!s) return;
-  const pending=(s.pendingResponses||[]).filter(id=>id!==currentInstructorId);
+  // Legacy subs may have no pendingResponses field — infer the pool from specialty match now,
+  // then apply the decline on top of that.
+  const basePool = Array.isArray(s.pendingResponses) ? s.pendingResponses : eligibleInstructorIds(s.type, s.origId);
+  const pending = basePool.filter(id=>id!==currentInstructorId);
   const declined=[...new Set([...(s.declined||[]), currentInstructorId])];
   const noTakers = pending.length===0;
   await subsCol.doc(subId).update({pendingResponses:pending, declined, noTakers, updatedAt:Date.now()});
