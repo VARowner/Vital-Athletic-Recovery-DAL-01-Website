@@ -39,7 +39,7 @@ fbq('track', 'PageView');
      below (or set window.VAR_PIXEL2_ENABLED = true from GTM / dev console).
 ================================================== -->
 <script>
-  window.VAR_PIXEL2_ENABLED = false; // <-- flip to true to activate
+  window.VAR_PIXEL2_ENABLED = true;  // ACTIVE — matches the ad account that runs the ads
   if (window.VAR_PIXEL2_ENABLED) {
     !function(f,b,e,v,n,t,s)
     {if(f.fbq2)return;n=f.fbq2=function(){n.callMethod?
@@ -1166,6 +1166,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (eventName === 'portal_click' && typeof fbq === 'function') {
       fbq('track', 'Lead', params || {});
       fbq('track', 'InitiateCheckout', params || {});
+    }
+    // Mirror to Pixel 2 as well — Pixel 2 is the dataset tied to the ad account
+    // that actually runs the ads, and it receives GymMaster Purchase events via Zapier.
+    if (eventName === 'portal_click' && window.VAR_PIXEL2_ENABLED && typeof fbq2 === 'function') {
+      fbq2('track', 'Lead', params || {});
+      fbq2('track', 'InitiateCheckout', params || {});
     }
   }
 
