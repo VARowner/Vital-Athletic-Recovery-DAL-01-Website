@@ -3495,19 +3495,84 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   (function() {
     // Popup surfaces on every page load. No dismissal suppression —
     // visitors see it again the next time they land on the page.
-    const DELAY_MS = 8000;            // when to surface the modal
-
+    //
+    // Paid traffic can request a specific offer with ?offer=trial or ?offer=founder
+    // so the popup matches the ad they clicked. Default is the day-pass offer.
     const overlay  = document.getElementById('specialOverlay');
     const closeBtn = document.getElementById('specialClose');
     const dismiss  = document.getElementById('specialDismiss');
     if (!overlay) return;
+
+    const OFFERS = {
+      daypass: {
+        eyebrow: 'First-Visit Special',
+        headline: 'Half off your <em>first visit.</em>',
+        sub: 'Single day pass &mdash; 50% off your first time in. Cold plunge, sauna, red light, compression. Try everything before you commit.',
+        pills: ['Cold Plunge','Sauna','Red Light','Compression'],
+        href: 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88',
+        cta1: 'Half off first visit',
+        cta2: 'First day &middot; 50% off',
+        fine: 'New guests · White Rock Lake studio',
+        tag: 'daypass_50off'
+      },
+      trial: {
+        eyebrow: 'New Here?',
+        headline: '7 days unlimited. <em>$59.</em>',
+        sub: 'Every Reformer and Yoga class, plus the full recovery space &mdash; cold plunge, infrared sauna, red light, compression. One week, one price, no membership required.',
+        pills: ['Reformer','Yoga','Cold Plunge','Sauna','Red Light'],
+        href: 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/596311050acf26264d12c556412cc66d',
+        cta1: 'Claim 7 days &middot; $59',
+        cta2: '7 days unlimited &middot; $59',
+        fine: 'New guests · Start any day · East Dallas',
+        tag: 'trial_7day_59'
+      },
+      founder: {
+        eyebrow: 'Limited',
+        headline: '10 Founder spots <em>left.</em>',
+        sub: 'Lock the Founder rate for life &mdash; every recovery tool, every class, one price. First 100 members only.',
+        pills: ['Rate Locked For Life','All Modalities','Priority Booking'],
+        href: 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+        cta1: 'Become a Founder',
+        cta2: 'Founder rate &middot; locked for life',
+        fine: 'First 100 members · East Dallas',
+        tag: 'founder_membership'
+      }
+    };
+
+    const params  = new URLSearchParams(window.location.search);
+    const key     = (params.get('offer') || '').toLowerCase();
+    const OFFER   = OFFERS[key] || OFFERS.daypass;
+    const isPaid  = !!OFFERS[key];   // arrived from a matched ad
+    // Ad traffic arrives with intent — show the offer fast. Organic gets the slow reveal.
+    const DELAY_MS = isPaid ? 1200 : 8000;
+
+    // Paint the requested offer into the modal before it ever opens
+    (function applyOffer(){
+      const set = (sel, html) => { const el = overlay.querySelector(sel); if (el) el.innerHTML = html; };
+      set('.special-eyebrow', OFFER.eyebrow);
+      set('#specialHeadline', OFFER.headline);
+      set('.special-sub', OFFER.sub);
+      const inc = overlay.querySelector('.special-includes');
+      if (inc) inc.innerHTML = OFFER.pills.map(p => `<span>${p}</span>`).join('');
+      const cta = overlay.querySelector('#specialClaim');
+      if (cta) {
+        cta.href = OFFER.href;
+        const t1 = cta.querySelector('.cta-text-1');
+        const t2 = cta.querySelector('.cta-text-2');
+        if (t1) t1.innerHTML = OFFER.cta1;
+        if (t2) t2.innerHTML = OFFER.cta2;
+      }
+      set('.special-fineprint', OFFER.fine);
+    })();
 
     function open() {
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: 'popup_shown', popup: '7day_reset' });
+      window.dataLayer.push({ event: 'popup_shown', popup: OFFER.tag });
+      // Mirror to Meta so paid landings register even before the outbound click
+      if (typeof fbq === 'function') { fbq('track', 'ViewContent', { content_name: OFFER.tag }); }
     }
     function close(reason) {
       overlay.classList.remove('open');
