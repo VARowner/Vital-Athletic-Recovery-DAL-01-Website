@@ -1157,21 +1157,54 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   };
   // ===== ANALYTICS (mirrors index.html — keep in sync) =====
   window.dataLayer = window.dataLayer || [];
+  // =====================================================================
+  // EVENT ID — browser/server deduplication key
+  // ---------------------------------------------------------------------
+  // Meta deduplicates on the pair (event name, eventID). The same ID is safe
+  // to reuse across both pixels because they are separate datasets, but Lead
+  // and InitiateCheckout get distinct suffixes since they are distinct events.
+  //
+  // Why this exists now, when nothing server-side sends Lead or
+  // InitiateCheckout yet: it is inert until something does. The moment a
+  // server-side copy of one of these events is added (e.g. through the
+  // GymMaster → Zapier → Conversions API path that already carries Purchase),
+  // the browser event can be matched to it instead of double-counting. Adding
+  // the key after the fact would mean a window of inflated numbers.
+  //
+  // The ID is also pushed to the dataLayer and parked on
+  // window.VAR_LAST_EVENT_ID, so it can be appended to the GymMaster portal
+  // URL later without changing this function.
+  // =====================================================================
+  function varEventId() {
+    try {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+    } catch (e) { /* older browser — fall through to the manual ID below */ }
+    return 'var-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
   function trackEvent(eventName, params) {
-    window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+    const payload = Object.assign({ event: eventName }, params || {});
+    // A caller may supply its own event_id to tie several events together;
+    // otherwise mint a fresh one for this event.
+    const eventId = payload.event_id || varEventId();
+    payload.event_id = eventId;
+    window.VAR_LAST_EVENT_ID = eventId;
+    window.dataLayer.push(payload);
     // Meta Pixel — mirror the high-intent portal_click as both Lead
     // and InitiateCheckout so Meta has a purchase-adjacent standard event
     // to optimize toward. (We can't fire Purchase honestly since the actual
     // transaction happens on GymMaster.)
     if (eventName === 'portal_click' && typeof fbq === 'function') {
-      fbq('track', 'Lead', params || {});
-      fbq('track', 'InitiateCheckout', params || {});
+      fbq('track', 'Lead', params || {}, { eventID: eventId + '-lead' });
+      fbq('track', 'InitiateCheckout', params || {}, { eventID: eventId + '-ic' });
     }
     // Mirror to Pixel 2 as well — Pixel 2 is the dataset tied to the ad account
     // that actually runs the ads, and it receives GymMaster Purchase events via Zapier.
     if (eventName === 'portal_click' && window.VAR_PIXEL2_ENABLED && typeof fbq2 === 'function') {
-      fbq2('track', 'Lead', params || {});
-      fbq2('track', 'InitiateCheckout', params || {});
+      fbq2('track', 'Lead', params || {}, { eventID: eventId + '-lead' });
+      fbq2('track', 'InitiateCheckout', params || {}, { eventID: eventId + '-ic' });
     }
   }
 

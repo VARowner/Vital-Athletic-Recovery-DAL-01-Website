@@ -2741,23 +2741,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // =====================================================================
   // BOOKING URLs — GymMaster portal
   // ---------------------------------------------------------------------
-  // GymMaster gives each membership/product a numeric ID in the signup
-  // URL (.../portal/signup/N). Find each plan's ID in GymMaster and drop
-  // it into the map below. Any product without its own entry falls back
-  // to BOOKING_URL_DEFAULT.
+  // Two URL shapes are in play:
+  //   /portal/signup/N            — a signup page that LISTS plans (N = a
+  //                                 signup-page ID, not a plan ID). /signup/1
+  //                                 shows all three Founder tiers; /signup/9
+  //                                 is the general/complimentary entry point.
+  //   /portal/membership/<hash>   — a DEEP LINK straight to one product's
+  //                                 checkout. This is what we want on every
+  //                                 tier-specific button, because it skips the
+  //                                 chooser step and, just as importantly, lets
+  //                                 portal_click report which tier was clicked.
   //
-  // To find a plan's URL: in GymMaster → Memberships → click the plan →
-  // copy the "Signup Link". The number at the end is the plan ID.
+  // To find a product's hash: open /portal/signup/1 in a browser, click a
+  // plan's "Learn more", and take the hash out of the resulting URL. Verify it
+  // by loading /portal/membership/<hash> directly — the page should show that
+  // plan's name and price and nothing else.
+  //
+  // Any product without its own entry falls back to BOOKING_URL_DEFAULT.
   // =====================================================================
   const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/9';
 
   const BOOKING_URLS = {
-    // Membership tiers — replace /signup/1 with the real GymMaster plan IDs
-    // once each Founder tier is set up. Currently fall back to the
-    // complimentary-visit signup so the buttons always land somewhere live.
-    'founder-essential': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
-    'founder-vital':     'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
-    'founder-ultimate':  'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+    // Membership tiers — deep links verified against GymMaster 2026-08-03.
+    // NOTE: GymMaster names the top tier "Unlimited (Founders)"; the site calls
+    // it "Ultimate". Same product, different label — keep the key as-is so the
+    // existing data-product attributes and GTM/GA4 history stay intact.
+    'founder-essential': 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/f87867d46b75e0175efedc2c8391a818', // Essential (Founder) — $72.00/mo
+    'founder-vital':     'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/6e5fe19d3021a0fc42fa2f2ded391e54', // Vital (Founder) — $140.25/mo
+    'founder-ultimate':  'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/9bbbfc5781723936928b5a30f4bd5677', // Unlimited (Founders) — $299.00/mo
+    // Generic "become a Founder" CTA — intentionally still the chooser page
+    // listing all three tiers, for buttons that don't name a tier.
     'founder':           'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
 
     // Intro / day pass — real URLs from live site
@@ -2787,21 +2800,54 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   //   popup_dismissed — user closes specials modal without clicking CTA
   // =====================================================================
   window.dataLayer = window.dataLayer || [];
+  // =====================================================================
+  // EVENT ID — browser/server deduplication key
+  // ---------------------------------------------------------------------
+  // Meta deduplicates on the pair (event name, eventID). The same ID is safe
+  // to reuse across both pixels because they are separate datasets, but Lead
+  // and InitiateCheckout get distinct suffixes since they are distinct events.
+  //
+  // Why this exists now, when nothing server-side sends Lead or
+  // InitiateCheckout yet: it is inert until something does. The moment a
+  // server-side copy of one of these events is added (e.g. through the
+  // GymMaster → Zapier → Conversions API path that already carries Purchase),
+  // the browser event can be matched to it instead of double-counting. Adding
+  // the key after the fact would mean a window of inflated numbers.
+  //
+  // The ID is also pushed to the dataLayer and parked on
+  // window.VAR_LAST_EVENT_ID, so it can be appended to the GymMaster portal
+  // URL later without changing this function.
+  // =====================================================================
+  function varEventId() {
+    try {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+    } catch (e) { /* older browser — fall through to the manual ID below */ }
+    return 'var-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
   function trackEvent(eventName, params) {
-    window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
+    const payload = Object.assign({ event: eventName }, params || {});
+    // A caller may supply its own event_id to tie several events together;
+    // otherwise mint a fresh one for this event.
+    const eventId = payload.event_id || varEventId();
+    payload.event_id = eventId;
+    window.VAR_LAST_EVENT_ID = eventId;
+    window.dataLayer.push(payload);
     // Meta Pixel — mirror the high-intent portal_click as both Lead
     // and InitiateCheckout so Meta has a purchase-adjacent standard event
     // to optimize toward. (We can't fire Purchase honestly since the actual
     // transaction happens on GymMaster.)
     if (eventName === 'portal_click' && typeof fbq === 'function') {
-      fbq('track', 'Lead', params || {});
-      fbq('track', 'InitiateCheckout', params || {});
+      fbq('track', 'Lead', params || {}, { eventID: eventId + '-lead' });
+      fbq('track', 'InitiateCheckout', params || {}, { eventID: eventId + '-ic' });
     }
     // Mirror to Pixel 2 as well — Pixel 2 is the dataset tied to the ad account
     // that actually runs the ads, and it receives GymMaster Purchase events via Zapier.
     if (eventName === 'portal_click' && window.VAR_PIXEL2_ENABLED && typeof fbq2 === 'function') {
-      fbq2('track', 'Lead', params || {});
-      fbq2('track', 'InitiateCheckout', params || {});
+      fbq2('track', 'Lead', params || {}, { eventID: eventId + '-lead' });
+      fbq2('track', 'InitiateCheckout', params || {}, { eventID: eventId + '-ic' });
     }
   }
 
