@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Thank you · Vital Athletic Recovery</title>
+<meta name="facebook-domain-verification" content="5jzzvwg6kc0d48ahudl6fr8oq4cdzf" />
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+// Both datasets. fbq('track', ...) fans out to every initialised pixel.
+fbq('init', '1119343175171253');
+fbq('init', '2029641160995228');
+fbq('track', 'PageView');
+</script>
+</head>
+<body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap');
+  :root{
+    --bg:#f2ebd8; --ink:#14110c; --ink-dim:#44403a; --ink-mute:#6f6a5c;
+    --accent:#8a6536; --accent-deep:#4a3617; --line:rgba(20,17,12,0.12);
+    --serif:'Fraunces',Georgia,serif; --sans:'Inter',-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+  .wrap{max-width:560px;width:100%;text-align:center}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,6vw,44px);
+     line-height:1.1;margin:0 0 14px}
+  .sub{color:var(--ink-dim);font-size:17px;line-height:1.55;margin:0 0 30px}
+  ul{list-style:none;padding:0;margin:0 0 32px;text-align:left}
+  li{position:relative;padding:14px 0 14px 30px;border-top:1px solid var(--line);
+     color:var(--ink-dim);font-size:15px;line-height:1.55}
+  li:last-child{border-bottom:1px solid var(--line)}
+  li::before{content:"";position:absolute;left:6px;top:22px;width:7px;height:7px;
+     border-radius:50%;background:var(--accent)}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+     font-weight:600;font-size:15px;padding:15px 30px;border-radius:2px;letter-spacing:.02em}
+  .btn:hover{background:var(--accent-deep)}
+  .muted{margin-top:26px;color:var(--ink-mute);font-size:13px;line-height:1.5}
+  .muted a{color:var(--accent);text-decoration:underline}
+  .spin{width:26px;height:26px;border:2px solid var(--line);border-top-color:var(--accent);
+     border-radius:50%;margin:0 auto 22px;animation:s .8s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+<div class="wrap">
+  <h1>Welcome, Founder.</h1>
+  <p class="sub">Your Vital membership is active.</p>
+  <ul>
+    <li>Your membership covers the full recovery space — cold plunge, saunas, compression, red light.</li>
+    <li>Classes aren't included on Vital. You can add a class pack any time in the portal.</li>
+    <li>Arrive 10 minutes early on your first visit for a walkthrough.</li>
+  </ul>
+  <a class="btn" href="https://vitalathleticrecovery.gymmasteronline.com/portal">Open the member portal</a>
+  <p class="muted">Questions? Call <a href="tel:+12143082123">(214) 308-2123</a><br/>
+     718 N. Buckner Blvd, Suite 416, Dallas, TX 75218</p>
+</div>
+<script>
+(function(){
+
+  // ---- first-party event id, shared with the thank-you page ----
+  var VAR_EID_COOKIE = 'var_eid';
+  function varReadCookie(name) {
+    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? decodeURIComponent(m.pop()) : '';
+  }
+  function varWriteCookie(name, value, minutes) {
+    var d = new Date(); d.setTime(d.getTime() + minutes * 60 * 1000);
+    var domain = location.hostname.indexOf('vitalathleticrecovery.com') > -1
+      ? '; domain=.vitalathleticrecovery.com' : '';
+    document.cookie = name + '=' + encodeURIComponent(value) +
+      '; expires=' + d.toUTCString() + '; path=/' + domain + '; SameSite=Lax';
+  }
+  function varNewId() {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return 'var-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  var VALUE = 151.82;
+  var NAME  = "Vital (Founder)";
+
+  var eid = varReadCookie(VAR_EID_COOKIE);
+  // No cookie means this buyer never passed through /go/ — still record the
+  // Purchase, just without a shared id to deduplicate against.
+  if (!eid) eid = varNewId();
+
+  // Refresh guard. Meta dedupes on (event name, eventID), but a repeated fire
+  // from this same browser would still be a wasted request.
+  var key = 'var_purchase_' + eid;
+  var already = false;
+  try { already = !!window.localStorage.getItem(key); } catch (e) {}
+
+  if (!already) {
+    try { window.localStorage.setItem(key, '1'); } catch (e) {}
+    fbq('track', 'Purchase', {
+      value: VALUE, currency: 'USD',
+      content_name: NAME, content_type: 'product', content_category: 'membership'
+    }, { eventID: eid + '-purchase' });
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event:'purchase', offer:"founder-vital",
+      value:VALUE, currency:'USD', event_id:eid
+    });
+  }
+
+  // The id has done its job; clear it so a later unrelated visit cannot reuse it.
+  varWriteCookie(VAR_EID_COOKIE, '', -1);
+})();
+</script>
+</body>
+</html>
