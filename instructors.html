@@ -377,6 +377,22 @@ fbq('track', 'PageView');
   }
   .ix-card { position: relative; }
 
+  /* ===== BOOK BAND — the page's selling CTA (added 2026-08-07) =====
+     Sits ahead of the invite band so a prospect who has just read the bios has
+     somewhere to go. Brown rather than near-black so it reads as a separate,
+     louder moment than the recruiting band that follows it. ===== */
+  .book-band { margin-top: 100px; background: #6b4e29; color: var(--ink-inverse); padding: 80px 48px; text-align: center; }
+  .book-band-inner { max-width: 720px; margin: 0 auto; }
+  .book-band .section-label { color: var(--ink-inverse); justify-content: center; }
+  .book-band .section-label::before { background: var(--ink-inverse); }
+  .book-band h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4.2vw, 48px); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; color: var(--ink-inverse); }
+  .book-band h2 em { font-style: normal; font-weight: 600; color: var(--ink-inverse); }
+  .book-band p { color: var(--ink-inverse); font-size: 17px; line-height: 1.65; margin-bottom: 28px; font-family: var(--serif); }
+  .book-band-actions { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .book-band-alt { color: var(--ink-inverse); font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; }
+  .book-band-alt:hover { opacity: 0.75; }
+  .book-band + .invite-band { margin-top: 0; }
+
   /* ===== INVITE BAND — for new instructors ===== */
   .invite-band {
     margin-top: 100px;
@@ -560,6 +576,7 @@ fbq('track', 'PageView');
     .roster-section { padding: 64px 24px 0; }
     .roster-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     .ix-card { padding: 28px 24px 30px; }
+    .book-band { padding: 64px 24px; margin-top: 80px; }
     .invite-band { padding: 64px 24px; margin-top: 80px; }
     .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
     .foot-brand img { height: 280px; margin: -40px 0 -30px -28px; }
@@ -577,6 +594,8 @@ fbq('track', 'PageView');
     .roster-grid { grid-template-columns: 1fr; gap: 20px; }
     .ix-card { padding: 24px 22px 26px; }
     .ix-name { font-size: 22px; }
+    .book-band { padding: 56px 20px; }
+    .book-band h2 { font-size: clamp(26px, 8vw, 34px); }
     .invite-band { padding: 56px 20px; }
     .invite-band h2 { font-size: clamp(26px, 8vw, 34px); }
     .btn-primary { padding: 14px 22px; font-size: 12px; }
@@ -796,6 +815,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </main>
 
 <!-- INVITE BAND — for prospective instructors -->
+<!-- ===== BOOK BAND (added 2026-08-07) =====
+     This page used to end on "Apply to Teach", so someone who had just read
+     every bio had no way to book a class. ============================== -->
+<section class="book-band" aria-labelledby="book-heading">
+  <div class="book-band-inner">
+    <div class="section-label">Train With Them</div>
+    <h2 id="book-heading">Take a class.<br /><em>Seven days, $59.</em></h2>
+    <p>
+      The seven&#8209;day trial is the only pass that includes classes &mdash; every
+      Reformer and Yoga class on the schedule, taught by the people above, plus the
+      full recovery space. No membership required.
+    </p>
+    <div class="book-band-actions">
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/596311050acf26264d12c556412cc66d"
+         target="_blank" rel="noopener noreferrer" class="btn-primary"
+         data-cta="booking" data-product="trial-7day">Claim 7 Days &middot; $59</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/classcalendar"
+         target="_blank" rel="noopener" class="book-band-alt">See who&rsquo;s teaching this week &rarr;</a>
+    </div>
+  </div>
+</section>
+
 <section class="invite-band" aria-labelledby="invite-heading">
   <div class="invite-band-inner">
     <div class="section-label">Teach Here</div>
@@ -852,7 +893,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ===== BOOKING URLs =====
   const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1';
   const BOOKING_URLS = {
-    'founder': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+    'founder':    'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+    // Added 2026-08-07 for the book-band below. The 7 Day Unlimited Trial is the
+    // only product that includes Reformer and Yoga classes, which makes it the
+    // right offer on the page where people come to read about the instructors.
+    'trial-7day': 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/596311050acf26264d12c556412cc66d',
   };
   // ===== ANALYTICS (mirrors index.html — keep in sync) =====
   window.dataLayer = window.dataLayer || [];
