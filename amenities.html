@@ -1101,7 +1101,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p>First-time recovery visits are half off — walk in, try the modalities, and decide. Founder pricing is open now and locks for life when you join.</p>
     <div class="cta-actions">
       <a href="index.html#memberships" class="btn-primary">View Founder Rates</a>
-      <a href="#" class="btn-ghost" data-cta="booking" data-product="day-pass">Half off first visit →</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88" target="_blank" rel="noopener noreferrer" class="btn-ghost" data-cta="booking" data-product="day-pass">Half off first visit →</a>
     </div>
   </div>
 </section>
@@ -1151,9 +1151,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
   // ===== BOOKING URLs =====
-  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/9';
+  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1';
   const BOOKING_URLS = {
-    'founder': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+    'founder':  'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
+    // Added 2026-08-07: this page's only buy button asks for 'day-pass'. Without
+    // this entry it fell through to BOOKING_URL_DEFAULT, which was /portal/signup/9
+    // — a GymMaster page carrying no products at all.
+    'day-pass': 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88',
   };
   // ===== ANALYTICS (mirrors index.html — keep in sync) =====
   window.dataLayer = window.dataLayer || [];
@@ -1210,7 +1214,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      e.preventDefault();
       const product = btn.dataset.product || '';
       const ctaType = btn.dataset.cta || 'booking';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
@@ -1222,7 +1225,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         page_section: (btn.closest('section') && btn.closest('section').id) || 'amenities_page'
       });
       trackEvent('portal_click', { product: product, source: 'cta_button' });
-      window.open(url, '_blank', 'noopener,noreferrer');
+      // The real destination now lives in the anchor's href, so the browser
+      // navigates natively. That keeps every buy button working if this script
+      // ever fails, and avoids window.open — which the Facebook and Instagram
+      // in-app browsers frequently block. Only a CTA with no usable href
+      // falls back to the old behaviour.
+      const hasHref = btn.tagName === 'A' &&
+                      btn.getAttribute('href') &&
+                      btn.getAttribute('href') !== '#';
+      if (!hasHref) {
+        e.preventDefault();
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     });
   });
 

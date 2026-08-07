@@ -2286,7 +2286,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li>Discounted Reformer & Yoga classes</li>
         <li>Founder rate locked for life</li>
       </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-essential">Become a Founder</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/f87867d46b75e0175efedc2c8391a818" target="_blank" rel="noopener noreferrer" class="tier-cta" data-cta="booking" data-product="founder-essential">Become a Founder</a>
     </div>
 
     <div class="tier featured">
@@ -2305,7 +2305,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li>Priority booking on classes</li>
         <li>Founder rate locked for life</li>
       </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-vital">Become a Founder</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/6e5fe19d3021a0fc42fa2f2ded391e54" target="_blank" rel="noopener noreferrer" class="tier-cta" data-cta="booking" data-product="founder-vital">Become a Founder</a>
     </div>
 
     <div class="tier">
@@ -2324,7 +2324,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li>Priority booking on everything</li>
         <li>Founder rate locked for life</li>
       </ul>
-      <a href="#" class="tier-cta" data-cta="booking" data-product="founder-ultimate">Become a Founder</a>
+      <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/9bbbfc5781723936928b5a30f4bd5677" target="_blank" rel="noopener noreferrer" class="tier-cta" data-cta="booking" data-product="founder-ultimate">Become a Founder</a>
     </div>
   </div>
 </section>
@@ -2356,17 +2356,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="pack">
         <div class="pack-name">8-Pack <small>Best Value</small></div>
         <div class="pack-price">$240</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-8">Buy →</a>
+        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/dbc18f9ff6b9ef860fcf1e804513d9df" target="_blank" rel="noopener noreferrer" class="pack-cta" data-cta="booking" data-product="class-pack-8">Buy →</a>
       </div>
       <div class="pack">
         <div class="pack-name">4-Pack <small>Flexible</small></div>
         <div class="pack-price">$140</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-pack-4">Buy →</a>
+        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/7270f464058e0da20254fddb8696f034" target="_blank" rel="noopener noreferrer" class="pack-cta" data-cta="booking" data-product="class-pack-4">Buy →</a>
       </div>
       <div class="pack">
         <div class="pack-name">Single Class <small>One-Time</small></div>
         <div class="pack-price">$40</div>
-        <a href="#" class="pack-cta" data-cta="booking" data-product="class-single">Buy →</a>
+        <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/962ef290f3056eebfff97be69bb5e015" target="_blank" rel="noopener noreferrer" class="pack-cta" data-cta="booking" data-product="class-single">Buy →</a>
       </div>
     </div>
 
@@ -2684,7 +2684,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="final-content">
     <h2>Half off your <em>first day.</em></h2>
     <p>Discover how good purposeful recovery can feel. First-time visitors get full access to the recovery space at 50% off — cold plunge, sauna, and every self-recovery tool, all day.</p>
-    <a href="#" class="btn-primary" data-cta="booking" data-product="day-pass">Claim Your Day Pass</a>
+    <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88" target="_blank" rel="noopener noreferrer" class="btn-primary" data-cta="booking" data-product="day-pass">Claim Your Day Pass</a>
     <div style="margin-top: 24px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute);">
       Reformer &amp; Yoga not included · First-time visitors only
     </div>
@@ -2744,8 +2744,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // Two URL shapes are in play:
   //   /portal/signup/N            — a signup page that LISTS plans (N = a
   //                                 signup-page ID, not a plan ID). /signup/1
-  //                                 shows all three Founder tiers; /signup/9
-  //                                 is the general/complimentary entry point.
+  //                                 shows all four Founder-tier options.
+  //                                 /signup/9 was the general entry point but
+  //                                 GymMaster now serves it with NO products
+  //                                 attached — verified 2026-08-07. Never use it.
   //   /portal/membership/<hash>   — a DEEP LINK straight to one product's
   //                                 checkout. This is what we want on every
   //                                 tier-specific button, because it skips the
@@ -2759,7 +2761,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   //
   // Any product without its own entry falls back to BOOKING_URL_DEFAULT.
   // =====================================================================
-  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/9';
+  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1';
 
   const BOOKING_URLS = {
     // Membership tiers — deep links verified against GymMaster 2026-08-03.
@@ -2774,7 +2776,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     'founder':           'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
 
     // Intro / day pass — real URLs from live site
-    'intro-visit':       'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/9',
+    'intro-visit':       'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
     'day-pass':          'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88',
 
     // Class packs — wired to real GymMaster payment links
@@ -2853,7 +2855,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      e.preventDefault();
       const product = btn.dataset.product || '';
       const ctaType = btn.dataset.cta || 'booking';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
@@ -2873,7 +2874,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         source: 'cta_button'
       });
 
-      window.open(url, '_blank', 'noopener,noreferrer');
+      // The real destination now lives in the anchor's href, so the browser
+      // navigates natively. That keeps every buy button working if this script
+      // ever fails, and avoids window.open — which the Facebook and Instagram
+      // in-app browsers frequently block. Only a CTA with no usable href
+      // falls back to the old behaviour.
+      const hasHref = btn.tagName === 'A' &&
+                      btn.getAttribute('href') &&
+                      btn.getAttribute('href') !== '#';
+      if (!hasHref) {
+        e.preventDefault();
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     });
   });
 
