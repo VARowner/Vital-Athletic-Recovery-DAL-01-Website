@@ -88,27 +88,36 @@ fbq('track', 'PageView');
 
   var VALUE = 151.82;
   var NAME  = "Vital (Founder)";
+  var OFFER = "founder-vital";
 
   var eid = varReadCookie(VAR_EID_COOKIE);
-  // No cookie means this buyer never passed through /go/ — still record the
-  // Purchase, just without a shared id to deduplicate against.
+  // No cookie means this buyer never passed through /go/. Organic buyers reach
+  // GymMaster straight from a site CTA and never get one, so we still record
+  // the Purchase — just without a shared id to deduplicate against.
   if (!eid) eid = varNewId();
 
-  // Refresh guard. Meta dedupes on (event name, eventID), but a repeated fire
-  // from this same browser would still be a wasted request.
-  var key = 'var_purchase_' + eid;
+  // Refresh guard, keyed to the OFFER — deliberately NOT to eid.
+  // eid is regenerated on every cookie-less load (and the cookie is cleared at
+  // the bottom of this script), so an eid-keyed guard produced a fresh key every
+  // time and never matched: each reload, bookmark hit or shared link fired a
+  // brand-new Purchase at the full hardcoded value. Confirmed 2026-08-10.
+  var key = 'var_purchase_' + OFFER;
+  var GUARD_MS = 6 * 60 * 60 * 1000;  // a genuine repeat purchase 6h+ later still counts
   var already = false;
-  try { already = !!window.localStorage.getItem(key); } catch (e) {}
+  try {
+    var seen = window.localStorage.getItem(key);
+    already = !!seen && (Date.now() - parseInt(seen, 10) < GUARD_MS);
+  } catch (e) {}
 
   if (!already) {
-    try { window.localStorage.setItem(key, '1'); } catch (e) {}
+    try { window.localStorage.setItem(key, String(Date.now())); } catch (e) {}
     fbq('track', 'Purchase', {
       value: VALUE, currency: 'USD',
       content_name: NAME, content_type: 'product', content_category: 'membership'
     }, { eventID: eid + '-purchase' });
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
-      event:'purchase', offer:"founder-vital",
+      event:'purchase', offer:OFFER,
       value:VALUE, currency:'USD', event_id:eid
     });
   }
