@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="robots" content="noindex, nofollow" />
+<meta name="robots" content="noindex" />
 <title>Thank you · Vital Athletic Recovery</title>
 <meta name="facebook-domain-verification" content="5jzzvwg6kc0d48ahudl6fr8oq4cdzf" />
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -11,6 +11,22 @@ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<script>
+// Defensive fbclid pass-through: if fbclid appears in the URL (should any
+// redirect start passing it), write _fbc BEFORE fbq init so PageView and
+// Purchase carry the click id. Meta uses _fbc, not URL, for click
+// attribution. GymMaster does not pass fbclid today; this is defensive.
+(function(){
+  var m = location.search.match(/[?&]fbclid=([^&]+)/);
+  if (!m) return;
+  var fbclid = decodeURIComponent(m[1]);
+  var domain = location.hostname.indexOf("vitalathleticrecovery.com") > -1
+    ? "; domain=.vitalathleticrecovery.com" : "";
+  var d = new Date(); d.setTime(d.getTime() + 90 * 24 * 60 * 60 * 1000);
+  document.cookie = "_fbc=fb.1." + Date.now() + "." + fbclid +
+    "; expires=" + d.toUTCString() + "; path=/" + domain + "; SameSite=Lax";
+})();
+</script>
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
