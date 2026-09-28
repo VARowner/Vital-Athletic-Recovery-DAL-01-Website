@@ -4,13 +4,20 @@
 
   <url>
     <loc>https://www.vitalathleticrecovery.com/</loc>
-    <lastmod>2026-06-10</lastmod>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://content.app-sources.com/s/364947973119715621/uploads/Images/DSC1814-6103948.jpg?format=webp</image:loc>
       <image:title>Inside the Vital Athletic Recovery studio in East Dallas</image:title>
     </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.vitalathleticrecovery.com/about</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <url>
