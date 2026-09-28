@@ -272,8 +272,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="cta-card">
     <h3>Want to try it for <em>yourself?</em></h3>
-    <p>First-time visitors get the full recovery space at half off — cold plunge included, all day.</p>
-    <a href="#" data-cta="booking" data-product="day-pass">Claim Your Day Pass</a>
+    <p>Your First Recovery Visit Is 50% Off. Experience Vital Athletic Recovery for the first time with full access to our self-directed recovery space, including cold plunge, sauna, red light therapy, compression and recovery tools. First-time visitors only. Reformer Pilates, Yoga and private sessions are not included.</p>
+    <a href="https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88" target="_blank" rel="noopener noreferrer" data-cta="booking" data-product="day-pass">Claim Your Day Pass</a>
   </div>
 
   <div class="article-footer">
@@ -311,7 +311,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="foot-col">
       <h4>Visit</h4>
       <ul>
-        <li><a href="../index.html#visit">718 N. Buckner Blvd</a></li>
+        <li><a href="../index.html#visit">718 N. Buckner Blvd.</a></li>
         <li><a href="../index.html#visit">Suite 416, Dallas TX 75218</a></li>
         <li><a href="tel:2143082123">(214) 308-2123</a></li>
         <li><a href="https://www.instagram.com/vital_athletic_recovery/" target="_blank" rel="noopener">Instagram</a></li>
@@ -325,17 +325,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 
 <script>
-  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/9';
+  const BOOKING_URL_DEFAULT = 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88'; // First Visit 50% Off
   const BOOKING_URLS = {
-    'founder': 'https://vitalathleticrecovery.gymmasteronline.com/portal/signup/1',
     'day-pass': 'https://vitalathleticrecovery.gymmasteronline.com/portal/membership/076c24e4886c2223b0d10bd58e702b88',
   };
   document.querySelectorAll('[data-cta]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      e.preventDefault();
       const product = btn.dataset.product || '';
       const url = BOOKING_URLS[product] || BOOKING_URL_DEFAULT;
-      window.open(url, '_blank', 'noopener,noreferrer');
+
+      // Added 2026-08-07: this button previously fired no analytics at all, so
+      // every sale that started from a blog post was invisible in GA4. Event
+      // names match the rest of the site — do not rename without updating GTM.
+      window.dataLayer = window.dataLayer || [];
+      const eventId = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : 'var-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+      window.dataLayer.push({
+        event: 'cta_click', event_id: eventId, cta_type: 'booking', product: product,
+        destination_url: url, page_section: 'blog_post',
+        button_text: (btn.textContent || '').trim().slice(0, 80)
+      });
+      window.dataLayer.push({
+        event: 'portal_click', event_id: eventId, product: product, source: 'cta_button'
+      });
+      // The real destination now lives in the anchor's href, so the browser
+      // navigates natively. That keeps every buy button working if this script
+      // ever fails, and avoids window.open — which the Facebook and Instagram
+      // in-app browsers frequently block. Only a CTA with no usable href
+      // falls back to the old behaviour.
+      const hasHref = btn.tagName === 'A' &&
+                      btn.getAttribute('href') &&
+                      btn.getAttribute('href') !== '#';
+      if (!hasHref) {
+        e.preventDefault();
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     });
   });
   const navEl = document.querySelector('nav');
