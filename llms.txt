@@ -39,7 +39,7 @@ Prices are before tax. Essential and Vital are month-to-month with a 30-day canc
 - 4-Pack: $140
 - Single Class: $40
 - Class packs work across both Yoga and Reformer. Members save 20%.
-- Class minimum: classes run with 2 or more bookings. A class that has not reached 2 bookings two hours before start (or by 8 pm the night before for classes starting before 9 am) is cancelled; everyone booked is notified by text and email and the class credit is returned automatically.
+- Class minimum: classes run with 2 or more bookings. A class that has not reached 2 bookings two hours before start (or by 8 pm the night before for classes starting before 9 am) is cancelled; everyone booked is notified by email (and app push notification if they use the VAR app) and the class credit is returned automatically.
 
 ## First-Visit Offer
 
@@ -63,7 +63,7 @@ Yes. All first-time visitors sign a brief liability waiver at the front desk bef
 There are three paths: (1) pre-purchase a day pass or membership online and arrive any time during open hours; (2) walk in cold and buy a day pass or start a membership at the front desk; (3) book a Reformer or Yoga class online and arrive 5–10 minutes before class start. All three paths sign the waiver before participating in any session.
 
 **What happens if a class doesn't have enough people booked?**
-Classes run with 2 or more bookings. If a class hasn't reached 2 bookings two hours before start (or by 8 pm the night before for classes starting before 9 am), we cancel it and text and email everyone booked. Your class credit goes straight back to your account. Booking early is the best way to make sure your class runs.
+Classes run with 2 or more bookings. If a class hasn't reached 2 bookings two hours before start (or by 8 pm the night before for classes starting before 9 am), we cancel it and email everyone booked (plus an app notification if you use the VAR app). Your class credit goes straight back to your account. Booking early is the best way to make sure your class runs.
 
 **Can I freeze my membership?**
 Yes. Vital and Unlimited memberships can be frozen for up to 60 days per calendar year at no cost. Contact us before your requested freeze date.
