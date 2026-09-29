@@ -97,13 +97,19 @@ fbq('track', 'PageView');
   fbq('track','ViewContent',CONTENT,{eventID:eid+'-vc'});
     fbq('track','InitiateCheckout',CONTENT,{eventID:eid+'-ic'});
 
+  // Google Ads: GTM may not have written the click-id cookie before we forward,
+  // so write it ourselves in the same format the Google tag uses (GCL.<ts>.<gclid>).
+  // The /thanks/ page on this domain is what Google Ads counts as the Purchase.
+  var gclid = (location.search.match(/[?&]gclid=([^&#]+)/) || [])[1];
+  if (gclid) { varWriteCookie('_gcl_aw', 'GCL.' + Math.floor(Date.now()/1000) + '.' + decodeURIComponent(gclid), 60*24*90); }
+
   // Carry any tracking params through to GymMaster untouched.
   var qs = location.search || '';
   var url = DEST + (qs ? (DEST.indexOf('?') > -1 ? '&' + qs.slice(1) : qs) : '');
   document.getElementById('manual').href = url;
 
   // Short delay so the pixel requests actually leave the browser first.
-  setTimeout(function(){ location.replace(url); }, 450);
+  setTimeout(function(){ location.replace(url); }, gclid ? 900 : 450);
 })();
 </script>
 </body>
