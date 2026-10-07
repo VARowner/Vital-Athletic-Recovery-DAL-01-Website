@@ -70,6 +70,7 @@ fbq('track', 'PageView');
 <meta property="og:title" content="Cold Plunge in East Dallas · Vital Athletic Recovery" />
 <meta property="og:description" content="Cold plunge in East Dallas at Vital Athletic Recovery. Water between 37°F and 55°F, 1–2 minute sessions, drained and refilled weekly, no reservation needed. 718 N. Buckner Blvd., Suite 416." />
 <meta property="og:url" content="https://www.vitalathleticrecovery.com/cold-plunge" />
+<meta property="og:image" content="https://www.vitalathleticrecovery.com/assets/cold-plunge/cold-plunge-room.jpg" />
 
 <meta name="theme-color" content="#8a6536" />
 <meta name="color-scheme" content="light" />
@@ -802,6 +803,13 @@ fbq('track', 'PageView');
   .testimonial-stars { color: var(--accent-soft); font-size: 18px; letter-spacing: 0.2em; margin-bottom: 14px; position: relative; }
   .testimonial-attr a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
+  .cp-photo { margin: 0 auto; max-width: 1200px; padding: 0 48px; }
+  .cp-photo img { width:100%; height:auto; display:block; border-radius:2px; }
+  .cp-photo figcaption { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); margin-top:10px; }
+  .cp-inline { margin-top:28px; }
+  .cp-inline img { width:100%; height:auto; display:block; border-radius:2px; }
+  .cp-split { display:grid; grid-template-columns: 1.1fr 1fr; gap:40px; align-items:center; }
+  @media (max-width: 720px) { .cp-photo { padding: 0 16px; } .cp-split { grid-template-columns:1fr; gap:24px; } }
   .cp-facts { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:28px; }
   .cp-fact { background:var(--bg); padding:24px 20px; }
   .cp-fact .k { font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-mute); }
@@ -816,7 +824,7 @@ fbq('track', 'PageView');
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"Service","name":"Cold Plunge","serviceType":"Cold water immersion","url":"https://www.vitalathleticrecovery.com/cold-plunge",
+{"@type":"Service","name":"Cold Plunge","image":"https://www.vitalathleticrecovery.com/assets/cold-plunge/cold-plunge-room.jpg","serviceType":"Cold water immersion","url":"https://www.vitalathleticrecovery.com/cold-plunge",
  "provider":{"@type":"HealthClub","name":"Vital Athletic Recovery","telephone":"+1-214-308-2123",
   "address":{"@type":"PostalAddress","streetAddress":"718 N. Buckner Blvd., Suite 416","addressLocality":"Dallas","addressRegion":"TX","postalCode":"75218","addressCountry":"US"}},
  "areaServed":"East Dallas"},
@@ -889,23 +897,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </header>
 
+<figure class="cp-photo">
+  <img src="assets/cold-plunge/cold-plunge-room.jpg" width="1400" height="1050" alt="Row of cold plunge tubs by the front windows at Vital Athletic Recovery, with the saunas behind them" fetchpriority="high">
+  <figcaption>The plunge room · 718 N. Buckner</figcaption>
+</figure>
+
 <main>
 
 <section class="am-section ab-section" aria-labelledby="how-heading">
   <div class="section-label">Your session</div>
   <h2 id="how-heading">One to two minutes <em>is the whole job.</em></h2>
+  <div class="cp-split">
   <ol class="pg-steps">
     <li><strong>Warm up or shower first.</strong> Come in from a class, the sauna, or a quick rinse.</li>
     <li><strong>Step in slowly and settle to the shoulders.</strong> The first few seconds are the loudest. Slow, long exhales get you through them.</li>
     <li><strong>Stay 1 to 2 minutes.</strong> First time? Shorter is fine. You can always get out early.</li>
     <li><strong>Get out and warm back up.</strong> Towel off, then head to the sauna or get dressed and move around.</li>
   </ol>
+  <figure class="cp-inline"><img src="assets/cold-plunge/cold-plunge-in-tub.jpg" width="1080" height="1080" alt="Member settled to the shoulders in a cold plunge, breathing slowly" loading="lazy"></figure>
+  </div>
 </section>
 
 <section class="am-section ab-section" aria-labelledby="clean-heading">
   <div class="section-label">How we keep it clean</div>
   <h2 id="clean-heading">Fresh water, <em>every week.</em></h2>
   <p>Every week we drain each plunge completely, clean the tub, change the filters, and refill it with fresh water.</p>
+  <figure class="cp-inline"><img src="assets/cold-plunge/cold-plunge-tubs.jpg" width="1600" height="900" alt="Three cold plunge tubs with cold mist rising off fresh water" loading="lazy"></figure>
 </section>
 
 <section class="am-section ab-section" aria-labelledby="bring-heading">
