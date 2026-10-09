@@ -18,6 +18,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'AW-17796671571');
+  // GA4 (G-4CKKHGVY6H) for the purchase event below. No page_view: GTM already sends those. Added 2026-10-09.
+  gtag('config', 'G-4CKKHGVY6H', { 'send_page_view': false });
 </script>
 <script>
 // Defensive fbclid pass-through: if fbclid appears in the URL (should any
@@ -151,6 +153,14 @@ fbq('track', 'PageView');
       'value': VALUE,
       'currency': 'USD',
       'transaction_id': eid
+    });
+    // GA4 purchase so Analytics records revenue and the traffic source of each sale. Added 2026-10-09.
+    gtag('event', 'purchase', {
+      'send_to': 'G-4CKKHGVY6H',
+      'transaction_id': eid,
+      'value': VALUE,
+      'currency': 'USD',
+      'items': [{ 'item_id': OFFER, 'item_name': NAME, 'item_category': 'membership', 'price': VALUE, 'quantity': 1 }]
     });
   }
 
