@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ===== GOOGLE TAG MANAGER ===== -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P73DQ4WR');</script>
+<!-- ===== END GOOGLE TAG MANAGER ===== -->
+
+<title>Email preferences | Vital Athletic Recovery</title>
+<meta name="description" content="Choose what you hear from Vital Athletic Recovery — stop class alert emails, or unsubscribe from all marketing emails. You'll still get booking confirmations and class cancellation notices." />
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="https://www.vitalathleticrecovery.com/unsubscribe/" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f2ebd8;
+    --bg-elev: #e5dbc0;
+    --bg-deep: #d3c5a3;
+    --ink: #14110c;
+    --ink-dim: #44403a;
+    --ink-mute: #6f6a5c;
+    --ink-inverse: #f4eeda;
+    --accent: #8a6536;
+    --accent-soft: #b88a55;
+    --accent-deep: #4a3617;
+    --sage: #4a6354;
+    --moss: #2c3f33;
+    --night: #181613;
+    --line: rgba(20,17,12,0.12);
+    --line-strong: rgba(20,17,12,0.24);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: var(--ink-dim); text-decoration: none; transition: color 0.3s; }
+  a:hover { color: var(--accent); }
+
+  /* ===== NAV (copied from index.html) ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(14px) saturate(110%);
+    -webkit-backdrop-filter: blur(14px) saturate(110%);
+    background: rgba(250,246,239,0.72);
+    border-bottom: 1px solid var(--line);
+    transition: padding 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  }
+  .logo { display: inline-flex; align-items: center; text-decoration: none; color: var(--ink); }
+  .logo img {
+    height: 300px; width: auto; display: block;
+    margin: -50px 0;
+    transition: height 0.35s ease, margin 0.35s ease;
+  }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .nav-links a { color: var(--ink-dim); }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-actions { display: flex; align-items: center; gap: 28px; }
+  .nav-cta {
+    padding: 10px 22px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--ink-inverse);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--ink-inverse); }
+  .nav-login {
+    color: var(--ink-dim); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-login:hover { color: var(--accent); }
+  .nav-burger {
+    display: none; position: relative; width: 44px; height: 44px;
+    border: 1px solid var(--accent); background: transparent; cursor: pointer;
+    border-radius: 0; padding: 0;
+  }
+  .nav-burger span {
+    position: absolute; left: 11px; right: 11px; height: 2px; background: var(--ink);
+    transition: all 0.3s;
+  }
+  .nav-burger span:nth-child(1) { top: 15px; }
+  .nav-burger span:nth-child(2) { top: 21px; }
+  .nav-burger span:nth-child(3) { top: 27px; }
+
+  /* ===== MOBILE DRAWER ===== */
+  .drawer-backdrop {
+    position: fixed; inset: 0; background: rgba(13,11,8,0.5); z-index: 98;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+  .mobile-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 85vw);
+    background: var(--bg); z-index: 99; padding: 110px 32px 32px;
+    transform: translateX(100%); transition: transform 0.35s ease;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+  .mobile-drawer.open { transform: translateX(0); }
+  .mobile-links { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+  .mobile-links a {
+    font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink);
+  }
+  .mobile-actions { display: flex; flex-direction: column; gap: 16px; margin-top: auto; }
+  .mobile-cta {
+    padding: 12px 22px; border: 1px solid var(--ink); background: var(--ink);
+    color: var(--ink-inverse); text-align: center;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+
+  /* ===== PAGE ===== */
+  main { padding: 220px 24px 96px; }
+  .prefs {
+    max-width: 620px; margin: 0 auto;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    padding: 56px 48px;
+  }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 16px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(32px, 5vw, 44px); line-height: 1.15;
+    letter-spacing: -0.01em; color: var(--ink); margin-bottom: 16px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-size: 16px; color: var(--ink-dim); margin-bottom: 36px; }
+  .field-label {
+    display: block; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500; margin-bottom: 10px;
+  }
+  input[type="email"] {
+    width: 100%; padding: 14px 16px;
+    font-family: var(--sans); font-size: 16px; font-weight: 300; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line-strong); border-radius: 0;
+    outline: none; margin-bottom: 32px;
+  }
+  input[type="email"]:focus { border-color: var(--accent); }
+
+  .choice {
+    display: block; cursor: pointer;
+    border: 1px solid var(--line-strong); background: var(--bg);
+    padding: 20px 22px; margin-bottom: 14px;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice:has(input:checked) { border-color: var(--accent); background: #efe6cd; }
+  .choice input { accent-color: var(--accent); margin-right: 10px; }
+  .choice-title { font-family: var(--serif); font-weight: 500; font-size: 19px; color: var(--ink); }
+  .choice-desc { font-size: 14px; color: var(--ink-dim); margin-top: 6px; margin-left: 28px; }
+
+  .btn-confirm {
+    display: block; width: 100%; margin-top: 28px;
+    padding: 16px 22px; border: 1px solid var(--ink); background: var(--ink);
+    color: var(--ink-inverse); cursor: pointer;
+    font-family: var(--sans); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .btn-confirm:hover { background: var(--accent); border-color: var(--accent); }
+  .btn-confirm:disabled { opacity: 0.55; cursor: default; }
+  .fineprint { font-size: 13px; color: var(--ink-mute); text-align: center; margin-top: 20px; }
+  .error {
+    display: none; margin-top: 18px; padding: 14px 16px;
+    background: #f3e3d8; border: 1px solid #b4552d; color: #7a3416; font-size: 14px;
+  }
+  .error.show { display: block; }
+  .done { display: none; text-align: center; }
+  .done.show { display: block; }
+  .done h2 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(28px, 4vw, 36px); line-height: 1.2; margin-bottom: 16px;
+  }
+  .done p { font-size: 16px; color: var(--ink-dim); margin-bottom: 12px; }
+  .done a { color: var(--accent); text-decoration: underline; }
+
+  /* ===== FOOTER (copied from index.html) ===== */
+  footer {
+    background: #0d0b08; color: var(--ink-inverse);
+    padding: 72px 48px 32px;
+    border-top: 1px solid rgba(138, 101, 54, 0.35);
+  }
+  .foot-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; margin-bottom: 48px;
+  }
+  .foot-brand { display: inline-block; margin-bottom: 20px; }
+  .foot-brand img { height: 64px; width: auto; display: block; }
+  .foot-tag { font-size: 14px; color: rgba(244, 238, 218, 0.7); line-height: 1.6; max-width: 360px; }
+  .foot-col h4 {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent-soft); margin-bottom: 20px; font-weight: 500;
+  }
+  .foot-col ul { list-style: none; }
+  .foot-col li { margin-bottom: 10px; }
+  .foot-col a { color: rgba(244, 238, 218, 0.75); font-size: 14px; }
+  .foot-col a:hover { color: var(--accent-soft); }
+  .foot-bottom {
+    padding-top: 32px; border-top: 1px solid rgba(244, 238, 218, 0.12);
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: rgba(244, 238, 218, 0.5);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .nav-actions { display: none; }
+    .nav-burger { display: inline-block; }
+    .logo img { height: 200px; margin: -38px 0; }
+    main { padding: 170px 20px 72px; }
+    .prefs { padding: 40px 28px; }
+    footer { padding: 56px 24px 28px; }
+    .foot-grid { grid-template-columns: 1fr; gap: 40px; }
+    .foot-bottom { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P73DQ4WR"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav aria-label="Primary">
+  <a href="/" class="logo" aria-label="Vital Athletic Recovery — home">
+    <img src="/assets/var-logo-horizontal-light.png" alt="Vital Athletic Recovery" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/memberships.html">Memberships</a></li>
+    <li><a href="/amenities.html">Amenities</a></li>
+    <li><a href="/instructors.html">Instructors</a></li>
+    <li><a href="/#classes">Classes</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/#visit">Visit</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="/#memberships" class="nav-cta">Membership Offers</a>
+    <a href="https://vitalathleticrecovery.gymmasteronline.com/portal"
+       target="_blank" rel="noopener" class="nav-login">Member Login</a>
+  </div>
+  <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+<aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+  <ul class="mobile-links">
+    <li><a href="/about.html" data-drawer-link>About</a></li>
+    <li><a href="/memberships.html" data-drawer-link>Memberships</a></li>
+    <li><a href="/amenities.html" data-drawer-link>Amenities</a></li>
+    <li><a href="/instructors.html" data-drawer-link>Instructors</a></li>
+    <li><a href="/#classes" data-drawer-link>Classes</a></li>
+    <li><a href="/blog.html" data-drawer-link>Blog</a></li>
+    <li><a href="/#visit" data-drawer-link>Visit</a></li>
+  </ul>
+  <div class="mobile-actions">
+    <a href="/#memberships" class="mobile-cta" data-drawer-link>Membership Offers</a>
+    <a href="https://vitalathleticrecovery.gymmasteronline.com/portal" target="_blank" rel="noopener" class="mobile-cta" data-drawer-link>Member Login</a>
+  </div>
+</aside>
+
+<main>
+  <div class="prefs">
+    <div id="prefsForm">
+      <p class="eyebrow">Email preferences</p>
+      <h1>Choose what you <em>hear</em> from us.</h1>
+      <p class="lede">Pick one, confirm, and we&rsquo;ll take care of it. Either way, you&rsquo;ll still get booking confirmations and class cancellation notices.</p>
+
+      <form id="unsubForm" novalidate>
+        <label class="field-label" for="email">Your email</label>
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+
+        <span class="field-label">What should stop?</span>
+        <label class="choice">
+          <input type="radio" name="choice" value="stop-alerts" checked />
+          <span class="choice-title">Stop class alerts only</span>
+          <span class="choice-desc">No more &ldquo;Spots open this week&rdquo; emails. You&rsquo;ll still get booking confirmations and cancellation notices.</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="choice" value="unsubscribe-all" />
+          <span class="choice-title">Unsubscribe from all marketing emails</span>
+          <span class="choice-desc">No more marketing emails from Vital Athletic Recovery. You&rsquo;ll still get booking confirmations and cancellation notices.</span>
+        </label>
+
+        <button class="btn-confirm" type="submit" id="confirmBtn">Confirm</button>
+        <p class="error" id="errorBox"></p>
+        <p class="fineprint">Changed your mind later? Ask at the front desk, or turn email back on in your member portal.</p>
+      </form>
+    </div>
+
+    <div class="done" id="doneBox" aria-live="polite">
+      <p class="eyebrow">All set</p>
+      <h2>You&rsquo;re unsubscribed.</h2>
+      <p id="doneText"></p>
+      <p>Changed your mind? Ask at the front desk or turn email back on in your member portal.</p>
+      <p><a href="/">Back to the site</a></p>
+    </div>
+  </div>
+</main>
+
+<footer aria-label="Site footer">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">
+        <img src="/assets/var-logo-horizontal-light.png" alt="Vital Athletic Recovery" />
+      </div>
+      <p class="foot-tag">East Dallas&rsquo;s recovery and movement sanctuary. Built for professionals, parents, and athletes who want to live longer &mdash; and live better.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Studio</h4>
+      <ul>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/amenities.html">Amenities</a></li>
+        <li><a href="/instructors.html">Instructors</a></li>
+        <li><a href="/#classes">Schedule</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Join</h4>
+      <ul>
+        <li><a href="/#memberships">Memberships</a></li>
+        <li><a href="/#classes">Class Packs</a></li>
+        <li><a href="/#visit">Day Pass</a></li>
+        <li><a href="https://vitalathleticrecovery.gymmasteronline.com/portal" target="_blank" rel="noopener">Member Login</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Visit</h4>
+      <ul>
+        <li><a href="/#visit">718 N. Buckner Blvd.</a></li>
+        <li><a href="/#visit">Suite 416, Dallas TX 75218</a></li>
+        <li><a href="tel:2143082123">(214) 308-2123</a></li>
+        <li><a href="https://www.instagram.com/vital_athletic_recovery/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div>&copy; 2026 Vital Athletic Recovery</div>
+    <div>Terms &middot; Privacy</div>
+  </div>
+</footer>
+
+<script>
+  // ---- Mobile drawer ----
+  (function () {
+    var burger = document.getElementById('navBurger');
+    var drawer = document.getElementById('mobileDrawer');
+    var backdrop = document.getElementById('drawerBackdrop');
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      drawer.setAttribute('aria-hidden', 'true');
+      backdrop.setAttribute('aria-hidden', 'true');
+    }
+    burger.addEventListener('click', function () {
+      var open = drawer.classList.toggle('open');
+      backdrop.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+    backdrop.addEventListener('click', closeDrawer);
+    drawer.querySelectorAll('[data-drawer-link]').forEach(function (a) {
+      a.addEventListener('click', closeDrawer);
+    });
+  })();
+
+  // ---- Unsubscribe form ----
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var emailInput = document.getElementById('email');
+    var form = document.getElementById('unsubForm');
+    var errorBox = document.getElementById('errorBox');
+    var confirmBtn = document.getElementById('confirmBtn');
+    var formWrap = document.getElementById('prefsForm');
+    var doneBox = document.getElementById('doneBox');
+    var doneText = document.getElementById('doneText');
+
+    // Prefill from the link in the email
+    var preEmail = params.get('email');
+    if (preEmail) emailInput.value = preEmail;
+
+    var preChoice = params.get('choice');
+    if (preChoice === 'stop' || preChoice === 'stop-alerts') {
+      form.querySelector('input[name="choice"][value="stop-alerts"]').checked = true;
+    } else if (preChoice === 'full' || preChoice === 'unsubscribe-all') {
+      form.querySelector('input[name="choice"][value="unsubscribe-all"]').checked = true;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errorBox.classList.remove('show');
+
+      var email = emailInput.value.trim();
+      if (!email || email.indexOf('@') === -1) {
+        errorBox.textContent = 'Please enter your email address so we know whose emails to stop.';
+        errorBox.classList.add('show');
+        emailInput.focus();
+        return;
+      }
+
+      var choice = form.querySelector('input[name="choice"]:checked').value;
+      var subject = choice === 'stop-alerts'
+        ? 'Stop class alerts'
+        : 'Unsubscribe from all marketing';
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Saving…';
+
+      var body = new URLSearchParams();
+      body.append('email', email);
+      body.append('choice', choice);
+      body.append('_subject', subject);
+
+      fetch('https://formspree.io/f/xdegogdj', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: body
+      }).then(function (res) {
+        if (!res.ok) throw new Error('submit failed');
+        var what = choice === 'stop-alerts'
+          ? 'class alerts'
+          : 'all marketing emails';
+        doneText.textContent = 'Done — you\u2019re unsubscribed from ' + what +
+          '. You\u2019ll still get booking confirmations and cancellation notices.';
+        formWrap.style.display = 'none';
+        doneBox.classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }).catch(function () {
+        errorBox.textContent = 'Something went wrong — please try again, or email owner@vitalathleticrecovery.com and we\u2019ll take care of it.';
+        errorBox.classList.add('show');
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm';
+      });
+    });
+  })();
+</script>
+</body>
+</html>
