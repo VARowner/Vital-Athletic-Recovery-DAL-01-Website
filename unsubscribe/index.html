@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- ===== END GOOGLE TAG MANAGER ===== -->
 
 <title>Email preferences | Vital Athletic Recovery</title>
-<meta name="description" content="Choose what you hear from Vital Athletic Recovery — stop class alert emails, or unsubscribe from all marketing emails. You'll still get booking confirmations and class cancellation notices." />
+<meta name="description" content="Choose what you hear from Vital Athletic Recovery — stop class alert emails, stop special-offer emails, or unsubscribe from all marketing emails. You'll still get booking confirmations and class cancellation notices." />
 <meta name="robots" content="noindex" />
 <link rel="canonical" href="https://www.vitalathleticrecovery.com/unsubscribe/" />
 
@@ -295,7 +295,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="prefsForm">
       <p class="eyebrow">Email preferences</p>
       <h1>Choose what you <em>hear</em> from us.</h1>
-      <p class="lede">Pick one, confirm, and we&rsquo;ll take care of it. Either way, you&rsquo;ll still get booking confirmations and class cancellation notices.</p>
+      <p class="lede">Pick one, confirm, and we&rsquo;ll take care of it. Whichever you pick, you&rsquo;ll still get booking confirmations and class cancellation notices.</p>
 
       <form id="unsubForm" novalidate>
         <label class="field-label" for="email">Your email</label>
@@ -306,6 +306,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <input type="radio" name="choice" value="stop-alerts" checked />
           <span class="choice-title">Stop class alerts only</span>
           <span class="choice-desc">No more &ldquo;Spots open this week&rdquo; emails. You&rsquo;ll still get booking confirmations and cancellation notices.</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="choice" value="offers" />
+          <span class="choice-title">Stop special offers only</span>
+          <span class="choice-desc">No more special-offer emails. You&rsquo;ll still get &ldquo;Spots open this week&rdquo; class alerts, booking confirmations, and cancellation notices.</span>
         </label>
         <label class="choice">
           <input type="radio" name="choice" value="unsubscribe-all" />
@@ -418,6 +423,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       form.querySelector('input[name="choice"][value="stop-alerts"]').checked = true;
     } else if (preChoice === 'full' || preChoice === 'unsubscribe-all') {
       form.querySelector('input[name="choice"][value="unsubscribe-all"]').checked = true;
+    } else if (preChoice === 'offers') {
+      form.querySelector('input[name="choice"][value="offers"]').checked = true;
     }
 
     form.addEventListener('submit', function (e) {
@@ -435,7 +442,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var choice = form.querySelector('input[name="choice"]:checked').value;
       var subject = choice === 'stop-alerts'
         ? 'Stop class alerts'
-        : 'Unsubscribe from all marketing';
+        : choice === 'offers'
+          ? 'Stop special offers'
+          : 'Unsubscribe from all marketing';
 
       confirmBtn.disabled = true;
       confirmBtn.textContent = 'Saving…';
@@ -453,7 +462,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         if (!res.ok) throw new Error('submit failed');
         var what = choice === 'stop-alerts'
           ? 'class alerts'
-          : 'all marketing emails';
+          : choice === 'offers'
+            ? 'special-offer emails'
+            : 'all marketing emails';
         doneText.textContent = 'Done — you\u2019re unsubscribed from ' + what +
           '. You\u2019ll still get booking confirmations and cancellation notices.';
         formWrap.style.display = 'none';
